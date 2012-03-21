@@ -1,0 +1,4 @@
+Implements a distributed pacman game.
+The game is playable by three players and requires a game server that is reachable by the players.
+
+Multiple levels are supported and each of the pacmans has a different color. When one pacman eats another, it gets all of its points. A pacman eats another pacman, if they both step on the same block. The decision which one is eaten depends on the current colors of the pacmans. The colors of the pacmans change in regular intervals.
