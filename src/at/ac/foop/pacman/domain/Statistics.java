@@ -1,4 +1,4 @@
-package at.ac.foop.pacman.model.statistics;
+package at.ac.foop.pacman.domain;
 
 /**
  *

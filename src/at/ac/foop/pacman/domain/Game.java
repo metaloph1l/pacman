@@ -1,4 +1,4 @@
-package at.ac.foop.pacman.model.game;
+package at.ac.foop.pacman.domain;
 
 /**
  *
