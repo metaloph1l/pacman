@@ -205,7 +205,7 @@ direction = getDirection() : Direction</panel_attributes>
     <panel_attributes>With this design the direction of the pacman
 can be set asynchronously and during each turn the
 player just pulls the current direction and
-playes the pacman accordingly. This way it makes
+places the pacman accordingly. This way it makes
 no difference if the direction of a pacman is set
 by the server or the user interface.</panel_attributes>
     <additional_attributes/>
