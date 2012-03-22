@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.4">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>120</y>
+      <w>280</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>Player
+--
+_directions : {up, down, left, right}_
+id : long
+name : String
+points : int
+--
+takeTurn(direction)
+addPoints(points)
+getPoints() : int
+getLocation() : Square
+eat(player)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>980</x>
+      <y>120</y>
+      <w>240</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Piece
+--
+color
+currentDirection
+--
+eat(piece)
+setLocation(square)
+getLocation() : Square</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>740</x>
+      <y>100</y>
+      <w>260</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+piece
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>30;50;240;50;170;50;240;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>980</x>
+      <y>390</y>
+      <w>240</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Square
+--
+wallType
+points
+player
+--
+landedOn(player)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>940</x>
+      <y>240</y>
+      <w>190</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=-&lt;
+                 location
+m1=     1
+</panel_attributes>
+    <additional_attributes>100;150;100;110;100;150;100;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>460</y>
+      <w>230</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Board
+--
+width : int
+height : int
+--
++getSquare(square, direction)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>690</x>
+      <y>460</y>
+      <w>310</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;
+squares {ordered}
+</panel_attributes>
+    <additional_attributes>30;50;290;50;130;50;290;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>460</x>
+      <y>320</y>
+      <w>156</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+             board
+m2=     1</panel_attributes>
+    <additional_attributes>80;30;80;140;80;110;80;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>90</x>
+      <y>440</y>
+      <w>310</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Statistics
+--
+player
+point
+round
+date
+--
++ addRecord(player, points, round, date)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>80</x>
+      <y>260</y>
+      <w>190</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;
+                    records
+m2=         *</panel_attributes>
+    <additional_attributes>100;30;100;180;100;150;100;180</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>110</x>
+      <y>120</y>
+      <w>170</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>PacmanGame
+--
+MAX_ROUNDS
+TIME_PER_ROUND
+roundCount
+--
++initialize()
++playGame()
+-playRound()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>250</x>
+      <y>100</y>
+      <w>260</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&gt;
+players {ordered}
+
+m2=2..3  </panel_attributes>
+    <additional_attributes>30;50;240;50;70;50;240;50</additional_attributes>
+  </element>
+</diagram>
