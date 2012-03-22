@@ -23,7 +23,7 @@ points</panel_attributes>
       <w>140</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>Piece
+    <panel_attributes>Pacman
 --
 color
 currentDirection</panel_attributes>
@@ -80,7 +80,7 @@ m2=       0..1</panel_attributes>
       <w>140</w>
       <h>90</h>
     </coordinates>
-    <panel_attributes>Board
+    <panel_attributes>Labyrinth
 --
 </panel_attributes>
     <additional_attributes/>
