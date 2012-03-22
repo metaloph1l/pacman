@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="11.4">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>70</y>
+      <w>100</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Player
+--
+name
+points</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>70</y>
+      <w>140</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Piece
+--
+color
+currentDirection</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>320</x>
+      <y>60</y>
+      <w>190</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-
+owns
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>30;50;170;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>490</x>
+      <y>260</y>
+      <w>140</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Square
+--
+wallType
+points
+player</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>110</y>
+      <w>130</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=-
+           is-on
+m1=     1
+m2=       0..1</panel_attributes>
+    <additional_attributes>70;150;70;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>260</y>
+      <w>140</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>Board
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>360</x>
+      <y>260</y>
+      <w>150</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;
+contains
+m1=  1
+m2=n</panel_attributes>
+    <additional_attributes>30;50;130;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>190</x>
+      <y>110</y>
+      <w>218</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=-
+                    takes turn
+m1=           2..3
+m2=     1</panel_attributes>
+    <additional_attributes>110;30;110;150</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>460</y>
+      <w>130</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Statistics
+--
+player
+point
+round
+date</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>320</y>
+      <w>190</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-
+                    records
+m1=           1
+m2=     n</panel_attributes>
+    <additional_attributes>100;30;100;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>70</y>
+      <w>140</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>PacmanGame
+--
+MAX_ROUNDS
+TIME_PER_ROUND
+roundCount</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>130</x>
+      <y>50</y>
+      <w>140</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-
+plays
+m1=1
+m2=2..3</panel_attributes>
+    <additional_attributes>30;50;120;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>130</x>
+      <y>120</y>
+      <w>140</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=-
+played-on
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>30;30;120;170</additional_attributes>
+  </element>
+</diagram>
