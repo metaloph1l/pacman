@@ -38,7 +38,9 @@ currentDirection
 --
 eat(piece)
 setLocation(square)
-getLocation() : Square</panel_attributes>
+getLocation() : Square
+getDirection() : Direction
+changeDirection(direction)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

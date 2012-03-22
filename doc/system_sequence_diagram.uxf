@@ -70,4 +70,15 @@ _:PacmanGame_</panel_attributes>
 playGame()</panel_attributes>
     <additional_attributes>320;50;30;50</additional_attributes>
   </element>
+  <element>
+    <type>com.umlet.element.Actor</type>
+    <coordinates>
+      <x>470</x>
+      <y>180</y>
+      <w>80</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Player</panel_attributes>
+    <additional_attributes/>
+  </element>
 </diagram>
