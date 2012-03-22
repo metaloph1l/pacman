@@ -2,3 +2,6 @@
 /nbproject/
 /build.xml
 /build/
+bin/
+.classpath
+.project
