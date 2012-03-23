@@ -9,7 +9,7 @@ public class Labyrinth {
 	//Fields
 	int width;
 	int height;
-	Square[][] squares;
+	Square[][] squares; //the game field
 	
 	//Constructors
 	public Labyrinth(int width, int height) {

@@ -1,10 +1,10 @@
-package at.ac.foop.pacman.client;
+package at.ac.foop.pacman.application.gameserver;
 
 /**
  *
  * @author Phil
  */
-public class Client {
+public class Gameserver {
    public static void main(String[] args) {
       
    }
