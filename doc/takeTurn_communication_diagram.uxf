@@ -213,7 +213,7 @@ by the server or the user interface.</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>500</x>
+      <x>560</x>
       <y>570</y>
       <w>180</w>
       <h>30</h>
@@ -225,7 +225,7 @@ by the server or the user interface.</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>560</x>
+      <x>620</x>
       <y>570</y>
       <w>50</w>
       <h>350</h>
@@ -236,7 +236,7 @@ by the server or the user interface.</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>320</x>
+      <x>380</x>
       <y>580</y>
       <w>290</w>
       <h>70</h>
@@ -248,7 +248,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>580</x>
+      <x>640</x>
       <y>630</y>
       <w>20</w>
       <h>260</h>
@@ -259,7 +259,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>570</x>
+      <x>630</x>
       <y>780</y>
       <w>370</w>
       <h>70</h>
@@ -271,7 +271,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>870</x>
+      <x>930</x>
       <y>570</y>
       <w>100</w>
       <h>30</h>
@@ -283,7 +283,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>890</x>
+      <x>950</x>
       <y>570</y>
       <w>50</w>
       <h>350</h>
@@ -294,7 +294,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>570</x>
+      <x>630</x>
       <y>680</y>
       <w>370</w>
       <h>70</h>
@@ -306,7 +306,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>590</x>
+      <x>650</x>
       <y>660</y>
       <w>20</w>
       <h>50</h>
@@ -317,7 +317,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>450</x>
+      <x>510</x>
       <y>640</y>
       <w>350</w>
       <h>80</h>
@@ -329,7 +329,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.custom.InteractionFrame</type>
     <coordinates>
-      <x>360</x>
+      <x>420</x>
       <y>650</y>
       <w>600</w>
       <h>220</h>
@@ -350,7 +350,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
-      <x>590</x>
+      <x>650</x>
       <y>740</y>
       <w>20</w>
       <h>50</h>
@@ -361,7 +361,7 @@ landedOn(player)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>460</x>
+      <x>520</x>
       <y>720</y>
       <w>330</w>
       <h>80</h>
