@@ -18,7 +18,6 @@ public class Labyrinth {
 		this.height = height;
 	}
 	
-	//Constructors
 	public Labyrinth(Square[][] squares) {
 		this.squares = squares;
 		this.width = squares.length;

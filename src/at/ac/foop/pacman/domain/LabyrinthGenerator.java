@@ -4,10 +4,6 @@ import at.ac.foop.pacman.util.MapLoader;
 import at.ac.foop.pacman.util.PropertyLoader;
 import at.ac.foop.pacman.util.ServerSettings;
 
-/**
- *
- * @author Phil
- */
 public class LabyrinthGenerator {
 	
 	public static Labyrinth generateLabyrinth() {
