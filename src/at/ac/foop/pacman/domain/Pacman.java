@@ -7,8 +7,8 @@ package at.ac.foop.pacman.domain;
 */
 public class Pacman {
 	//Fields
-	PacmanColor color; //the color of this pacman
-	Direction direction; //the current direction of the pacman
+	private PacmanColor color; //the color of this pacman
+	private Direction direction; //the current direction of the pacman
 	Square location;
 
 	//Concrete Methods
@@ -31,5 +31,13 @@ public class Pacman {
 	
 	public void setDirection(Direction direction) {
 		this.direction = direction;
+	}
+
+	public PacmanColor getColor() {
+		return color;
+	}
+
+	public void setColor(PacmanColor color) {
+		this.color = color;
 	}
 }

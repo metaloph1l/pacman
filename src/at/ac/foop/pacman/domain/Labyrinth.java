@@ -18,11 +18,33 @@ public class Labyrinth {
 		this.height = height;
 	}
 	
+	//TODO needs refactoring -> LabyrinthGenerator should generate the maze and its squares.
 	public void initializeBoard() {
 		//create all the square items
 	}
 	
 	public Square getSquare(Square square, Direction direction) {
-		return null;
+		Coordinate coord = square.getCoordinate();
+		Square tmp = null;
+		
+		switch(direction) {
+			case UP:
+				tmp = squares[(coord.getY()-1)%height][coord.getX()];
+				break;
+			case DOWN:
+				tmp = squares[(coord.getY()+1)%height][coord.getX()];
+				break;
+			case LEFT:
+				tmp = squares[coord.getY()][(coord.getX()-1)%width];
+				break;
+			case RIGHT:
+				tmp = squares[coord.getY()][(coord.getX()+1)%width];
+				break;
+			case NONE:
+				tmp = square;
+				break;
+		}
+		
+		return tmp;
 	}
 }
