@@ -5,7 +5,7 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>300</x>
-      <y>60</y>
+      <y>80</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -17,7 +17,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>320</x>
-      <y>60</y>
+      <y>80</y>
       <w>50</w>
       <h>320</h>
     </coordinates>
@@ -28,7 +28,7 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>710</x>
-      <y>60</y>
+      <y>80</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -40,7 +40,7 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>910</x>
-      <y>60</y>
+      <y>80</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -52,7 +52,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>730</x>
-      <y>60</y>
+      <y>80</y>
       <w>50</w>
       <h>320</h>
     </coordinates>
@@ -63,7 +63,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>930</x>
-      <y>60</y>
+      <y>80</y>
       <w>50</w>
       <h>320</h>
     </coordinates>
@@ -74,7 +74,7 @@
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>170</y>
+      <y>190</y>
       <w>450</w>
       <h>70</h>
     </coordinates>
@@ -86,7 +86,7 @@ newSquare = getSquare(currentSquare, direction)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>170</x>
-      <y>80</y>
+      <y>100</y>
       <w>200</w>
       <h>70</h>
     </coordinates>
@@ -98,7 +98,7 @@ takeTurn()</panel_attributes>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>340</x>
-      <y>130</y>
+      <y>150</y>
       <w>20</w>
       <h>210</h>
     </coordinates>
@@ -109,7 +109,7 @@ takeTurn()</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>110</y>
+      <y>130</y>
       <w>650</w>
       <h>70</h>
     </coordinates>
@@ -121,7 +121,7 @@ currentSquare = getLocation() : Square</panel_attributes>
     <type>com.umlet.element.Note</type>
     <coordinates>
       <x>230</x>
-      <y>400</y>
+      <y>420</y>
       <w>480</w>
       <h>130</h>
     </coordinates>
@@ -139,7 +139,7 @@ it owns the Pacman and can assign it a new location.
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>220</y>
+      <y>240</y>
       <w>650</w>
       <h>70</h>
     </coordinates>
@@ -151,19 +151,19 @@ setSquare(newSquare)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>270</y>
+      <y>290</y>
       <w>850</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-landedOn(player)</panel_attributes>
+enter(player)</panel_attributes>
     <additional_attributes>830;50;30;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>1070</x>
-      <y>60</y>
+      <y>80</y>
       <w>180</w>
       <h>30</h>
     </coordinates>
@@ -175,7 +175,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>1130</x>
-      <y>60</y>
+      <y>80</y>
       <w>50</w>
       <h>320</h>
     </coordinates>
@@ -186,7 +186,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>330</x>
-      <y>140</y>
+      <y>160</y>
       <w>650</w>
       <h>70</h>
     </coordinates>
@@ -198,7 +198,7 @@ direction = getDirection() : Direction</panel_attributes>
     <type>com.umlet.element.Note</type>
     <coordinates>
       <x>790</x>
-      <y>400</y>
+      <y>420</y>
       <w>400</w>
       <h>130</h>
     </coordinates>
@@ -214,7 +214,7 @@ by the server or the user interface.</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>560</x>
-      <y>570</y>
+      <y>590</y>
       <w>180</w>
       <h>30</h>
     </coordinates>
@@ -226,7 +226,7 @@ by the server or the user interface.</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>620</x>
-      <y>570</y>
+      <y>590</y>
       <w>50</w>
       <h>350</h>
     </coordinates>
@@ -237,19 +237,19 @@ by the server or the user interface.</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>380</x>
-      <y>580</y>
+      <y>600</y>
       <w>290</w>
       <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
-landedOn(player)</panel_attributes>
+enter(player)</panel_attributes>
     <additional_attributes>270;50;30;50</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>640</x>
-      <y>630</y>
+      <y>650</y>
       <w>20</w>
       <h>260</h>
     </coordinates>
@@ -260,7 +260,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>630</x>
-      <y>780</y>
+      <y>800</y>
       <w>370</w>
       <h>70</h>
     </coordinates>
@@ -272,7 +272,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>930</x>
-      <y>570</y>
+      <y>590</y>
       <w>100</w>
       <h>30</h>
     </coordinates>
@@ -284,7 +284,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>950</x>
-      <y>570</y>
+      <y>590</y>
       <w>50</w>
       <h>350</h>
     </coordinates>
@@ -295,7 +295,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>630</x>
-      <y>680</y>
+      <y>700</y>
       <w>370</w>
       <h>70</h>
     </coordinates>
@@ -307,7 +307,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>650</x>
-      <y>660</y>
+      <y>680</y>
       <w>20</w>
       <h>50</h>
     </coordinates>
@@ -318,7 +318,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>510</x>
-      <y>640</y>
+      <y>660</y>
       <w>350</w>
       <h>80</h>
     </coordinates>
@@ -330,7 +330,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.custom.InteractionFrame</type>
     <coordinates>
       <x>420</x>
-      <y>650</y>
+      <y>670</y>
       <w>600</w>
       <h>220</h>
     </coordinates>
@@ -351,7 +351,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.custom.SeqObjectActive</type>
     <coordinates>
       <x>650</x>
-      <y>740</y>
+      <y>760</y>
       <w>20</w>
       <h>50</h>
     </coordinates>
@@ -362,7 +362,7 @@ landedOn(player)</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>520</x>
-      <y>720</y>
+      <y>740</y>
       <w>330</w>
       <h>80</h>
     </coordinates>

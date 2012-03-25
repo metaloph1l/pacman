@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="11.4">
-  <zoom_level>10</zoom_level>
+  <zoom_level>9</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>140</y>
-      <w>280</w>
-      <h>230</h>
+      <x>513</x>
+      <y>126</y>
+      <w>252</w>
+      <h>207</h>
     </coordinates>
     <panel_attributes>Player
 --
@@ -20,16 +20,20 @@ points : int
 +addPoints(points)
 +getPoints() : int
 +getLocation() : Square
-+eat(player)</panel_attributes>
++eat(player)
+-sendBounty(player)
++getPacman() 
++setPacman()
++setMap(labyrinth)</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1080</x>
-      <y>140</y>
-      <w>240</w>
-      <h>150</h>
+      <x>954</x>
+      <y>126</y>
+      <w>216</w>
+      <h>135</h>
     </coordinates>
     <panel_attributes>Pacman
 --
@@ -46,55 +50,61 @@ changeDirection(direction)</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>840</x>
-      <y>120</y>
-      <w>260</w>
-      <h>70</h>
+      <x>738</x>
+      <y>108</y>
+      <w>233</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
 piece
 m1=1
 m2=1</panel_attributes>
-    <additional_attributes>30;50;240;50;170;50;240;50</additional_attributes>
+    <additional_attributes>27;45;216;45;153;45;216;45</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1080</x>
-      <y>410</y>
-      <w>240</w>
-      <h>170</h>
+      <x>954</x>
+      <y>369</y>
+      <w>261</w>
+      <h>171</h>
     </coordinates>
-    <panel_attributes>Square
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Square
 --
-isWall
-points
-player
+coordinates
 --
-landedOn(player)</panel_attributes>
++enter(player)
++leave(player)
++reset()
++getType() : SquareType {WALL, FIELD}
++getPoints()
++getCoordinate()
++setCoordinate(coordinate)
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1040</x>
-      <y>260</y>
-      <w>190</w>
-      <h>170</h>
+      <x>918</x>
+      <y>234</y>
+      <w>164</w>
+      <h>152</h>
     </coordinates>
     <panel_attributes>lt=-&lt;
                  location
 m1=     1
 </panel_attributes>
-    <additional_attributes>100;150;100;110;100;150;100;30</additional_attributes>
+    <additional_attributes>90;135;90;99;90;135;90;27</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>480</y>
-      <w>230</w>
-      <h>90</h>
+      <x>513</x>
+      <y>432</y>
+      <w>207</w>
+      <h>81</h>
     </coordinates>
     <panel_attributes>Labyrinth
 --
@@ -108,36 +118,36 @@ height : int
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>790</x>
-      <y>480</y>
-      <w>310</w>
-      <h>70</h>
+      <x>693</x>
+      <y>432</y>
+      <w>278</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=&gt;
 squares {ordered}
 </panel_attributes>
-    <additional_attributes>30;50;290;50;130;50;290;50</additional_attributes>
+    <additional_attributes>27;45;261;45;117;45;261;45</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>560</x>
-      <y>340</y>
-      <w>156</w>
-      <h>160</h>
+      <x>486</x>
+      <y>306</y>
+      <w>136</w>
+      <h>143</h>
     </coordinates>
     <panel_attributes>lt=-&gt;
              board
 m2=     1</panel_attributes>
-    <additional_attributes>80;30;80;140;80;110;80;140</additional_attributes>
+    <additional_attributes>72;27;72;126;72;99;72;126</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>190</x>
-      <y>460</y>
-      <w>310</w>
-      <h>180</h>
+      <x>135</x>
+      <y>432</y>
+      <w>279</w>
+      <h>162</h>
     </coordinates>
     <panel_attributes>Statistics
 --
@@ -152,47 +162,132 @@ date
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>180</x>
-      <y>280</y>
-      <w>190</w>
-      <h>200</h>
+      <x>144</x>
+      <y>324</y>
+      <w>174</w>
+      <h>125</h>
     </coordinates>
     <panel_attributes>lt=&gt;
                     records
 m2=         *</panel_attributes>
-    <additional_attributes>100;30;100;180;100;150;100;180</additional_attributes>
+    <additional_attributes>90;27;90;108;90;72;90;108</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>210</x>
-      <y>140</y>
-      <w>170</w>
-      <h>170</h>
+      <x>135</x>
+      <y>126</y>
+      <w>216</w>
+      <h>225</h>
     </coordinates>
-    <panel_attributes>PacmanGame
+    <panel_attributes>{active}
+&lt;&lt;Singleton&gt;&gt;
+Game
+
 --
 MAX_ROUNDS
 TIME_PER_ROUND
+CLOCK_LENGTH
 roundCount
 --
-+initialize()
-+playGame()
++init()
++start()
++end()
++play()
 -playRound()</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>350</x>
-      <y>120</y>
-      <w>260</w>
-      <h>70</h>
+      <x>324</x>
+      <y>108</y>
+      <w>206</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>lt=&gt;
 players {ordered}
 
 m2=2..3  </panel_attributes>
-    <additional_attributes>30;50;240;50;70;50;240;50</additional_attributes>
+    <additional_attributes>27;45;171;45;72;45;189;45</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>855</x>
+      <y>630</y>
+      <w>153</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>Field
+--
+points : Integer
+occupant : Player
+--
+@Overriden Methods</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>909</x>
+      <y>513</y>
+      <w>152</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>135;27;27;117</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1107</x>
+      <y>630</y>
+      <w>144</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>Wall
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1071</x>
+      <y>513</y>
+      <w>134</w>
+      <h>134</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>27;27;117;117</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>450</x>
+      <y>486</y>
+      <w>212</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+                       mapFactory
+m2=     1</panel_attributes>
+    <additional_attributes>108;27;108;126;108;99;108;126</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>513</x>
+      <y>612</y>
+      <w>207</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Singleton&gt;&gt;
+LabyrinthFactory
+--
++produce(id) : Square[][]
++produce(name) : Square[][]
+</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>
