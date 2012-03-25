@@ -1,14 +1,15 @@
 package at.ac.foop.pacman.domain;
 
-import javax.management.RuntimeErrorException;
-
 public class Square {
 	//Fields
-	//WallType type; //decides which 
+	//WallType type; //decides which kind of square this object is
 	int points; //The number of points of this square
-	Player player; //The current player on this square or null for no player
+	Player occupant; //The current player on this square or null for no player
 	
 	//Constructors
+	public Square(int points) {
+		this.points = points;
+	}
 	
 	//Concrete Methods
 	/**
@@ -20,16 +21,27 @@ public class Square {
 	 * TODO: This is a potential point that needs
 	 * synchronization
 	 * 
-	 * @param player The player which arrived on this field
+	 * @param inboundPlayer The player which arrived on this field
 	 */
-	public void landedOn(Player player) {
-		if(this.player == null) {
-			this.player = player;
-			player.addPoints(points);
-			this.points = 0;
+	public void landedOn(Player inboundPlayer) {
+		if(this.occupant == null) {
+			this.occupant = inboundPlayer;
+			if(this.points > 0) {
+				inboundPlayer.addPoints(points);
+				this.points = 0;
+			}
 		} else {
-			//decide which player eats the other one
-			//and call eat on that one
+			/**
+			 * This does not mean that the inbound player is eaten
+			 * instead the occupant that receives the eat message is
+			 * responsible for deciding who eats whom. If the occupant
+			 * has been eaten then true is returned and the occupant
+			 * is replaced by the inbound player.
+			 */
+			boolean eaten = this.occupant.eat(inboundPlayer);
+			if(eaten) {
+				this.occupant = inboundPlayer;
+			}
 		}
 	}
 	
@@ -39,8 +51,8 @@ public class Square {
 	 * @param player
 	 */
 	public void leave(Player player) {
-		if(this.player == player) {
-			this.player = null;
+		if(this.occupant == player) {
+			this.occupant = null;
 		} else {
 			throw new RuntimeException("A Player that " +
 					"is not on this field can not leave this field.");

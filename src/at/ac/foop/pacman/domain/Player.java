@@ -26,8 +26,14 @@ public class Player {
 		currentSquare.leave(this);
 	}
 
-	public void eat(Player player) {
-		
+	/**
+	 * The eat method decides if this player is eaten by another player.
+	 * @param player The other player that challenged this player
+	 * @return true if this player has been eaten by the other player.<br />
+	 * false other wise.
+	 */
+	public boolean eat(Player player) {
+		return false;
 	}
 
 	//Getters and Setters
