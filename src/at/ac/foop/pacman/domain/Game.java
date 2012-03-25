@@ -38,7 +38,7 @@ public class Game {
 	 */
 	public void init() {
 		if (round < NUM_OF_ROUNDS_PER_GAME) {
-			this.map = LabyrinthGenerator.generate(round);
+			this.map = LabyrinthGenerator.generateLabyrinth();
 
 			for (Player player : players) {
 				player.setMap(map);

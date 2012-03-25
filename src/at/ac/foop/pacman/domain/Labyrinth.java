@@ -18,9 +18,16 @@ public class Labyrinth {
 		this.height = height;
 	}
 	
+	//Constructors
+	public Labyrinth(Square[][] squares) {
+		this.squares = squares;
+		this.width = squares.length;
+		this.height = squares[0].length;
+	}
+	
 	//TODO needs refactoring -> LabyrinthGenerator should generate the maze and its squares.
 	public void initializeBoard() {
-		//create all the square items
+		this.squares = LabyrinthGenerator.generateSquares();
 	}
 	
 	public Square getSquare(Square square, Direction direction) {
