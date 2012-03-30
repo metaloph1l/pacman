@@ -2,6 +2,7 @@ package at.ac.foop.pacman.application;
 
 import java.awt.Point;
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.Hashtable;
 
 import at.ac.foop.pacman.domain.Direction;
@@ -17,7 +18,8 @@ public interface IGameServer extends Remote {
 	 * @param direction The direction of this pacman figure
 	 * for the next clock cycle. 
 	 */
-	void changeDirection(Long playerId, Direction direction);
+	void changeDirection(Long playerId, Direction direction)
+	    throws RemoteException;
 	
 	/**
 	 *  Signals the server that the player is ready to
@@ -26,18 +28,18 @@ public interface IGameServer extends Remote {
 	 *  The server should not send the first clock message
 	 *  unless all clients have signalled they are ready.
 	 */
-	void ready();
+	void ready() throws RemoteException;
 	
 	/**
 	 * After the client has received a notifyMapChange
 	 * message it downloads the map from the server.
 	 */
-	Square[][] downloadMap();
+	Square[][] downloadMap() throws RemoteException;
 	
 	/**
 	 * The client also needs to download the positions of
 	 * the pacman figures.
 	 * @return Returns a Hashlist of Player Ids and position 
 	 */
-	Hashtable<Long, Point> getPositions();
+	Hashtable<Long, Point> getPositions() throws RemoteException;
 }
