@@ -1,5 +1,7 @@
 package at.ac.foop.pacman.domain;
 
+import at.ac.foop.pacman.application.gameserver.GameController;
+
 public class Player {
 	//Fields
 
@@ -82,7 +84,7 @@ public class Player {
 				throw new RuntimeException("Unknown color");
 		}
 		
-		Game.getCurrentInstance().endRound();
+		GameController.getCurrentInstance().endRound();
         return false; //TODO: return correct boolean
 	}
 

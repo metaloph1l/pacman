@@ -1,20 +1,24 @@
-package at.ac.foop.pacman.domain;
+package at.ac.foop.pacman.application.gameserver;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import at.ac.foop.pacman.domain.Labyrinth;
+import at.ac.foop.pacman.domain.LabyrinthGenerator;
+import at.ac.foop.pacman.domain.Player;
+
 /**
  *
  * @author Phil
  */
-public class Game {
+public class GameController {
 	//Constants
 
 	public static int CLOCK_LENGTH = 500;
 	public static int CLOCKS_PER_ROUND = 100;
 	public static int NUM_OF_ROUNDS_PER_GAME = 3;
-	private static Game instance = null;
+	private static GameController instance = null;
 	//Fields
 	int round;
 	int clock;
@@ -24,7 +28,7 @@ public class Game {
 	private Timer timer;
 
 	//Constructors
-	private Game(List<Player> players) {
+	private GameController(List<Player> players) {
 		this.round = 0;
 		this.clock = 0;
 		this.players = players;
@@ -82,11 +86,11 @@ public class Game {
 
 	public static void generateNewInstance(List<Player> players) {
 		synchronized ("getInstance".intern()) {
-			instance = new Game(players);
+			instance = new GameController(players);
 		}
 	}
 
-	public static Game getCurrentInstance() {
+	public static GameController getCurrentInstance() {
 		synchronized ("getInstance".intern()) {
 			if (instance == null) {
 				throw new RuntimeException("There currently is no game instance running.");
@@ -107,7 +111,7 @@ public class Game {
 
 		@Override
 		public void run() {
-			Game.this.play();
+			GameController.this.play();
 		}
 	}
 }
