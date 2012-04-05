@@ -21,13 +21,13 @@ public class LabyrinthGenerator {
 			return null;
 		}
 		Square[][] map = new Square[mapArrStr.length][mapArrStr[0].length];
-		
+
 		Integer fieldPoints = Integer.parseInt(PropertyLoader.getInstance().
-																getProperty(ServerSettings.SERVER_CONFIG, 
-																		ServerSettings.FIELD_POINTS, 
-																		ServerSettings.DEFAULT_FIELD_POINTS)
-												);
-		
+			getProperty(ServerSettings.SERVER_CONFIG,
+			ServerSettings.FIELD_POINTS,
+			ServerSettings.DEFAULT_FIELD_POINTS)
+		);
+
 		for (int i = 0; i < mapArrStr.length; i++) {
 			for(int j = 0; j < mapArrStr[i].length; j++) {
 				if(mapArrStr[i][j].equals("W")) {
