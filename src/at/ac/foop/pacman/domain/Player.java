@@ -121,4 +121,12 @@ public class Player {
 		this.getPacman().setDirection(Direction.NONE);
 		this.map = map;
 	}
+
+	public void setDirection(Direction direction) {
+		pacman.setDirection(direction);
+	}
+
+	public void changeColor() {
+		pacman.changeColor();
+	}
 }

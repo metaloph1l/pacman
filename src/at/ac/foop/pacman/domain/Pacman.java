@@ -40,4 +40,17 @@ public class Pacman {
 	public void setColor(PacmanColor color) {
 		this.color = color;
 	}
+
+	public void changeColor() {
+		switch(this.color) {
+			case RED:
+				this.color = PacmanColor.GREEN;
+				break;
+			case BLUE:
+				this.color = PacmanColor.RED;
+				break;
+			case GREEN:
+				this.color = PacmanColor.BLUE;
+		}
+	}
 }
