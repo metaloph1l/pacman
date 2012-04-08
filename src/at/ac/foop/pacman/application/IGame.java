@@ -5,6 +5,9 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.Player;
+import java.util.List;
+import java.util.Map;
 
 public interface IGame extends Remote {
 	/**
@@ -22,8 +25,10 @@ public interface IGame extends Remote {
 	 * @param directions A list of Key-Value pairs with playerId
 	 * and the direction of that player.
 	 */
-	void clock(int count, Hashtable<Long, Direction> directions)
+	void clock(int count, Map<Long, Direction> directions)
 	    throws RemoteException;
+	
+	void startRound(List<Player> players) throws RemoteException;
 	
 	/**
 	 * The game allows the color of the Pacmans to rotate in response

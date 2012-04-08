@@ -15,6 +15,7 @@ import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.Square;
+import java.util.Map;
 
 /**
  * The client game controllers function is to receive the calls
@@ -25,28 +26,29 @@ import at.ac.foop.pacman.domain.Square;
  *
  */
 public class GameController extends Observable implements IGame {
-	public static int NUM_PLAYERS = 3;
 	List<Player> players;
 	Labyrinth map;
 	int count;
 	private IGameServer server;
 
-	public void init() {
+	public void init(String name) throws RemoteException {
 		//Initialize the players
-		players = new ArrayList<Player>(NUM_PLAYERS);
-		for(int i=0; i< NUM_PLAYERS; i++) {
+		players = new ArrayList<Player>(Player.PLAYER_COUNT);
+		for(int i=0; i< Player.PLAYER_COUNT; i++) {
 			players.add(new Player());
 		}
 		try {
 			//1. Connect to the server
+			Long playerId = this.server.connect(this);
 
 			//2. Download the map and the player positions
-			Square[][] map = this.server.downloadMap();
-			this.map = new Labyrinth(map);
+			this.map = this.server.downloadMap();
 
 			//3. Setup a representation of the game locally
 			//   that includes: Players, Pacmans, Labyrinth, etc.
-			Hashtable<Long, Point> positions = server.getPositions();
+			// TODO: This players are only placeholders for the real players
+			//       that get sent to the client once the game starts!
+			Map<Long, Point> positions = server.getPositions();
 			for(Long id : positions.keySet()) {
 				Pacman pacman = new Pacman();
 				//Set the start color according to the id
@@ -54,11 +56,12 @@ public class GameController extends Observable implements IGame {
 				players.get(id.intValue()).setPacman(pacman);
 				Point point = positions.get(id);
 				//Give the pacman the square on which is should be
-				pacman.setLocation(map[point.x][point.y]);
+				pacman.setLocation(map.getSquare(point.x, point.y));
 			}
 			
 			//4. Finally signal the server that we are ready
-			this.server.ready();
+			this.server.setName(playerId, name);
+			this.server.ready(playerId);
 		} catch(RemoteException e) {
 			//TODO: handle any server exception here
 		}
@@ -74,7 +77,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void clock(int count, Hashtable<Long, Direction> directions)
+	public void clock(int count, Map<Long, Direction> directions)
 			throws RemoteException {
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
@@ -92,5 +95,11 @@ public class GameController extends Observable implements IGame {
 			player.changeColor();
 		}
 		//notify the UI that colors have been changed
+	}
+
+	@Override
+	public void startRound(List<Player> players) throws RemoteException {
+		this.players = players;
+		//TODO: update representation according to the sent players.
 	}
 }

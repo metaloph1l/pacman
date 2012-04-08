@@ -20,11 +20,11 @@ public class GameController {
 	public static int NUM_OF_ROUNDS_PER_GAME = 3;
 	private static GameController instance = null;
 	//Fields
-	int round;
-	int clock;
-	List<Player> players;
-	Labyrinth map;
-	boolean play;
+	private int round;
+	private int clock;
+	private List<Player> players;
+	private Labyrinth map;
+	private boolean play;
 	private Timer timer;
 
 	//Constructors
@@ -68,12 +68,10 @@ public class GameController {
 		}
 
 		GameTimerTask tt = new GameTimerTask();
+		
+		this.init();
 
 		timer.schedule(tt, CLOCK_LENGTH);
-	}
-
-	public void end() {
-		this.timer.cancel();
 	}
 
 	
@@ -105,6 +103,7 @@ public class GameController {
 		round++;
 		
 		//TODO somehow signal clients that a new round starts and wait for ready up of all clients.
+		timer.cancel();
 	}
 
 	public class GameTimerTask extends TimerTask {
@@ -114,4 +113,9 @@ public class GameController {
 			GameController.this.play();
 		}
 	}
+
+	public Labyrinth getMap() {
+		return map;
+	}
+	
 }

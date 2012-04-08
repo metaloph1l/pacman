@@ -4,6 +4,7 @@ import at.ac.foop.pacman.application.gameserver.GameController;
 
 public class Player {
 	//Fields
+	public static final int PLAYER_COUNT = 3;
 
 	Long id; //Uniquely identified the player
 	String name; //The name of the player (for statistics)
@@ -13,6 +14,14 @@ public class Player {
 	boolean alive = true;
 
 	//Constructors
+	public Player() {
+	}
+	
+	public Player(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
 	//Concrete Methods
 	public void takeTurn() {
 		if (alive) {
@@ -130,5 +139,21 @@ public class Player {
 
 	public void changeColor() {
 		pacman.changeColor();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 }
