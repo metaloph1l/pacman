@@ -1,31 +1,32 @@
 package at.ac.foop.pacman.application.gameserver;
 
+import java.awt.Point;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Player;
-import at.ac.foop.pacman.domain.Square;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 /**
  *
  * @author Phil
  */
-public class Gameserver implements IGameServer {
+public class Gameserver extends UnicastRemoteObject implements IGameServer {
 
+	private static final long serialVersionUID = -5709659040290335529L;
 	private List<PlayerWrapper> players;
 	private Map<Long, Boolean> connected;
 	private Map<Long, IGame> callbacks;
 	private Map<Long, Boolean> ready;
 	private GameController gameController;
 
-	public Gameserver() {
+	public Gameserver() throws RemoteException {
 		players = new ArrayList<PlayerWrapper>(Player.PLAYER_COUNT);
 
 		for (int count = 0; count < Player.PLAYER_COUNT; count++) {
@@ -102,11 +103,18 @@ public class Gameserver implements IGameServer {
 
 				player.setCallback(callback);
 				player.setConnected(true);
-
+				
+				// just for testing purpose
+				/* try {
+					player.getCallback().notifyMapChange();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} */ 
+				
 				break;
 			}
 		}
-
 		return playerId;
 	}
 

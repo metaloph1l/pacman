@@ -30,6 +30,10 @@ public class GameController extends Observable implements IGame {
 	Labyrinth map;
 	int count;
 	private IGameServer server;
+	
+	GameController(IGameServer server) {
+		this.server = server;
+	}
 
 	public void init(String name) throws RemoteException {
 		//Initialize the players
@@ -74,6 +78,8 @@ public class GameController extends Observable implements IGame {
 	public void notifyMapChange() throws RemoteException {
 		//This indicates that the server wants to change the map.
 		//TODO: We need to pause the game and download the map on a separate thread
+		
+		System.out.println("MAPChanged!!!");
 	}
 
 	@Override
