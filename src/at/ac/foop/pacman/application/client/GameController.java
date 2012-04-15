@@ -109,4 +109,16 @@ public class GameController extends Observable implements IGame {
 		this.players = players;
 		//TODO: update representation according to the sent players.
 	}
+
+	@Override
+	public void setName(Long id, String name) throws RemoteException {
+		players.get(id.intValue()).setName(name);
+		//notify the UI that a player name has changed
+		this.notifyObservers();
+	}
+
+	@Override
+	public void setReady(Long id) throws RemoteException {
+		//Not implemented so far.
+	}
 }
