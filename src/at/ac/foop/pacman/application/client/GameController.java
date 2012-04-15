@@ -3,7 +3,6 @@ package at.ac.foop.pacman.application.client;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Observable;
 
@@ -14,7 +13,6 @@ import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
-import at.ac.foop.pacman.domain.Square;
 import java.util.Map;
 
 /**
@@ -40,14 +38,16 @@ public class GameController extends Observable implements IGame {
 		//Initialize the players
 		players = new ArrayList<Player>(Player.PLAYER_COUNT);
 		for(int i=0; i< Player.PLAYER_COUNT; i++) {
-			players.add(new Player());
+			Player player = new Player();
+			player.setId(new Long(i));
+			players.add(player);
 		}
 		try {
 			//1. Connect to the server
-			Long playerId = this.server.connect(this);
-
-			//2. Download the map and the player positions
-			this.map = this.server.downloadMap();
+			playerId = this.server.connect(this);
+			
+			//2. Inform the server of this players name
+			this.server.setName(playerId, name);
 
 			//3. Setup a representation of the game locally
 			//   that includes: Players, Pacmans, Labyrinth, etc.
@@ -55,10 +55,14 @@ public class GameController extends Observable implements IGame {
 			//       that get sent to the client once the game starts!
 			Map<Long, Point> positions = server.getPositions();
 			for(Long id : positions.keySet()) {
+				Player player = players.get(id.intValue());
+				if(player.getId().equals(this.playerId)) {
+					player.setName(name);
+				}
 				Pacman pacman = new Pacman();
 				//Set the start color according to the id
 				pacman.setColor(PacmanColor.values()[id.intValue()]);
-				players.get(id.intValue()).setPacman(pacman);
+				player.setPacman(pacman);
 				Point point = positions.get(id);
 				//Give the pacman the square on which is should be
 				pacman.setLocation(map.getSquare(point.x, point.y));
@@ -90,18 +94,21 @@ public class GameController extends Observable implements IGame {
 			Direction direction = directions.get(key);
 			Player player = players.get(key.intValue());
 			player.setDirection(direction);
+			player.takeTurn();
 		}
 		this.count = count;
+		//notify the UI that the player positions have changed
+		this.notifyObservers();
 	}
 
 	@Override
 	public void changeColor() throws RemoteException {
-		//notifiy the UI that we are changing colors
-		//TODO: the UI must not update itself while we change colors
+		//notify the UI that we are changing colors
 		for(Player player : players) {
 			player.changeColor();
 		}
 		//notify the UI that colors have been changed
+		this.notifyObservers();
 	}
 
 	@Override
