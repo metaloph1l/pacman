@@ -29,7 +29,8 @@ public class GameController extends Observable implements IGame {
 	List<Player> players;
 	Labyrinth map;
 	int count;
-	private IGameServer server;
+	private IGameServer server; //Interface to the game server
+	private Long playerId; //The id of this clients player
 	
 	GameController(IGameServer server) {
 		this.server = server;
