@@ -6,7 +6,6 @@ import java.rmi.RemoteException;
 
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
-import at.ac.foop.pacman.domain.Square;
 import java.util.Map;
 
 public interface IGameServer extends Remote {
@@ -68,8 +67,9 @@ public interface IGameServer extends Remote {
 
 	/**
 	 * The client also needs to download the positions of
-	 * the pacman figures.
-	 * @return Returns a Hashlist of Player Ids and position 
+	 * the Pacman figures.
+	 * @return Returns a Map of Player Ids and their respective
+	 * positions 
 	 */
 	Map<Long, Point> getPositions() throws RemoteException;
 }
