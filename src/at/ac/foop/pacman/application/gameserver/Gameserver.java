@@ -35,9 +35,6 @@ public class Gameserver extends UnicastRemoteObject implements IGameServer {
 		}
 	}
 
-	public static void main(String[] args) {
-	}
-
 	@Override
 	public void changeDirection(Long playerId, Direction direction) {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -98,6 +95,7 @@ public class Gameserver extends UnicastRemoteObject implements IGameServer {
 		Long playerId = null;
 
 		for (PlayerWrapper player : players) {
+			// find the first player slot that is free and return its id
 			if (!player.isConnected()) {
 				playerId = player.getPlayerId();
 
