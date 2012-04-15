@@ -17,16 +17,14 @@ import at.ac.foop.pacman.util.PropertyLoader;
  * @author Phil
  */
 public class Client {
-	
-	private GameUI ui;
+
 	private IGame ctrl;
 	private IGameServer server;
 	
 	public Client() {
-		ui = new GameUI(40, 40);
 		this.init();
 	}
-	
+
 	private void init() {
 		String url = PropertyLoader.getInstance().getProperty(
 				ClientSettings.CLIENT_CONFIG,
