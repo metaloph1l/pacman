@@ -82,9 +82,12 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void notifyMapChange() throws RemoteException {
 		//This indicates that the server wants to change the map.
-		//TODO: We need to pause the game and download the map on a separate thread
-		
-		System.out.println("MAPChanged!!!");
+		//TODO: Change this method to pass the Labyrinth object directly
+		//      that way we do not need too much logic to download the map
+		//      separately!
+		System.out.println("A new map has been received");
+		//notify the UI that a new map has been downloaded
+		this.notifyObservers();
 	}
 
 	@Override
