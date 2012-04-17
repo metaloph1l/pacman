@@ -32,7 +32,7 @@ public class GameController extends Observable implements IGame {
 	int count;
 	private IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
-	private Queue<GameState> state = new LinkedList<GameState>();
+	private Queue<GameState> states = new LinkedList<GameState>();
 	
 	GameController(IGameServer server) {
 		this.server = server;
@@ -106,14 +106,11 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void notifyMapChange(Labyrinth map) throws RemoteException {
 		//This indicates that the server wants to change the map.
-		//TODO: Change this method to pass the Labyrinth object directly
-		//      that way we do not need too much logic to download the map
-		//      separately!
 		//set the next map
 		nextMap = map;
 		System.out.println("A new map has been received");
 		//notify the UI that a new map has been downloaded
-		state.add(GameState.NEW_MAP);
+		states.add(GameState.NEW_MAP);
 		this.notifyObservers();
 	}
 
@@ -138,6 +135,7 @@ public class GameController extends Observable implements IGame {
 			player.changeColor();
 		}
 		//notify the UI that colors have been changed
+		this.states.add(GameState.NEW_COLOR);
 		this.notifyObservers();
 	}
 
@@ -150,6 +148,7 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void setName(Long id, String name) throws RemoteException {
 		players.get(id.intValue()).setName(name);
+		states.add(GameState.NEW_PLAYER);
 		//notify the UI that a player name has changed
 		this.notifyObservers();
 	}
@@ -157,5 +156,9 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void setReady(Long id) throws RemoteException {
 		//Not implemented so far.
+	}
+
+	public GameState removeState() {
+		return states.remove();
 	}
 }
