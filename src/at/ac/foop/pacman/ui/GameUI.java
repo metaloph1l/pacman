@@ -39,13 +39,17 @@ public class GameUI extends JFrame implements Observer {
 
 	// Constructors
 	public GameUI(int width, int height, GameController controller) {
+		this.controller = controller;
+		if(controller != null) {
+			controller.addObserver(this);
+		}
+		//TODO: if the controller object is null, then the UI must inform
+		//      the user that the client could not connect to the game server.
 		this.width = width;
 		this.height = height;
 		squares = new JPanel[width][height];
 		showLabyrinth();
 		this.addKeyListener(new DirectionListener());
-		this.controller = controller;
-		controller.addObserver(this);
 	}
 
 	private void showLabyrinth() {
