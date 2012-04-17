@@ -27,11 +27,14 @@ public class Labyrinth implements Serializable {
 		this.height = squares[0].length;
 	}
 
-	//TODO needs refactoring -> LabyrinthGenerator should generate the maze and its squares.
 	public void initializeBoard() {
 		this.squares = LabyrinthGenerator.generateSquares();
 	}
 
+	/**
+	 * This is used only when initialising the game. During initialisation
+	 * the game server sends the initial player positions as coordinates.
+	 */
 	public Square getSquare(int x, int y) {
 		if (x < 0 || y < 0 || x > width - 1 || y > height - 1) {
 			throw new IllegalArgumentException("Array index out of bounds.");

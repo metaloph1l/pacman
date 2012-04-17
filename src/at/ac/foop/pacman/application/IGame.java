@@ -46,10 +46,15 @@ public interface IGame extends Remote {
 	void notifyScore(Map<Long, Long> statistics) throws RemoteException;
 
 	/**
-	 * Notifies the client that the player with the provided
-	 * player id is now ready for playing.
+	 * The server calls this method to inform the client
+	 * that another player is ready. This should only be
+	 * used by clients to update the Ui to display which
+	 * other users are ready. It must not affect the clients
+	 * game logic or game controller.
 	 * 
-	 * @param playerId The player id of the player that is now ready.
+	 * The implementation of this method is optional.
+	 * @param id The id of another player that has become
+	 * ready.
 	 */
 	void notifyReady(Long playerId) throws RemoteException;
 	
@@ -96,4 +101,13 @@ public interface IGame extends Remote {
 	 * o(GREEN) = BLUE;
 	 */
 	void notifyColorChange() throws RemoteException;
+	
+	/**
+	 * When ever a new player has connected to the server and
+	 * set its name. The server must inform all client of the
+	 * new name of the other client.
+	 * @param id The id of the client for which the name is
+	 * @param name The name of the client which joined the game
+	 */
+	void notifyNameChange(Long id, String name) throws RemoteException;
 }

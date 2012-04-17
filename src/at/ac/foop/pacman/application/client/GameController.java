@@ -5,7 +5,6 @@ import at.ac.foop.pacman.domain.PlayerOutcome;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Observable;
 
@@ -17,6 +16,7 @@ import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.Square;
+import at.ac.foop.pacman.domain.SquareType;
 import java.util.Map;
 
 /**
@@ -31,7 +31,8 @@ public class GameController extends Observable implements IGame {
 	List<Player> players;
 	Labyrinth map;
 	int count;
-	private IGameServer server;
+	private IGameServer server; //Interface to the game server
+	private Long playerId; //The id of this clients player
 	
 	GameController(IGameServer server) {
 		this.server = server;
@@ -41,14 +42,16 @@ public class GameController extends Observable implements IGame {
 		//Initialize the players
 		players = new ArrayList<Player>(Player.PLAYER_COUNT);
 		for(int i=0; i< Player.PLAYER_COUNT; i++) {
-			players.add(new Player());
+			Player player = new Player();
+			player.setId(new Long(i));
+			players.add(player);
 		}
 		try {
 			//1. Connect to the server
-			Long playerId = this.server.connect(this);
-
-			//2. Download the map and the player positions
-			this.map = this.server.downloadMap();
+			playerId = this.server.connect(this);
+			
+			//2. Inform the server of this players name
+			this.server.setName(playerId, name);
 
 			//3. Setup a representation of the game locally
 			//   that includes: Players, Pacmans, Labyrinth, etc.
@@ -56,10 +59,14 @@ public class GameController extends Observable implements IGame {
 			//       that get sent to the client once the game starts!
 			Map<Long, Point> positions = server.getPositions();
 			for(Long id : positions.keySet()) {
+				Player player = players.get(id.intValue());
+				if(player.getId().equals(this.playerId)) {
+					player.setName(name);
+				}
 				Pacman pacman = new Pacman();
 				//Set the start color according to the id
 				pacman.setColor(PacmanColor.values()[id.intValue()]);
-				players.get(id.intValue()).setPacman(pacman);
+				player.setPacman(pacman);
 				Point point = positions.get(id);
 				//Give the pacman the square on which is should be
 				pacman.setLocation(map.getSquare(point.x, point.y));
@@ -79,9 +86,12 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void notifyMapChange(Labyrinth labyrinth) throws RemoteException {
 		//This indicates that the server wants to change the map.
-		//TODO: We need to pause the game and download the map on a separate thread
-		
-		System.out.println("MAPChanged!!!");
+		//TODO: Change this method to pass the Labyrinth object directly
+		//      that way we do not need too much logic to download the map
+		//      separately!
+		System.out.println("A new map has been received");
+		//notify the UI that a new map has been downloaded
+		this.notifyObservers();
 	}
 
 	@Override
@@ -91,25 +101,48 @@ public class GameController extends Observable implements IGame {
 			Direction direction = directions.get(key);
 			Player player = players.get(key.intValue());
 			player.setDirection(direction);
+			this.movePacmans();
 		}
 		this.count = count;
+		//notify the UI that the player positions have changed
+		this.notifyObservers();
+	}
+	
+	private void movePacmans() {
+		for (Player player : players) {
+			Pacman pacman = player.getPacman();
+
+			if (pacman.isAlive()) {
+				Square currentSquare = pacman.getLocation();
+				Direction direction = pacman.getDirection();
+				Square nextSquare = map.getSquare(currentSquare, direction);
+
+
+
+				if (SquareType.WALL.equals(nextSquare.getType())) {
+					//Nothing to do. The player hits a wall.
+				} else {
+					currentSquare.leave(player);
+					nextSquare.enter(player);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void notifyColorChange() throws RemoteException {
-		//notifiy the UI that we are changing colors
-		//TODO: the UI must not update itself while we change colors
+		//notify the UI that we are changing colors
 		for(Player player : players) {
 			player.changeColor();
 		}
 		//notify the UI that colors have been changed
+		this.notifyObservers();
 	}
 
 	@Override
 	public void notifyPlayers(List<Player> players) throws RemoteException {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-
 	@Override
 	public void notifyPlayer(Player player) throws RemoteException {
 		throw new UnsupportedOperationException("Not supported yet.");
@@ -134,4 +167,9 @@ public class GameController extends Observable implements IGame {
 	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
-}
+	@Override
+	public void notifyNameChange(Long id, String name) throws RemoteException {
+		players.get(id.intValue()).setName(name);
+		//notify the UI that a player name has changed
+		this.notifyObservers();
+	}}
