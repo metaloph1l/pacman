@@ -4,6 +4,6 @@ package at.ac.foop.pacman.domain;
  *
  * @author Phil
  */
-public class Statistics {
-   
+public enum GameOutcome {
+	Normal, Draw
 }

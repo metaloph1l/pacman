@@ -1,6 +1,7 @@
 package at.ac.foop.pacman.application.gameserver;
 
 import at.ac.foop.pacman.application.IGame;
+import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Player;
 
 /**
@@ -14,10 +15,10 @@ public final class PlayerWrapper {
 	private boolean connected;
 	private boolean ready;
 	
-	public PlayerWrapper(Long playerId) {
+	public PlayerWrapper(Long playerId, String defaultName) {
 		this.reset();
 		
-		this.player = new Player(playerId, null);
+		this.player = new Player(playerId, defaultName);
 	}
 	
 	public void reset() {
@@ -68,5 +69,9 @@ public final class PlayerWrapper {
 	
 	public Player getPlayer() {
 		return this.player;
+	}
+	
+	public Direction getDirection() {
+		return this.player.getPacman().getDirection();
 	}
 }

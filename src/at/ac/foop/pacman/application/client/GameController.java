@@ -1,5 +1,7 @@
 package at.ac.foop.pacman.application.client;
 
+import at.ac.foop.pacman.domain.GameOutcome;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -75,7 +77,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void notifyMapChange() throws RemoteException {
+	public void notifyMapChange(Labyrinth labyrinth) throws RemoteException {
 		//This indicates that the server wants to change the map.
 		//TODO: We need to pause the game and download the map on a separate thread
 		
@@ -83,7 +85,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void clock(int count, Map<Long, Direction> directions)
+	public void notifyClock(int count, Map<Long, Direction> directions)
 			throws RemoteException {
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
@@ -94,7 +96,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void changeColor() throws RemoteException {
+	public void notifyColorChange() throws RemoteException {
 		//notifiy the UI that we are changing colors
 		//TODO: the UI must not update itself while we change colors
 		for(Player player : players) {
@@ -104,8 +106,32 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void startRound(List<Player> players) throws RemoteException {
-		this.players = players;
-		//TODO: update representation according to the sent players.
+	public void notifyPlayers(List<Player> players) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyPlayer(Player player) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyScore(Map<Long, Long> statistics) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyReady(Long playerId) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyGameStarting() throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

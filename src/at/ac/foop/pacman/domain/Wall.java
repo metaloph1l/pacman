@@ -1,10 +1,12 @@
 package at.ac.foop.pacman.domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Phil
  */
-final public class Wall extends Square {
+final public class Wall extends Square implements Serializable {
 
 	@Override
 	public void enter(Player player) {
