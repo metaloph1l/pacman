@@ -3,8 +3,10 @@ package at.ac.foop.pacman.application.client;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
+import java.util.Queue;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
@@ -26,9 +28,11 @@ import java.util.Map;
 public class GameController extends Observable implements IGame {
 	List<Player> players;
 	Labyrinth map;
+	Labyrinth nextMap;
 	int count;
 	private IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
+	private Queue<GameState> state = new LinkedList<GameState>();
 	
 	GameController(IGameServer server) {
 		this.server = server;
@@ -80,13 +84,16 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void notifyMapChange() throws RemoteException {
+	public void notifyMapChange(Labyrinth map) throws RemoteException {
 		//This indicates that the server wants to change the map.
 		//TODO: Change this method to pass the Labyrinth object directly
 		//      that way we do not need too much logic to download the map
 		//      separately!
+		//set the next map
+		nextMap = map;
 		System.out.println("A new map has been received");
 		//notify the UI that a new map has been downloaded
+		state.add(GameState.NEW_MAP);
 		this.notifyObservers();
 	}
 

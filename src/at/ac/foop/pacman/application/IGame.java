@@ -5,18 +5,19 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Player;
 import java.util.List;
 import java.util.Map;
 
 public interface IGame extends Remote {
 	/**
-	 * This notifies the client that a new map should be downloaded
-	 * from the server. The client then needs to pause the game and
-	 * download the new map.
+	 * This sends a new map to the client. When the client receives
+	 * this call he needs to suspend the current round and update
+	 * the user interface with the received labyrinth.
+	 * @param map The new map that will be used in the next round
 	 */
-	void notifyMapChange()
-	    throws RemoteException;
+	void notifyMapChange(Labyrinth map) throws RemoteException;
 	
 	/**
 	 * This sends the map changes of the last clock cycle to the
@@ -66,4 +67,5 @@ public interface IGame extends Remote {
 	 * ready.
 	 */
 	void setReady(Long id) throws RemoteException;
+
 }
