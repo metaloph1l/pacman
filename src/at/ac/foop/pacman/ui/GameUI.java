@@ -5,11 +5,15 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import at.ac.foop.pacman.application.client.GameController;
+import at.ac.foop.pacman.application.client.GameState;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.ui.panels.EmptyField;
 import at.ac.foop.pacman.ui.panels.WallField;
@@ -23,22 +27,25 @@ import at.ac.foop.pacman.ui.panels.WallField;
  * Sebastian Geiger: Intial Design
  *
  */
-public class GameUI extends JFrame {
+public class GameUI extends JFrame implements Observer {
 	// Constants
 	public static String TITLE = "Multiplayer Pacman (2012)";
 
 	// Fields
-	int width, height;
-	JPanel[][] squares;
-	JPanel container;
+	private int width, height;
+	private JPanel[][] squares;
+	private JPanel container;
+	private GameController controller;
 
 	// Constructors
-	public GameUI(int width, int height) {
+	public GameUI(int width, int height, GameController controller) {
 		this.width = width;
 		this.height = height;
 		squares = new JPanel[width][height];
 		showLabyrinth();
 		this.addKeyListener(new DirectionListener());
+		this.controller = controller;
+		controller.addObserver(this);
 	}
 
 	private void showLabyrinth() {
@@ -103,5 +110,25 @@ public class GameUI extends JFrame {
 
 		@Override
 		public void keyTyped(KeyEvent event) { }
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		GameState state = controller.removeState();
+		switch(state) {
+			case NEW_MAP:
+				System.out.println("[UI] New map loadded");
+				break;
+			case NEW_COLOR:
+				System.out.println("[UI] Color changed");
+				break;
+			case NEW_PLAYER:
+				System.out.println("[UI] Player joined");
+				break;
+			case NEW_POSITION: break;
+			case NEW_TURN: break;
+			case PLAYER_READY: break;
+			default: throw new RuntimeException("[Error] Unimplemented GameState type");
+		}
 	}
 }
