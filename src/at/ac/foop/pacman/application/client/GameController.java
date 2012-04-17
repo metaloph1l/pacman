@@ -82,6 +82,26 @@ public class GameController extends Observable implements IGame {
 		//      to the game come from the server through the RMI
 		//      methods.
 	}
+	
+	/**
+	 * This should be uses by the user interface to retrieve the
+	 * current list of players. The user interface should
+	 * poll the list of players when it receives an notification
+	 * and the NEW_PLAYER state is enqueued.
+	 * @return
+	 */
+	public List<Player> getPlayers() {
+		return this.players;
+	}
+	
+	/**
+	 * Get the current map.
+	 * The UI should call this in response to the
+	 * NEW_MAP state.
+	 */
+	public Labyrinth getMap() {
+		return this.map;
+	}
 
 	@Override
 	public void notifyMapChange(Labyrinth map) throws RemoteException {

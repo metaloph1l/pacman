@@ -4,7 +4,7 @@ public enum GameState {
 	NEW_MAP,
 	NEW_POSITION,
 	NEW_COLOR,
-	NEW_NAME,
+	NEW_PLAYER,
 	PLAYER_READY,
 	NEW_TURN
 }
