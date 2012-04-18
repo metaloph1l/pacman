@@ -209,7 +209,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		for (PlayerWrapper playerWrap : this.players) {
 			try {
-				playerWrap.getCallback().notifyReady(playerId);
+				if(playerWrap.getCallback() != null)
+					playerWrap.getCallback().notifyReady(playerId);
 			} catch (RemoteException ex) {
 				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
 			}
@@ -304,7 +305,9 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		for (PlayerWrapper playerWrap : this.players) {
 			try {
-				playerWrap.getCallback().notifyPlayer(player.getPlayer());
+				if(playerWrap.getCallback() != null) {
+					playerWrap.getCallback().notifyPlayer(player.getPlayer());
+				}
 			} catch (RemoteException ex) {
 				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
 			}
