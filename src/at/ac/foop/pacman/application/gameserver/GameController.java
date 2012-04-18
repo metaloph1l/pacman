@@ -16,6 +16,8 @@ import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
+
+import java.net.ConnectException;
 import java.nio.channels.AlreadyConnectedException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -212,7 +214,13 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				if(playerWrap.getCallback() != null)
 					playerWrap.getCallback().notifyReady(playerId);
 			} catch (RemoteException ex) {
-				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				Throwable cause = ex.getCause();
+				if(cause instanceof ConnectException) {
+					//Player has gone offline
+					Logger.getLogger(GameController.class.getName()).log(Level.WARNING, "Player offline");
+				} else {
+					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
 			if (!playerWrap.isReady()) {
 				allReady = false;
@@ -309,7 +317,13 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					playerWrap.getCallback().notifyPlayer(player.getPlayer());
 				}
 			} catch (RemoteException ex) {
-				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				Throwable cause = ex.getCause();
+				if(cause instanceof ConnectException) {
+					//Player has gone offline
+					Logger.getLogger(GameController.class.getName()).log(Level.WARNING, "Player offline");
+				} else {
+					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
 		}
 	}
