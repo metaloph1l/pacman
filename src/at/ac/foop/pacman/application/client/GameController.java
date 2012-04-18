@@ -1,5 +1,7 @@
 package at.ac.foop.pacman.application.client;
 
+import at.ac.foop.pacman.domain.GameOutcome;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
+import at.ac.foop.pacman.domain.Square;
+import at.ac.foop.pacman.domain.SquareType;
 import java.util.Map;
 
 /**
@@ -103,7 +107,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void notifyMapChange(Labyrinth map) throws RemoteException {
+	public void notifyMapChange(Labyrinth labyrinth) throws RemoteException {
 		//This indicates that the server wants to change the map.
 		//set the next map
 		nextMap = map;
@@ -114,21 +118,42 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void clock(int count, Map<Long, Direction> directions)
+	public void notifyClock(int count, Map<Long, Direction> directions)
 			throws RemoteException {
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
 			Player player = players.get(key.intValue());
 			player.setDirection(direction);
-			player.takeTurn();
+			this.movePacmans();
 		}
 		this.count = count;
 		//notify the UI that the player positions have changed
 		this.notifyObservers();
 	}
+	
+	private void movePacmans() {
+		for (Player player : players) {
+			Pacman pacman = player.getPacman();
+
+			if (pacman.isAlive()) {
+				Square currentSquare = pacman.getLocation();
+				Direction direction = pacman.getDirection();
+				Square nextSquare = map.getSquare(currentSquare, direction);
+
+
+
+				if (SquareType.WALL.equals(nextSquare.getType())) {
+					//Nothing to do. The player hits a wall.
+				} else {
+					currentSquare.leave(player);
+					nextSquare.enter(player);
+				}
+			}
+		}
+	}
 
 	@Override
-	public void changeColor() throws RemoteException {
+	public void notifyColorChange() throws RemoteException {
 		//notify the UI that we are changing colors
 		for(Player player : players) {
 			player.changeColor();
@@ -139,25 +164,43 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void startRound(List<Player> players) throws RemoteException {
-		this.players = players;
-		//TODO: update representation according to the sent players.
+	public void notifyPlayers(List<Player> players) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+	@Override
+	public void notifyPlayer(Player player) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void setName(Long id, String name) throws RemoteException {
-		players.get(id.intValue()).setName(name);
-		states.add(GameState.NEW_PLAYER);
-		//notify the UI that a player name has changed
-		this.notifyObservers();
+	public void notifyScore(Map<Long, Long> statistics) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
-	public void setReady(Long id) throws RemoteException {
-		//Not implemented so far.
+	public void notifyReady(Long playerId) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyGameStarting() throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	public GameState removeState() {
 		return states.remove();
 	}
+
+	@Override
+	public void notifyNameChange(Long id, String name) throws RemoteException {
+		players.get(id.intValue()).setName(name);
+		states.add(GameState.NEW_PLAYER);
+		//notify the UI that a player name has changed
+		this.notifyObservers();
+    }
 }

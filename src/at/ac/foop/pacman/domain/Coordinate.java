@@ -1,10 +1,12 @@
 package at.ac.foop.pacman.domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Phil
  */
-public class Coordinate {
+public class Coordinate implements Serializable {
 
 	private Integer x;
 	private Integer y;

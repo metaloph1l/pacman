@@ -7,18 +7,59 @@ import java.util.Hashtable;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Player;
+import at.ac.foop.pacman.domain.GameOutcome;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import java.util.List;
 import java.util.Map;
 
 public interface IGame extends Remote {
 	/**
-	 * This sends a new map to the client. When the client receives
-	 * this call he needs to suspend the current round and update
-	 * the user interface with the received labyrinth.
-	 * @param map The new map that will be used in the next round
+	 * This notifies that a new map is being loaded. The
+     * client needs to notify the UI and set enqueue the
+     * correct GameState.
+     *
+	 * @param labyrinth The new map.
 	 */
-	void notifyMapChange(Labyrinth map) throws RemoteException;
+	void notifyMapChange(Labyrinth labyrinth) throws RemoteException;
 	
+	/**
+	 * This notifies the client to update its representation
+	 * of the players in the game. This method is used by the
+	 * server once the client connects to the game.
+	 * 
+	 * @param players The new player objects.
+	 */
+	void notifyPlayers(List<Player> players) throws RemoteException;
+	
+	/**
+	 * This notifies the client to update its representation
+	 * of the supplied player. The player id is included in
+	 * the object.
+	 * 
+	 * @param player The player to update.
+	 */
+	void notifyPlayer(Player player) throws RemoteException;
+
+	/**
+	 * This sends a Map of scores to the client.
+	 * 
+	 * @param statistics The mapping of player ids to scores.
+	 */
+	void notifyScore(Map<Long, Long> statistics) throws RemoteException;
+
+	/**
+	 * The server calls this method to inform the client
+	 * that another player is ready. This should only be
+	 * used by clients to update the Ui to display which
+	 * other users are ready. It must not affect the clients
+	 * game logic or game controller.
+	 * 
+	 * The implementation of this method is optional.
+	 * @param id The id of another player that has become
+	 * ready.
+	 */
+	void notifyReady(Long playerId) throws RemoteException;
+
 	/**
 	 * This sends the map changes of the last clock cycle to the
 	 * client.
@@ -26,10 +67,27 @@ public interface IGame extends Remote {
 	 * @param directions A list of Key-Value pairs with playerId
 	 * and the direction of that player.
 	 */
-	void clock(int count, Map<Long, Direction> directions)
+	void notifyClock(int count, Map<Long, Direction> directions)
 	    throws RemoteException;
 	
-	void startRound(List<Player> players) throws RemoteException;
+	/**
+	 * Notifies the client that all players are ready and 
+	 * the game is about to be started within a short period of time.
+	 * 
+	 * When this message is received the client can start to send direction
+	 * changes to the server. They are then incorporated in the first
+	 * clock signal of the server.
+	 */
+	void notifyGameStarting() throws RemoteException;
+	
+	/**
+	 * Notifies the client that the game is over and sends along
+	 * the player ids of the winning and losing player.
+	 * 
+	 * @param winnerId The player id of the player that won.
+	 * @param loserId The player id of the player that lost.
+	 */
+	void notifyGameOver(GameOutcome type, Map<Long,PlayerOutcome> outcome) throws RemoteException;
 	
 	/**
 	 * The game allows the color of the Pacmans to rotate in response
@@ -44,7 +102,7 @@ public interface IGame extends Remote {
 	 * o(BLUE) = RED;
 	 * o(GREEN) = BLUE;
 	 */
-	void changeColor() throws RemoteException;
+	void notifyColorChange() throws RemoteException;
 	
 	/**
 	 * When ever a new player has connected to the server and
@@ -53,19 +111,5 @@ public interface IGame extends Remote {
 	 * @param id The id of the client for which the name is
 	 * @param name The name of the client which joined the game
 	 */
-	void setName(Long id, String name) throws RemoteException;
-	
-	/**
-	 * The server calls this method to inform the client
-	 * that another player is ready. This should only be
-	 * used by clients to update the Ui to display which
-	 * other users are ready. It must not affect the clients
-	 * game logic or game controller.
-	 * 
-	 * The implementation of this method is optional.
-	 * @param id The id of another player that has become
-	 * ready.
-	 */
-	void setReady(Long id) throws RemoteException;
-
+	void notifyNameChange(Long id, String name) throws RemoteException;
 }

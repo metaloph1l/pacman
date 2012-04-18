@@ -1,6 +1,8 @@
 package at.ac.foop.pacman.domain;
 
-public abstract class Square {
+import java.io.Serializable;
+
+public abstract class Square implements Serializable {
 	//Fields
 	Coordinate coordinate; //The coordinate of this square
 	

@@ -1,20 +1,18 @@
 package at.ac.foop.pacman.domain;
 
+import java.io.Serializable;
+
 /**
 *
 * @author Phil
 * Sebastian Geiger
 */
-public class Pacman {
+public class Pacman implements Serializable {
 	//Fields
 	private PacmanColor color; //the color of this pacman
 	private Direction direction; //the current direction of the pacman
 	Square location;
-
-	//Concrete Methods
-	public void eat(Pacman pacman) {
-		
-	}
+	boolean alive;
 
 	//Getters and Setters
 	public Square getLocation() {
@@ -51,6 +49,61 @@ public class Pacman {
 				break;
 			case GREEN:
 				this.color = PacmanColor.BLUE;
+		}
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+	
+	/**
+	 * The eat method decides if this player is eaten by another player.
+	 * @param player The other player that challenged this player
+	 * @return true if this player has been eaten by the other player.<br />
+	 * false other wise.
+	 */
+	public static Pacman getWinner(Pacman pacman1, Pacman pacman2) {
+		if(pacman1 == null || pacman2 == null) {
+			throw new RuntimeException("pacmans must not be null.");
+		}
+		
+		PacmanColor color1, color2;
+		
+		color1 = pacman1.getColor();
+		color2 = pacman2.getColor();
+		
+		if(color1 == null || color2 == null) {
+			throw new RuntimeException("colors must not be null.");
+		}
+
+		if (color1.equals(color2)) {
+			throw new RuntimeException("Encountered two pacmans with the same color.");
+		}
+		
+		int result = (Pacman.getNumber(color1)-Pacman.getNumber(color2))%3;
+		
+		if(result == 1) {
+			return pacman1;
+		}
+		else {
+			return pacman2;
+		}
+	}
+	
+	private static int getNumber(PacmanColor color) {
+		switch(color) {
+			case RED:
+				return 1;
+			case BLUE:
+				return 2;
+			case GREEN:
+				return 3;
+			default:
+				throw new RuntimeException("Unknown color");
 		}
 	}
 }

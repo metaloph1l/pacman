@@ -1,11 +1,13 @@
 package at.ac.foop.pacman.domain;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Phil
  * Sebastian Geiger
  */
-public class Labyrinth {
+public class Labyrinth implements Serializable {
 	//Fields
 
 	int width;
