@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="pacman" default="compile" basedir=".">
+    <description>
+        A distributed pacman project
+    </description>
+
+    <!-- set global properties for this build -->
+    <property name="src.dir" location="src"/>
+    <property name="lib.dir" location="lib"/>
+    <property name="build.dir" location="build"/>
+    <property name="resources.dir" location="resources"/>
+    <property name="maps.dir" location="maps"/>
+
+    <!--<property name="lib.dir" location="lib" />-->
+
+    <path id="project.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="log4j-1.2.16.jar"/>
+        </fileset>
+        <pathelement location="${build.dir}"/>
+        <pathelement location="${resources.dir}"/>
+        <pathelement location="${maps.dir}"/>
+    </path>
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <!-- Create the build directory structure used by compile -->
+    </target>
+
+    <target name="compile" depends="init" description="compile the source " >
+        <mkdir dir="${build.dir}"/>
+        <!-- Compile the java code from ${src} into ${build} -->
+        <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="project.classpath" debug="true"
+            deprecation="true" includeantruntime="false"
+        />
+        <copy todir="${build.dir}">
+            <fileset dir="${resources.dir}">
+                <include name="*.properties"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="run-client" depends="compile" description="run the client" >
+        <java classname="at.ac.foop.pacman.ui.StartUpClient"
+            classpathref="project.classpath"
+            fork="true"
+        />
+    </target>
+
+    <target name="run-server" depends="compile" description="run the server" >
+        <java classname="at.ac.foop.pacman.ui.StartUpGameServer"
+            classpathref="project.classpath"
+            fork="true"
+        />
+    </target>
+
+    <target name="clean" description="clean up" >
+        <!-- Delete the ${build} directory trees -->
+        <delete dir="${build.dir}"/>
+    </target>
+</project>
