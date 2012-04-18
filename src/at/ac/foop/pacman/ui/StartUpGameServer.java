@@ -10,11 +10,13 @@ import at.ac.foop.pacman.application.gameserver.Gameserver;
 
 public class StartUpGameServer {
 	public static void main(String[] args) {
+		System.out.println("[Gameserver] Registering RMI class");
 		try {
 			Registry reg = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
 			IGameServer server = new Gameserver();
-		    reg.rebind("Server", server);
-		    try {
+			reg.rebind("Server", server);
+			try {
+				System.out.println("[Gameserver] Started!");
 				System.in.read();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
