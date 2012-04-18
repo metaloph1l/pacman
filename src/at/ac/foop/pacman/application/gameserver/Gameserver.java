@@ -1,9 +1,11 @@
 package at.ac.foop.pacman.application.gameserver;
 
 import java.awt.Point;
+import java.nio.channels.AlreadyConnectedException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,10 @@ public class Gameserver extends UnicastRemoteObject implements IGameServer {
 	private GameController gameController;
 
 	public Gameserver() throws RemoteException {
+		connected = new Hashtable<Long, Boolean>();
+		callbacks = new Hashtable<Long, IGame>();
+		ready = new Hashtable<Long, Boolean>();
 		players = new ArrayList<PlayerWrapper>(Player.PLAYER_COUNT);
-
 		for (int count = 0; count < Player.PLAYER_COUNT; count++) {
 			PlayerWrapper player = new PlayerWrapper(1L);
 			players.add(player);
@@ -91,17 +95,23 @@ public class Gameserver extends UnicastRemoteObject implements IGameServer {
 	}
 
 	@Override
-	public Long connect(IGame callback) {
+	public Long connect(IGame callback) throws RemoteException {
+		if(callbacks.containsValue(callback)) {
+			//throw new RemoteException("You are already connected.", new AlreadyConnectedException());
+			System.out.println("error");
+			return null;
+		}
 		Long playerId = null;
 
 		for (PlayerWrapper player : players) {
 			// find the first player slot that is free and return its id
 			if (!player.isConnected()) {
 				playerId = player.getPlayerId();
-
+				callbacks.put(playerId, callback);
 				player.setCallback(callback);
 				player.setConnected(true);
-				
+				System.out.printf("[Player %d] Connected", playerId);
+				System.out.println();
 				// just for testing purpose
 				/* try {
 					player.getCallback().notifyMapChange();
