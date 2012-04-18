@@ -39,7 +39,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	public static int NUM_OF_ROUNDS_PER_GAME = 3;
 	private static GameController instance = null;
 	//Fields
-	private List<PlayerWrapper> players;
+	private List<PlayerSlot> players;
 	private Map<Long, Boolean> connected;
 	private Map<Long, IGame> callbacks;
 	private Map<Long, Boolean> ready;
@@ -58,10 +58,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		callbacks = new Hashtable<Long, IGame>();
 		ready = new Hashtable<Long, Boolean>();
 
-		players = new ArrayList<PlayerWrapper>(Player.PLAYER_COUNT);
+		players = new ArrayList<PlayerSlot>(Player.PLAYER_COUNT);
 
 		for (int count = 1; count <= Player.PLAYER_COUNT; count++) {
-			PlayerWrapper player = new PlayerWrapper(new Long(count), "Player" + count);
+			PlayerSlot player = new PlayerSlot(new Long(count), "Player" + count);
 			players.add(player);
 		}
 	}
@@ -75,7 +75,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		if (round < NUM_OF_ROUNDS_PER_GAME) {
 			this.map = LabyrinthGenerator.generateLabyrinth();
 
-			for (PlayerWrapper player : players) {
+			for (PlayerSlot player : players) {
 				player.getPlayer().getPacman().setAlive(true);
 			}
 
@@ -91,10 +91,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		} else {
 			Map<Long, Direction> directions = new HashMap<Long, Direction>();
 
-			for (PlayerWrapper player : players) {
+			for (PlayerSlot player : players) {
 				directions.put(player.getPlayerId(), player.getDirection());
 			}
-			for (PlayerWrapper player : players) {
+			for (PlayerSlot player : players) {
 				try {
 					player.getCallback().notifyClock(clock, directions);
 				} catch (RemoteException ex) {
@@ -109,7 +109,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	private List<Square> movePacmans() {
 		List<Square> checkSquares = new ArrayList<Square>();
 
-		for (PlayerWrapper player : players) {
+		for (PlayerSlot player : players) {
 			Pacman pacman = player.getPlayer().getPacman();
 
 			if (pacman.isAlive()) {
@@ -145,7 +145,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		this.initializeRound();
 
-		for (PlayerWrapper playerWrap : this.players) {
+		for (PlayerSlot playerWrap : this.players) {
 			Player player = playerWrap.getPlayer();
 			try {
 				playerWrap.getCallback().notifyGameStarting();
@@ -189,9 +189,9 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			throw new IllegalArgumentException("player id out of bounds.");
 		}
 
-		PlayerWrapper playerWrapper = players.get(playerId.intValue());
+		PlayerSlot playerSlot = players.get(playerId.intValue());
 
-		playerWrapper.getPlayer().getPacman().setDirection(direction);
+		playerSlot.getPlayer().getPacman().setDirection(direction);
 	}
 
 	@Override
@@ -200,16 +200,16 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			throw new IllegalArgumentException("player id out of bounds.");
 		}
 
-		PlayerWrapper playerWrapper = players.get(playerId.intValue());
+		PlayerSlot playerSlot = players.get(playerId.intValue());
 
-		if (playerWrapper.getName() == null) {
+		if (playerSlot.getName() == null) {
 			throw new RuntimeException("player name must be set before ready is called.");
 		}
 
-		playerWrapper.setReady(true);
+		playerSlot.setReady(true);
 		boolean allReady = true;
 
-		for (PlayerWrapper playerWrap : this.players) {
+		for (PlayerSlot playerWrap : this.players) {
 			try {
 				if(playerWrap.getCallback() != null)
 					playerWrap.getCallback().notifyReady(playerId);
@@ -240,7 +240,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		Long playerId = null;
 
-		for (PlayerWrapper player : players) {
+		for (PlayerSlot player : players) {
 			if (!player.isConnected()) {
 				playerId = player.getPlayerId();
 				callbacks.put(playerId, callback);
@@ -250,7 +250,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				System.out.println();
 				List<Player> currentPlayers = new ArrayList<Player>();
 
-				for (PlayerWrapper playerWrap : players) {
+				for (PlayerSlot playerWrap : players) {
 					currentPlayers.add(playerWrap.getPlayer());
 				}
 
@@ -276,14 +276,14 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		throw new IllegalArgumentException("callback must not be null when disconnecting.");
 		}*/
 
-		PlayerWrapper player = players.get(playerId.intValue());
+		PlayerSlot player = players.get(playerId.intValue());
 
 		//if(player.getCallback() == callback) {
 		player.setConnected(false);
 		player.setReady(false);
 		player.setCallback(null);
 
-		for (PlayerWrapper playerWrap : this.players) {
+		for (PlayerSlot playerWrap : this.players) {
 			try {
 				playerWrap.getCallback().notifyPlayer(player.getPlayer());
 			} catch (RemoteException ex) {
@@ -308,10 +308,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			throw new IllegalArgumentException("player name must not be null.");
 		}
 
-		PlayerWrapper player = players.get(playerId.intValue());
+		PlayerSlot player = players.get(playerId.intValue());
 		player.setName(name);
 
-		for (PlayerWrapper playerWrap : this.players) {
+		for (PlayerSlot playerWrap : this.players) {
 			try {
 				if(playerWrap.getCallback() != null) {
 					playerWrap.getCallback().notifyPlayer(player.getPlayer());

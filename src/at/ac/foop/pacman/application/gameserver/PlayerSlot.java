@@ -8,14 +8,14 @@ import at.ac.foop.pacman.domain.Player;
  *
  * @author Phil
  */
-public final class PlayerWrapper {
+public final class PlayerSlot {
 	private Player player;	
 	private IGame callback;
 	
 	private boolean connected;
 	private boolean ready;
 	
-	public PlayerWrapper(Long playerId, String defaultName) {
+	public PlayerSlot(Long playerId, String defaultName) {
 		this.reset();
 		
 		this.player = new Player(playerId, defaultName);
