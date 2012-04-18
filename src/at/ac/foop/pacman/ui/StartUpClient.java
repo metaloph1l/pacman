@@ -5,6 +5,8 @@ import at.ac.foop.pacman.application.client.GameController;
 
 public class StartUpClient {
 	public static void main(String[] args) {
+		//Initialize log4j
+		org.apache.log4j.BasicConfigurator.configure();
 		//Initialisation code for the RMI logic
 		RmiConnector rmiConnector = new RmiConnector();
 		GameController controller = rmiConnector.init();

@@ -21,6 +21,8 @@ import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * The client game controllers function is to receive the calls
  * from the server instance and simulate the game. Here we also
@@ -37,9 +39,11 @@ public class GameController extends Observable implements IGame {
 	private IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
 	private Queue<GameState> states = new LinkedList<GameState>();
+	private Logger logger;
 	
 	GameController(IGameServer server) {
 		this.server = server;
+		logger = Logger.getLogger(GameController.class);
 	}
 
 	public void init(String name) throws RemoteException {
@@ -171,31 +175,31 @@ public class GameController extends Observable implements IGame {
 
 	@Override
 	public void notifyPlayers(List<Player> players) throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] Player list received.");
 	}
 	@Override
 	public void notifyPlayer(Player player) throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] Single Player update received.");
 	}
 
 	@Override
 	public void notifyScore(Map<Long, Long> statistics) throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] New scores received.");
 	}
 
 	@Override
 	public void notifyReady(Long playerId) throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] Player is ready");
 	}
 
 	@Override
 	public void notifyGameStarting() throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] Game has started.");
 	}
 
 	@Override
 	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
-		throw new UnsupportedOperationException("Not supported yet.");
+		logger.info("[Unimplemented] Game over.");
 	}
 
 	public GameState removeState() {
