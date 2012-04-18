@@ -14,6 +14,7 @@ import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.LabyrinthGenerator;
 import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.Player;
+import at.ac.foop.pacman.domain.PlayerSlot;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
 

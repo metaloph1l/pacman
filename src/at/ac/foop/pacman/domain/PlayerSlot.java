@@ -1,8 +1,6 @@
-package at.ac.foop.pacman.application.gameserver;
+package at.ac.foop.pacman.domain;
 
 import at.ac.foop.pacman.application.IGame;
-import at.ac.foop.pacman.domain.Direction;
-import at.ac.foop.pacman.domain.Player;
 
 /**
  *
