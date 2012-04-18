@@ -56,24 +56,10 @@ public class GameController extends Observable implements IGame {
 			
 			//2. Inform the server of this players name
 			this.server.setName(playerId, name);
-
-			//3. Setup a representation of the game locally
-			//   that includes: Players, Pacmans, Labyrinth, etc.
-			// TODO: This players are only placeholders for the real players
-			//       that get sent to the client once the game starts!
-			Map<Long, Point> positions = server.getPositions();
-			for(Long id : positions.keySet()) {
-				Player player = players.get(id.intValue());
-				if(player.getId().equals(this.playerId)) {
-					player.setName(name);
-				}
-				Pacman pacman = new Pacman();
-				//Set the start color according to the id
-				pacman.setColor(PacmanColor.values()[id.intValue()]);
-				player.setPacman(pacman);
-				Point point = positions.get(id);
-				//Give the pacman the square on which is should be
-				pacman.setLocation(map.getSquare(point.x, point.y));
+			
+			Player player = players.get(playerId.intValue());
+			if(player.getId().equals(this.playerId)) {
+				player.setName(name);
 			}
 
 			//4. Finally signal the server that we are ready
@@ -115,6 +101,26 @@ public class GameController extends Observable implements IGame {
 		//notify the UI that a new map has been downloaded
 		states.add(GameState.NEW_MAP);
 		this.notifyObservers();
+	}
+	
+	@Override
+	public void notifyPositions(Map<Long, Point> positions) {
+		//3. Setup a representation of the game locally
+		//   that includes: Players, Pacmans, Labyrinth, etc.
+		// TODO: This players are only placeholders for the real players
+		//       that get sent to the client once the game starts!
+		for(Long id : positions.keySet()) {
+			Player player = players.get(id.intValue());
+			Pacman pacman = new Pacman();
+			//Set the start color according to the id
+			pacman.setColor(PacmanColor.values()[id.intValue()]);
+			player.setPacman(pacman);
+			Point point = positions.get(id);
+			//Give the pacman the square on which is should be
+			pacman.setLocation(map.getSquare(point.x, point.y));
+			states.add(GameState.NEW_POSITION);
+			this.notifyObservers();
+		}
 	}
 
 	@Override

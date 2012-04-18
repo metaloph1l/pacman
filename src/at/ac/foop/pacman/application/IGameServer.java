@@ -1,12 +1,9 @@
 package at.ac.foop.pacman.application;
 
-import java.awt.Point;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import at.ac.foop.pacman.domain.Direction;
-import at.ac.foop.pacman.domain.Labyrinth;
-import java.util.Map;
 
 public interface IGameServer extends Remote {
 	/**
@@ -58,18 +55,4 @@ public interface IGameServer extends Remote {
 	 * @param name New name of the player.
 	 */
 	void setName(Long playerId, String name) throws RemoteException;
-
-	/**
-	 * After the client has received a notifyMapChange
-	 * message it downloads the map from the server.
-	 */
-	Labyrinth downloadMap() throws RemoteException;
-
-	/**
-	 * The client also needs to download the positions of
-	 * the Pacman figures.
-	 * @return Returns a Map of Player Ids and their respective
-	 * positions 
-	 */
-	Map<Long, Point> getPositions() throws RemoteException;
 }

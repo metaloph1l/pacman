@@ -1,8 +1,8 @@
 package at.ac.foop.pacman.application;
 
+import java.awt.Point;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.Hashtable;
 
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
@@ -22,6 +22,15 @@ public interface IGame extends Remote {
 	 */
 	void notifyMapChange(Labyrinth labyrinth) throws RemoteException;
 	
+	/**
+	 * This notifies that the new positions for the players
+	 * on the may that was just received.
+	 * 
+	 * @param positions The map contains the id of the player as the key
+	 * and the Position on the map as the value.
+	 */
+	void notifyPositions(Map<Long, Point> positions) throws RemoteException;
+
 	/**
 	 * This notifies the client to update its representation
 	 * of the players in the game. This method is used by the

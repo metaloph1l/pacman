@@ -16,7 +16,6 @@ import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
-import java.awt.Point;
 import java.nio.channels.AlreadyConnectedException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -222,20 +221,6 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		if (allReady) {
 			this.start();
 		}
-	}
-
-	@Override
-	public Labyrinth downloadMap() {
-		if (map == null) {
-			return null;
-		}
-
-		return map;
-	}
-
-	@Override
-	public Map<Long, Point> getPositions() {
-		throw new UnsupportedOperationException("Not supported yet.");
 	}
 
 	@Override
