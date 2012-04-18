@@ -8,6 +8,7 @@ import java.awt.event.KeyListener;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -69,9 +70,13 @@ public class GameUI extends JFrame implements Observer {
 			}
 		}
 		this.add(container, BorderLayout.CENTER);
+		JButton button = new JButton("HEADER HEADER HEADER");
+		this.add(button, BorderLayout.NORTH);
+		button = new JButton("SCORE BOARD");
+		this.add(button, BorderLayout.EAST);
 
 		// adjust the size of the window
-		this.setPreferredSize(new Dimension(width * 16, height * 16));
+		this.setPreferredSize(new Dimension(width * 16 + 100, height * 16 + 40));
 		this.pack();
 		this.setLocationRelativeTo(null); // Position game on screen center
 		this.setResizable(false);
