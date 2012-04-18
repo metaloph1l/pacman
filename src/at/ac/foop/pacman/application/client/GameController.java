@@ -71,9 +71,8 @@ public class GameController extends Observable implements IGame {
 				//Give the pacman the square on which is should be
 				pacman.setLocation(map.getSquare(point.x, point.y));
 			}
-			
+
 			//4. Finally signal the server that we are ready
-			this.server.setName(playerId, name);
 			this.server.ready(playerId);
 		} catch(RemoteException e) {
 			//TODO: handle any server exception here

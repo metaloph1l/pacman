@@ -8,7 +8,6 @@ import java.rmi.server.UnicastRemoteObject;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
-import at.ac.foop.pacman.ui.GameUI;
 import at.ac.foop.pacman.util.ClientSettings;
 import at.ac.foop.pacman.util.PropertyLoader;
 
@@ -36,8 +35,7 @@ public class RmiConnector {
 
 		try {
 			server = (IGameServer)Naming.lookup("rmi://" + url + "/Server");
-			System.out.println("server reference received");
-			System.out.println(server.downloadMap());
+			System.out.println("[RMI] Connected to server");
 
 			controller = new GameController(server);
 			UnicastRemoteObject.exportObject(controller, 0);
