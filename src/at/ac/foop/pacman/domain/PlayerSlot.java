@@ -1,6 +1,7 @@
 package at.ac.foop.pacman.domain;
 
 import at.ac.foop.pacman.application.IGame;
+import at.ac.foop.pacman.util.MethodCall;
 
 /**
  *
@@ -8,6 +9,7 @@ import at.ac.foop.pacman.application.IGame;
  */
 public final class PlayerSlot {
 	private Player player;	
+	private PlayerSlotThread playerSlotThread;
 	private IGame callback;
 	
 	private boolean connected;
@@ -17,12 +19,21 @@ public final class PlayerSlot {
 		this.reset();
 		
 		this.player = new Player(playerId, defaultName);
+		playerSlotThread = new PlayerSlotThread();
+		new Thread(playerSlotThread).start();
+	}
+	
+	public void notifyPlayer(MethodCall m) {
+		this.playerSlotThread.addMethodCall(m);
 	}
 	
 	public void reset() {
 		this.connected = false;
 		this.callback = null;
 		this.ready = false;
+		if(this.playerSlotThread != null) {
+			this.playerSlotThread.stop();
+		}
 	}
 
 	public IGame getCallback() {
@@ -31,6 +42,7 @@ public final class PlayerSlot {
 
 	public void setCallback(IGame callback) {
 		this.callback = callback;
+		this.playerSlotThread.setCallback(callback);
 	}
 
 	public boolean isConnected() {

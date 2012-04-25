@@ -17,6 +17,7 @@ import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.PlayerSlot;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
+import at.ac.foop.pacman.util.MethodCallBuilder;
 
 import java.net.ConnectException;
 import java.nio.channels.AlreadyConnectedException;
@@ -97,6 +98,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			}
 			for (PlayerSlot player : players) {
 				try {
+					player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
 					player.getCallback().notifyClock(clock, directions);
 				} catch (RemoteException ex) {
 					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
@@ -149,6 +151,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		for (PlayerSlot playerWrap : this.players) {
 			Player player = playerWrap.getPlayer();
 			try {
+				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameStarting"));
 				playerWrap.getCallback().notifyGameStarting();
 			} catch (RemoteException ex) {
 				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
@@ -213,6 +216,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		for (PlayerSlot playerWrap : this.players) {
 			try {
 				if(playerWrap.getCallback() != null)
+					playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyReady", playerId));
 					playerWrap.getCallback().notifyReady(playerId);
 			} catch (RemoteException ex) {
 				Throwable cause = ex.getCause();
@@ -286,6 +290,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		for (PlayerSlot playerWrap : this.players) {
 			try {
+				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
 				playerWrap.getCallback().notifyPlayer(player.getPlayer());
 			} catch (RemoteException ex) {
 				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
@@ -315,6 +320,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		for (PlayerSlot playerWrap : this.players) {
 			try {
 				if(playerWrap.getCallback() != null) {
+					playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
 					playerWrap.getCallback().notifyPlayer(player.getPlayer());
 				}
 			} catch (RemoteException ex) {
