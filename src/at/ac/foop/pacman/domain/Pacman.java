@@ -6,6 +6,7 @@ import java.io.Serializable;
 *
 * @author Phil
 * Sebastian Geiger
+* Stefan
 */
 public class Pacman implements Serializable {
 	//Fields
@@ -41,14 +42,16 @@ public class Pacman implements Serializable {
 
 	public void changeColor() {
 		switch(this.color) {
-			case RED:
-				this.color = PacmanColor.GREEN;
-				break;
-			case BLUE:
-				this.color = PacmanColor.RED;
-				break;
-			case GREEN:
-				this.color = PacmanColor.BLUE;
+		case RED:
+			this.color = PacmanColor.GREEN;
+			break;
+		case GREEN:
+			this.color = PacmanColor.RED;
+		case BLUE: //do nothing
+			break;
+		default:
+//TODO: error?				
+			break;
 		}
 	}
 

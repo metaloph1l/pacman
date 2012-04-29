@@ -11,6 +11,9 @@ public class StartUpClient {
 		RmiConnector rmiConnector = new RmiConnector();
 		GameController controller = rmiConnector.init();
 		//Initialisation of the user interface
-		new GameUI(40, 40, controller);
+		
+//TODO: ID of this player
+		new Client(controller, 10000,controller.getPlayers().get(0).getId());
+
 	}
 }

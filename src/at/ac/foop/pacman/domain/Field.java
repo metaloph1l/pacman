@@ -7,13 +7,15 @@ import java.util.List;
 /**
  *
  * @author Phil
+ * Stefan
  */
 final public class Field extends Square implements Serializable {
 	private List<Player> occupants; //The current player on this square or null for no player
 	private Integer points; //The number of points of this square
 	
 	public Field(Integer points) {
-		this.reset();
+		this.occupants = null;
+		this.points = points;
 	}
 	
 	@Override

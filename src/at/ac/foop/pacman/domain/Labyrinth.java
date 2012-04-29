@@ -6,6 +6,7 @@ import java.io.Serializable;
  *
  * @author Phil
  * Sebastian Geiger
+ * Stefan
  */
 public class Labyrinth implements Serializable {
 	//Fields
@@ -23,9 +24,19 @@ public class Labyrinth implements Serializable {
 
 	public Labyrinth(Square[][] squares) {
 		this.squares = squares;
-		this.width = squares.length;
-		this.height = squares[0].length;
+		this.width = squares[0].length;
+		this.height = squares.length;
 	}
+
+	/**
+	 * returns Width of Labyrinth
+	 */
+	public Integer getWidth(){return this.width;}
+	
+	/**
+	 * returns Height of Labyrinth
+	 */
+	public Integer getHeight(){return this.height;}
 
 	public void initializeBoard() {
 		this.squares = LabyrinthGenerator.generateSquares();
