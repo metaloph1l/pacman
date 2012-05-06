@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.SquareType;
 import at.ac.foop.pacman.ui.UI;
@@ -24,9 +26,11 @@ public class Drawing extends JPanel {
 	private final Graphics2D g2d;
 	private final int width, height;
 	private final UI parent;
+	private final Logger logger;
 
-	public Drawing (Graphics g, UI newparent){
+	public Drawing (Graphics g, UI newparent) {
 		super.paint(g);
+		this.logger = Logger.getLogger(Drawing.class);
 		this.g2d = (Graphics2D) g;
 		this.parent=newparent;
 
@@ -36,7 +40,7 @@ public class Drawing extends JPanel {
 		//height und width von hier nehmen
 
 		if (this.parent.parent.controller.getMap()==null) {
-			System.out.println("No Map");
+			logger.info("No Map");
 		}
 
 		this.parent.labHeight=this.parent.parent.controller.getMap().getHeight();

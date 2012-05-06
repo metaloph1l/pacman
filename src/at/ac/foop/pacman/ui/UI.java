@@ -96,7 +96,7 @@ public class UI extends JPanel {
 	} //end constructor
 
 	public void paint(Graphics g) {
-		System.out.println("[Paint]");
+		logger.debug("Painting Start");
 
 		//Renderingoptions
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
@@ -105,12 +105,17 @@ public class UI extends JPanel {
 				RenderingHints.VALUE_RENDER_QUALITY);
 
 		//TODO: implement Scoreboard
-		Drawing drawing=new Drawing(g,this);
-		drawing.drawBackground();
-		drawing.drawHead();
-		drawing.drawLabyrinth();
-		drawing.drawPacmans();
-		drawing.drawCookies();
+		try {
+			Drawing drawing=new Drawing(g,this);
+			drawing.drawBackground();
+			drawing.drawHead();
+			drawing.drawLabyrinth();
+			drawing.drawPacmans();
+			drawing.drawCookies();
+		} catch(Exception e) {
+			logger.error("ERROR", e);
+		}
+
 	}
 
 	private Shape animatedPacman(int player) {
@@ -143,7 +148,7 @@ public class UI extends JPanel {
 					this.pacmandphi, Arc2D.PIE
 					);
 		} else {
-			//System.out.println("no Pacman");
+			//logger.debug("no Pacman");
 			//return some random Pacman for testing purposes
 			//TODO: exception handling
 			return new Arc2D.Double(this.labStepX,this.labStepY,labStepX,labStepY,4.0f,4.0f,Arc2D.PIE);
@@ -158,11 +163,11 @@ public class UI extends JPanel {
 		this.coloredCookieTimer=(int)(Math.random()*40);
 		this.coloredCookieColor=Color.RED;
 
-		System.out.println("before shape");
+		logger.debug("before shape");
 
 		this.pacmanShape=new Shape[this.parent.controller.getPlayers().size()];
 		for (int i=0;i<this.parent.controller.getPlayers().size();i++) {
-			System.out.println("in shape");
+			logger.debug("in shape");
 			this.pacmanShape[i]=this.animatedPacman(i);
 		}
 		this.pacmanAnimation=-4;

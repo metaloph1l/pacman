@@ -3,6 +3,8 @@ package at.ac.foop.pacman.ui;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.log4j.Logger;
+
 import at.ac.foop.pacman.application.client.GameController;
 import at.ac.foop.pacman.application.client.GameState;
 import at.ac.foop.pacman.domain.Direction;
@@ -11,7 +13,7 @@ import at.ac.foop.pacman.domain.Direction;
  * The main entry point for the gui. It shows the
  * Game Window, displays the labyrinth and handles
  * user input.
- * 
+ *
  * @author
  * Sebastian Geiger: Intial Design
  * Stefan
@@ -19,17 +21,19 @@ import at.ac.foop.pacman.domain.Direction;
  */
 public class Client implements Observer{
 
-	
-	private UI ui;
+
+	private final UI ui;
+	private final Logger logger;
 	public long myID;
 
 	public int colorChangeSpeed;
-	
+
 	public GameController controller;
-	
+
 	//Constructor
 	public Client(GameController controller, int colorChangeSpeed, long playerId) {
 		this.controller = controller;
+		this.logger = Logger.getLogger(Client.class);
 		if(controller != null) {
 			controller.addObserver(this);
 		}
@@ -42,27 +46,27 @@ public class Client implements Observer{
 	}
 
 	/**
-	 * 
+	 *
 	 * Sends new direction to Server
-	 * 
+	 *
 	 * @param cmd
 	 */
 	public void sendcmd(Direction cmd) {
 		//TODO: send cmd to observer
 	}
-	
+
 	//TODO: optional: pauserequest
-	
+
 	/**
-	 * 
+	 *
 	 * call when colors change
 	 * restarts Timer
-	 * 
+	 *
 	 */
 	public void colorChanges(){
 		//TODO: call this when color changes
 		//TODO: optional: PID-Element for actual time
-		
+
 		this.ui.colorChangeAnimation=0;
 		this.ui.colorChangeTimer.restart();
 	}
@@ -72,13 +76,13 @@ public class Client implements Observer{
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
-				System.out.println("[UI] New map loadded");
+				logger.warn("(Unimplemented) New map loadded");
 				break;
 			case NEW_COLOR:
-				System.out.println("[UI] Color changed");
+				logger.warn("(Unimplemented) Color changed");
 				break;
 			case NEW_PLAYER:
-				System.out.println("[UI] Player joined");
+				logger.warn("(Unimplemented) Player joined");
 				break;
 			case NEW_POSITION: break;
 			case NEW_TURN: break;
@@ -86,5 +90,5 @@ public class Client implements Observer{
 			default: throw new RuntimeException("[Error] Unimplemented GameState type");
 		}
 	}
-	
+
 }

@@ -11,13 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class MapLoader {
-	
+
 	private static MapLoader instance = null;
 	private List<String> mapFiles = null;
 	private Map<String, String[][]> maps = null;
-	
+	private final Logger logger;
+
 	protected MapLoader() {
+		logger = Logger.getLogger(MapLoader.class);
 	}
 
 	public static MapLoader getInstance() {
@@ -29,9 +33,9 @@ public class MapLoader {
 
 	/**
 	 * loads a map names (fileNames) from a folder
-	 * 
+	 *
 	 */
-	public void loadMaps() {		
+	public void loadMaps() {
 		File mapDir = new File(MapLoader.getMapFolderPath());
 
 		FilenameFilter filter = new FilenameFilter() {
@@ -39,23 +43,23 @@ public class MapLoader {
 		        return name.endsWith(MapLoader.getMapFileExtension());
 		    }
 		};
-		
+
 		this.mapFiles = Arrays.asList(mapDir.list(filter));
 	}
-	
+
 	/**
 	 * loads a random map from a folder
-	 * 
+	 *
 	 * @return array representing the map
 	 */
 	public String[][] loadRandomMap() {
 		if((this.mapFiles == null) || (this.mapFiles.size() == 0)) {
 			this.loadMaps();
 		}
-		
+
 		int mapNumber = (int) (Math.random() * this.mapFiles.size());
 		String mapName = this.mapFiles.get(mapNumber);
-		
+
 		if ((this.maps != null) && (this.maps.containsKey(mapName))) {
 			return this.maps.get(mapName);
 		}
@@ -73,14 +77,14 @@ public class MapLoader {
 			}
 		}
 	}
-	
+
 	/**
-	 * This reads a map file and stores its 
-	 * values as an array. The map has to 
+	 * This reads a map file and stores its
+	 * values as an array. The map has to
 	 * be consistent (each row has to have
-	 * the same number of columns). The file 
+	 * the same number of columns). The file
 	 * itself has to end with a newline character.
-	 * 
+	 *
 	 * @param fileName The filename of the map
 	 * @return array representing the map
 	 */
@@ -90,7 +94,7 @@ public class MapLoader {
 			LineNumberReader lnr = new LineNumberReader(
 											new FileReader(
 												MapLoader.getMapFolderPath() + File.separator +  fileName));
-			
+
 			// TODO: maybe read line by line and build array afterwards
 			lnr.mark(64000);
 			// jump to the end of the file
@@ -98,12 +102,12 @@ public class MapLoader {
 			int rowNumbers = lnr.getLineNumber();
 			// reset the file
 			lnr.reset();
-			
+
 			int columnNumbers = lnr.readLine().split(ServerSettings.MAP_FIELD_SEPARATOR).length;
 			lnr.reset();
-			
+
 			mapArr = new String[rowNumbers][columnNumbers];
-			
+
 			String strLine = null;
 			int i = 0;
 			while ((strLine = lnr.readLine()) != null) {
@@ -111,28 +115,28 @@ public class MapLoader {
 				i++;
 		  	}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("ERROR", e);
 			return null;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("ERROR", e);
 			return null;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("ERROR", e);
 			return null;
 		}
-		
+
 		return mapArr;
 	}
-	
+
 	public static String getMapFolderPath() {
-		return PropertyLoader.getInstance().getProperty(ServerSettings.SERVER_CONFIG, 
-															ServerSettings.MAPS_FOLDER, 
+		return PropertyLoader.getInstance().getProperty(ServerSettings.SERVER_CONFIG,
+															ServerSettings.MAPS_FOLDER,
 															ServerSettings.DEFAULT_MAPS_FOLDER);
 	}
-	
+
 	public static String getMapFileExtension() {
-		return PropertyLoader.getInstance().getProperty(ServerSettings.SERVER_CONFIG, 
-															ServerSettings.MAP_EXT, 
+		return PropertyLoader.getInstance().getProperty(ServerSettings.SERVER_CONFIG,
+															ServerSettings.MAP_EXT,
 															ServerSettings.DEFAULT_MAP_EXT);
 	}
 }

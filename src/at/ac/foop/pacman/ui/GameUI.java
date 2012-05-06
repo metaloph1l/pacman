@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import at.ac.foop.pacman.application.client.GameController;
 import at.ac.foop.pacman.application.client.GameState;
 import at.ac.foop.pacman.domain.Direction;
@@ -23,7 +25,7 @@ import at.ac.foop.pacman.ui.panels.WallField;
  * The main entry point for the gui. It shows the
  * Game Window, displays the labyrinth and handles
  * user input.
- * 
+ *
  * @author
  * Sebastian Geiger: Intial Design
  *
@@ -33,14 +35,16 @@ public class GameUI extends JFrame implements Observer {
 	public static String TITLE = "Multiplayer Pacman (2012)";
 
 	// Fields
-	private int width, height;
-	private JPanel[][] squares;
+	private final int width, height;
+	private final JPanel[][] squares;
 	private JPanel container;
-	private GameController controller;
+	private final GameController controller;
+	private final Logger logger;
 
 	// Constructors
 	public GameUI(int width, int height, GameController controller) {
 		this.controller = controller;
+		this.logger = Logger.getLogger(Client.class);
 		if(controller != null) {
 			controller.addObserver(this);
 		}
@@ -85,7 +89,7 @@ public class GameUI extends JFrame implements Observer {
 
 	/**
 	 * Listens to the arrow keys on the keyboard and
-	 * forward them to the pacman controller. 
+	 * forward them to the pacman controller.
 	 * @author Sebastian Geiger
 	 *
 	 */
@@ -99,13 +103,13 @@ public class GameUI extends JFrame implements Observer {
 				case(KeyEvent.VK_LEFT):
 					direction = Direction.LEFT;
 					break;
-				case(KeyEvent.VK_RIGHT): 
+				case(KeyEvent.VK_RIGHT):
 					direction = Direction.RIGHT;
 					break;
-				case(KeyEvent.VK_UP): 
+				case(KeyEvent.VK_UP):
 					direction = Direction.UP;
 					break;
-				case(KeyEvent.VK_DOWN): 
+				case(KeyEvent.VK_DOWN):
 					direction = Direction.DOWN;
 					break;
 				default: return;
@@ -126,13 +130,13 @@ public class GameUI extends JFrame implements Observer {
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
-				System.out.println("[UI] New map loadded");
+				logger.warn("(Unimplemented) New map loadded");
 				break;
 			case NEW_COLOR:
-				System.out.println("[UI] Color changed");
+				logger.warn("(Unimplemented) Color changed");
 				break;
 			case NEW_PLAYER:
-				System.out.println("[UI] Player joined");
+				logger.warn("(Unimplemented) Player joined");
 				break;
 			case NEW_POSITION: break;
 			case NEW_TURN: break;

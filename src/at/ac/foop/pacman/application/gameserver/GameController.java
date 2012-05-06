@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
@@ -43,6 +43,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	private final Map<Long, Boolean> connected;
 	private final Map<Long, IGame> callbacks;
 	private final Map<Long, Boolean> ready;
+	private final Logger logger;
 	private int round;
 	private int clock;
 	private Labyrinth map;
@@ -64,6 +65,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			PlayerSlot player = new PlayerSlot(new Long(count), "Player" + count);
 			players.add(player);
 		}
+		logger = Logger.getLogger(GameController.class);
 	}
 
 	//Concrete Methods
@@ -99,7 +101,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
 					player.getCallback().notifyClock(clock, directions);
 				} catch (RemoteException ex) {
-					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+					logger.error("ERROR", ex);
 				}
 			}
 
@@ -152,7 +154,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameStarting"));
 				playerWrap.getCallback().notifyGameStarting();
 			} catch (RemoteException ex) {
-				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				logger.error("ERROR", ex);
 			}
 		}
 
@@ -165,7 +167,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				try {
 					instance = new GameController();
 				} catch (RemoteException ex) {
-					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+					Logger.getLogger(GameController.class).error("ERROR", ex);
 				}
 			}
 		}
@@ -220,10 +222,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			} catch (RemoteException ex) {
 				Throwable cause = ex.getCause();
 				if(cause instanceof ConnectException) {
-					//Player has gone offline
-					Logger.getLogger(GameController.class.getName()).log(Level.WARNING, "Player offline");
+					//TODO: Player has gone offline
+					logger.warn("Player offline");
 				} else {
-					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+					logger.error("ERROR", ex);
 				}
 			}
 			if (!playerWrap.isReady()) {
@@ -250,8 +252,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				callbacks.put(playerId, callback);
 				player.setCallback(callback);
 				player.setConnected(true);
-				System.out.printf("[Player %d] Connected", playerId);
-				System.out.println();
+				logger.info("[Player " + playerId + "] Connected");
 				List<Player> currentPlayers = new ArrayList<Player>();
 
 				for (PlayerSlot playerWrap : players) {
@@ -261,7 +262,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				try {
 					callback.notifyPlayers(currentPlayers);
 				} catch (RemoteException ex) {
-					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+					logger.error("ERROR", ex);
 				}
 
 				break;
@@ -292,7 +293,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
 				playerWrap.getCallback().notifyPlayer(player.getPlayer());
 			} catch (RemoteException ex) {
-				Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+				logger.error("ERROR", ex);
 			}
 		}
 
@@ -325,10 +326,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			} catch (RemoteException ex) {
 				Throwable cause = ex.getCause();
 				if(cause instanceof ConnectException) {
-					//Player has gone offline
-					Logger.getLogger(GameController.class.getName()).log(Level.WARNING, "Player offline");
+					//TODO: Player has gone offline
+					logger.warn("Player offline");
 				} else {
-					Logger.getLogger(GameController.class.getName()).log(Level.SEVERE, null, ex);
+					logger.error("ERROR", ex);
 				}
 			}
 		}
@@ -388,7 +389,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			if (clock < CLOCKS_PER_ROUND && play) {
 				GameController.this.playRound();
 			} else {
-				Logger.getLogger(GameController.class.getName()).log(Level.WARNING, "Timer is cancelling itself because of clock={0}, play={1}", new Object[]{clock, play});
+				//TODO: Improve message
+				logger.warn(String.format("Timer is cancelling itself because of clock={0}, play={1}", new Object[]{clock, play}));
 				this.cancel();
 			}
 		}

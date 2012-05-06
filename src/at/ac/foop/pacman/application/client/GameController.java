@@ -103,7 +103,7 @@ public class GameController extends Observable implements IGame {
 		//This indicates that the server wants to change the map.
 		//set the next map
 		nextMap = map;
-		System.out.println("A new map has been received");
+		logger.info("A new map has been received");
 		//notify the UI that a new map has been downloaded
 		states.add(GameState.NEW_MAP);
 		this.notifyObservers();
