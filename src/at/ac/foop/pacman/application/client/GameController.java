@@ -1,33 +1,33 @@
 package at.ac.foop.pacman.application.client;
 
-import at.ac.foop.pacman.domain.GameOutcome;
-import at.ac.foop.pacman.domain.PlayerOutcome;
 import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Queue;
+
+import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.GameOutcome;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * The client game controllers function is to receive the calls
  * from the server instance and simulate the game. Here we also
  * need to send the direction change of the user to the server.
- *  
+ *
  * @author S. Sebastian Geiger
  *
  */
@@ -36,11 +36,11 @@ public class GameController extends Observable implements IGame {
 	Labyrinth map;
 	Labyrinth nextMap;
 	int count;
-	private IGameServer server; //Interface to the game server
+	private final IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
-	private Queue<GameState> states = new LinkedList<GameState>();
-	private Logger logger;
-	
+	private final Queue<GameState> states = new LinkedList<GameState>();
+	private final Logger logger;
+
 	GameController(IGameServer server) {
 		this.server = server;
 		logger = Logger.getLogger(GameController.class);
@@ -57,10 +57,11 @@ public class GameController extends Observable implements IGame {
 		try {
 			//1. Connect to the server
 			playerId = this.server.connect(this);
-			
+			logger.info("Client connected to server");
+
 			//2. Inform the server of this players name
 			this.server.setName(playerId, name);
-			
+
 			Player player = players.get(playerId.intValue());
 			if(player.getId().equals(this.playerId)) {
 				player.setName(name);
@@ -70,12 +71,13 @@ public class GameController extends Observable implements IGame {
 			this.server.ready(playerId);
 		} catch(RemoteException e) {
 			//TODO: handle any server exception here
+			logger.error("Error", e);
 		}
 		//NOTE: This controller has no play method. Every change
 		//      to the game come from the server through the RMI
 		//      methods.
 	}
-	
+
 	/**
 	 * This should be uses by the user interface to retrieve the
 	 * current list of players. The user interface should
@@ -86,7 +88,7 @@ public class GameController extends Observable implements IGame {
 	public List<Player> getPlayers() {
 		return this.players;
 	}
-	
+
 	/**
 	 * Get the current map.
 	 * The UI should call this in response to the
@@ -106,7 +108,7 @@ public class GameController extends Observable implements IGame {
 		states.add(GameState.NEW_MAP);
 		this.notifyObservers();
 	}
-	
+
 	@Override
 	public void notifyPositions(Map<Long, Point> positions) {
 		//3. Setup a representation of the game locally
@@ -140,7 +142,7 @@ public class GameController extends Observable implements IGame {
 		//notify the UI that the player positions have changed
 		this.notifyObservers();
 	}
-	
+
 	private void movePacmans() {
 		for (Player player : players) {
 			Pacman pacman = player.getPacman();

@@ -6,6 +6,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import org.apache.log4j.Logger;
+
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
 import at.ac.foop.pacman.util.ClientSettings;
@@ -19,6 +21,7 @@ public class RmiConnector {
 
 	private IGame controller;
 	private IGameServer server;
+	private final Logger logger = Logger.getLogger(RmiConnector.class);
 
 	public GameController init() {
 		String url = PropertyLoader.getInstance().getProperty(
@@ -35,23 +38,23 @@ public class RmiConnector {
 
 		try {
 			server = (IGameServer)Naming.lookup("rmi://" + url + "/Server");
-			System.out.println("[RMI] Connected to server");
+			logger.debug("[RMI] Server lookup complete");
 
 			controller = new GameController(server);
 			UnicastRemoteObject.exportObject(controller, 0);
 
+			logger.info("Initializing GameController");
 			((GameController)controller).init("Test");
-			System.out.println("connected to server");
 			return (GameController)controller;
 		} catch (MalformedURLException e) {
 			// TODO: exception handling
-			e.printStackTrace();
+			logger.info("Error", e);
 		} catch (NotBoundException e) {
 			// TODO: exception handling
-			e.printStackTrace();
+			logger.info("Error", e);
 		} catch (RemoteException e) {
 			// TODO: exception handling
-			e.printStackTrace();
+			logger.info("Error", e);
 		}
 		return null;
 	}

@@ -1,15 +1,23 @@
 package at.ac.foop.pacman.application.gameserver;
 
+import java.net.ConnectException;
+import java.nio.channels.AlreadyConnectedException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Field;
-
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.LabyrinthGenerator;
 import at.ac.foop.pacman.domain.Pacman;
@@ -18,16 +26,6 @@ import at.ac.foop.pacman.domain.PlayerSlot;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
 import at.ac.foop.pacman.util.MethodCallBuilder;
-
-import java.net.ConnectException;
-import java.nio.channels.AlreadyConnectedException;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -41,10 +39,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	public static int NUM_OF_ROUNDS_PER_GAME = 3;
 	private static GameController instance = null;
 	//Fields
-	private List<PlayerSlot> players;
-	private Map<Long, Boolean> connected;
-	private Map<Long, IGame> callbacks;
-	private Map<Long, Boolean> ready;
+	private final List<PlayerSlot> players;
+	private final Map<Long, Boolean> connected;
+	private final Map<Long, IGame> callbacks;
+	private final Map<Long, Boolean> ready;
 	private int round;
 	private int clock;
 	private Labyrinth map;
@@ -215,9 +213,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		for (PlayerSlot playerWrap : this.players) {
 			try {
-				if(playerWrap.getCallback() != null)
+				if(playerWrap.getCallback() != null) {
 					playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyReady", playerId));
 					playerWrap.getCallback().notifyReady(playerId);
+				}
 			} catch (RemoteException ex) {
 				Throwable cause = ex.getCause();
 				if(cause instanceof ConnectException) {
