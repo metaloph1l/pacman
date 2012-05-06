@@ -28,19 +28,16 @@ public class Client implements Observer{
 	public GameController controller;
 	
 	//Constructor
-	public Client(GameController newcontroller, int newcolorchangespeed, long newmyID)
-	{
-		this.controller = newcontroller;
+	public Client(GameController controller, int colorChangeSpeed, long playerId) {
+		this.controller = controller;
 		if(controller != null) {
 			controller.addObserver(this);
 		}
 		//TODO: if the controller object is null, then the UI must inform
 		//      the user that the client could not connect to the game server.
-		
-		this.colorChangeSpeed=newcolorchangespeed;
 
-		this.myID=newmyID;
-		
+		this.colorChangeSpeed=colorChangeSpeed;
+		this.myID=playerId;
 		this.ui=new UI(this);
 	}
 
@@ -50,13 +47,11 @@ public class Client implements Observer{
 	 * 
 	 * @param cmd
 	 */
-//TODO: send cmd to observer
-	public void sendcmd(Direction cmd)
-	{
-
+	public void sendcmd(Direction cmd) {
+		//TODO: send cmd to observer
 	}
 	
-//TODO: optional: pauserequest	
+	//TODO: optional: pauserequest
 	
 	/**
 	 * 
@@ -64,9 +59,8 @@ public class Client implements Observer{
 	 * restarts Timer
 	 * 
 	 */
-//TODO: call this when color changes	
 	public void colorChanges(){
-		
+		//TODO: call this when color changes
 		//TODO: optional: PID-Element for actual time
 		
 		this.ui.colorChangeAnimation=0;
