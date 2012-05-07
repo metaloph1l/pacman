@@ -77,6 +77,17 @@ public class GameController extends Observable implements IGame {
 		//      to the game come from the server through the RMI
 		//      methods.
 	}
+	
+	public void disconnect() throws RemoteException {
+		try {
+			if(this.server != null) {
+				this.server.disconnect(playerId);
+			}
+		} catch(RemoteException e) {
+			//TODO: handle any server exception here
+			logger.error("Error", e);
+		}
+	}
 
 	/**
 	 * This should be uses by the user interface to retrieve the
