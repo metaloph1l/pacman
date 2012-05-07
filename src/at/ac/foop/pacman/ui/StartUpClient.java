@@ -20,7 +20,6 @@ public class StartUpClient {
 				@Override 
 				public void run() { 
 					try {
-						Logger.getLogger(StartUpClient.class).warn("unclean shutdown: disconnecting");
 						controller.disconnect();
 					} catch (RemoteException e) {
 						Logger.getLogger(StartUpClient.class).error("ERROR", e);
