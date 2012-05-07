@@ -1,27 +1,32 @@
 package at.ac.foop.pacman.domain;
 
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.ConnectException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.application.IGame;
+import at.ac.foop.pacman.application.gameserver.GameController;
 import at.ac.foop.pacman.util.MethodCall;
 
 public class PlayerSlotThread implements Runnable {
 
 	private LinkedBlockingQueue<MethodCall> methodCalls;
 	private IGame callback;
+	private Long playerId;
 	private boolean run = true;
 	private final Logger logger;
 
-	public PlayerSlotThread() {
+	public PlayerSlotThread(Long playerId) {
+		this.playerId = playerId;
 		methodCalls = new LinkedBlockingQueue<MethodCall>();
 		logger = Logger.getLogger(PlayerSlotThread.class);
 	}
 
 	@Override
 	public void run() {
+		logger.info("Player " + playerId + " in this thread");
 		while(run) {
 			MethodCall currCall = null;
 			try {
@@ -37,20 +42,23 @@ public class PlayerSlotThread implements Runnable {
 
 	public void notifyCallback(MethodCall currCall) {
 		try {
-			// DEBUG:
-			/* if (currCall.getArgs() != null) {
-				for (int i = 0; i < currCall.getArgs().size(); i++) {
-					System.out.println("ArgParams: " + currCall.getArgs().get(i));
-					System.out.println("ArgParamsClass: " + currCall.getArgs().get(i).getClass());
-				}
-			}*/
-			currCall.getMethod().invoke(callback, currCall.getArgs().toArray());
+			if(callback != null) {
+				currCall.getMethod().invoke(callback, currCall.getArgs().toArray());
+			}
 		} catch (IllegalArgumentException e) {
 			logger.error("ERROR", e);
 		} catch (IllegalAccessException e) {
 			logger.error("ERROR", e);
 		} catch (InvocationTargetException e) {
-			logger.error("ERROR", e);
+			Throwable cause = e.getCause();
+			if(cause instanceof ConnectException) {
+				GameController.getCurrentInstance().disconnect(playerId);
+				logger.warn("Player " + playerId + " went offline");
+			} else {
+				logger.error("ERROR", e);
+			}
+		} catch (Exception ex) {
+			logger.error("ERROR", ex);
 		}
 	}
 
@@ -58,6 +66,7 @@ public class PlayerSlotThread implements Runnable {
 		if(this.methodCalls == null) {
 			methodCalls = new LinkedBlockingQueue<MethodCall>();
 		}
+		// System.out.println(mCall);
 		this.methodCalls.add(mCall);
 	}
 
@@ -72,6 +81,10 @@ public class PlayerSlotThread implements Runnable {
 	}
 
 	public void setCallback(IGame callback) {
+		// if we reset the callback then we also reset the methodCalls
+		if(callback == null && this.methodCalls != null) {
+			this.methodCalls.clear();
+		}
 		this.callback = callback;
 	}
 }

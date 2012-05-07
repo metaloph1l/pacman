@@ -97,12 +97,13 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				directions.put(player.getPlayerId(), player.getDirection());
 			}
 			for (PlayerSlot player : players) {
-				try {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
+				/*try {
 					player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
 					player.getCallback().notifyClock(clock, directions);
 				} catch (RemoteException ex) {
 					logger.error("ERROR", ex);
-				}
+				}*/
 			}
 
 			this.clock++;
@@ -150,12 +151,14 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 		for (PlayerSlot playerWrap : this.players) {
 			Player player = playerWrap.getPlayer();
-			try {
+			
+			playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameStarting"));
+			/*try {
 				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameStarting"));
 				playerWrap.getCallback().notifyGameStarting();
 			} catch (RemoteException ex) {
 				logger.error("ERROR", ex);
-			}
+			}*/
 		}
 
 		timer.schedule(tt, 3000, CLOCK_LENGTH);
@@ -214,7 +217,11 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		boolean allReady = true;
 
 		for (PlayerSlot playerWrap : this.players) {
-			try {
+			if(playerWrap.getCallback() != null) {
+				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyReady", playerId));
+			}
+			
+			/*try {
 				if(playerWrap.getCallback() != null) {
 					playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyReady", playerId));
 					playerWrap.getCallback().notifyReady(playerId);
@@ -227,7 +234,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				} else {
 					logger.error("ERROR", ex);
 				}
-			}
+			}*/
+			
 			if (!playerWrap.isReady()) {
 				allReady = false;
 			}
@@ -258,12 +266,12 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				for (PlayerSlot playerWrap : players) {
 					currentPlayers.add(playerWrap.getPlayer());
 				}
-
-				try {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
+				/*try {
 					callback.notifyPlayers(currentPlayers);
 				} catch (RemoteException ex) {
 					logger.error("ERROR", ex);
-				}
+				}*/
 
 				break;
 			}
@@ -281,7 +289,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		throw new IllegalArgumentException("callback must not be null when disconnecting.");
 		}*/
 
-		PlayerSlot player = players.get(playerId.intValue());
+		PlayerSlot player = players.get(playerId.intValue() - 1);
 
 		//if(player.getCallback() == callback) {
 		player.setConnected(false);
@@ -289,14 +297,20 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		player.setCallback(null);
 
 		for (PlayerSlot playerWrap : this.players) {
-			try {
+			if(playerWrap.getPlayerId() != playerId) {
+				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
+			}
+			
+			/*try {
 				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
 				playerWrap.getCallback().notifyPlayer(player.getPlayer());
 			} catch (RemoteException ex) {
 				logger.error("ERROR", ex);
-			}
+			}*/
 		}
-
+		
+		logger.info("[Player " + playerId + "] disconnected");
+		
 		//TODO implement effects on running game
 		//}
 		//else {
@@ -318,7 +332,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		player.setName(name);
 
 		for (PlayerSlot playerWrap : this.players) {
-			try {
+			if(playerWrap.getCallback() != null) {
+				playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
+			}
+			/*try {
 				if(playerWrap.getCallback() != null) {
 					playerWrap.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayer", player.getPlayer()));
 					playerWrap.getCallback().notifyPlayer(player.getPlayer());
@@ -331,7 +348,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				} else {
 					logger.error("ERROR", ex);
 				}
-			}
+			}*/
 		}
 	}
 

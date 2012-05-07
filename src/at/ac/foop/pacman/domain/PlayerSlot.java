@@ -19,7 +19,7 @@ public final class PlayerSlot {
 		this.reset();
 		
 		this.player = new Player(playerId, defaultName);
-		playerSlotThread = new PlayerSlotThread();
+		playerSlotThread = new PlayerSlotThread(playerId);
 		new Thread(playerSlotThread).start();
 	}
 	
