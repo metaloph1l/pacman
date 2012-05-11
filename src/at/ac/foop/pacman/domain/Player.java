@@ -19,8 +19,6 @@ public class Player implements Serializable {
 	public Player(Long id, String name) {
 		this.id = id;
 		this.name = name;
-		this.pacman = new Pacman();
-		this.pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
 	}
 
 	public Long getPoints() {
@@ -35,6 +33,12 @@ public class Player implements Serializable {
 		this.pacman.setAlive(false);
 		player.setPoints(this.points + player.getPoints());
 		points = 0L;
+	}
+	
+	public void initPacman(Square square) {
+		this.pacman = new Pacman();
+		this.pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
+		this.pacman.setLocation(square);
 	}
 
 	public Pacman getPacman() {

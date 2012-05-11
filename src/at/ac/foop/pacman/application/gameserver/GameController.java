@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
+import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Field;
 import at.ac.foop.pacman.domain.Labyrinth;
@@ -76,10 +77,26 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	public void initializeRound() {
 		if (round < NUM_OF_ROUNDS_PER_GAME) {
 			this.map = LabyrinthGenerator.generateLabyrinth();
+			
+			List<Coordinate> pacmanCoords = LabyrinthGenerator.getPacmanPositions();
+			if(pacmanCoords == null || pacmanCoords.size() < Player.PLAYER_COUNT) {
+				// log and don't play round
+				// TODO: maybe notify clients?
+				logger.error("ERROR - Couldn't get enough pacman coordinates");
+				return;
+			}
+			
 
 			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+				Square pacmanPos = new Field(0);
+				pacmanPos.setCoordinate(pacmanCoords.get(0));
+				player.getPlayer().initPacman(pacmanPos);
+				pacmanCoords.remove(0);
 				player.getPlayer().getPacman().setAlive(true);
+				
+				// TODO: notify clients of current pacman positions
+				// player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", this.map));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
 			}
 
 			play = true;
