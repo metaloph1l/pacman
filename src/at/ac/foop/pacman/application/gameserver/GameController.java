@@ -78,6 +78,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			this.map = LabyrinthGenerator.generateLabyrinth();
 
 			for (PlayerSlot player : players) {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
 				player.getPlayer().getPacman().setAlive(true);
 			}
 
@@ -277,7 +278,21 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				break;
 			}
 		}
+		
+		if(this.allPlayersConnected() == true) {
+			this.start();
+		}
+		
 		return playerId;
+	}
+	
+	private boolean allPlayersConnected() {
+		for (PlayerSlot playerWrap : players) {
+			if (playerWrap.isConnected() == false) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

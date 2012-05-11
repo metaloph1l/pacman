@@ -1,6 +1,5 @@
 package at.ac.foop.pacman.domain;
 
-import at.ac.foop.pacman.application.gameserver.GameController;
 import java.io.Serializable;
 
 public class Player implements Serializable {
@@ -20,6 +19,8 @@ public class Player implements Serializable {
 	public Player(Long id, String name) {
 		this.id = id;
 		this.name = name;
+		this.pacman = new Pacman();
+		this.pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
 	}
 
 	public Long getPoints() {
