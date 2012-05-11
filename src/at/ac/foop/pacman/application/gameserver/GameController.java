@@ -279,22 +279,9 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			}
 		}
 		
-		if(this.allPlayersConnected() == true) {
-			this.start();
-		}
-		
 		return playerId;
 	}
 	
-	private boolean allPlayersConnected() {
-		for (PlayerSlot playerWrap : players) {
-			if (playerWrap.isConnected() == false) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	@Override
 	public void disconnect(Long playerId) {
 		if (playerId < 0 || playerId > players.size() - 1) {
