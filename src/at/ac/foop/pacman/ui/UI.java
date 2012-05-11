@@ -3,6 +3,7 @@ package at.ac.foop.pacman.ui;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Label;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -71,6 +72,7 @@ public class UI extends JPanel {
 		JFrame frame = new JFrame("Pacman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(450, 505);
+		this.add(new Label("LOADING..."));
 		frame.add(this);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -89,11 +91,14 @@ public class UI extends JPanel {
 				}
 			}
 		});
-		this.colorChangeTimer.start();
-		this.repaintTimer.start();
 
 		addKeyListener(new DirectionListener(parent));
 	} //end constructor
+	
+	public void initGameBoard() {
+		this.colorChangeTimer.start();
+		this.repaintTimer.start();
+	}
 
 	public void paint(Graphics g) {
 		logger.debug("Painting Start");
@@ -105,15 +110,20 @@ public class UI extends JPanel {
 				RenderingHints.VALUE_RENDER_QUALITY);
 
 		//TODO: implement Scoreboard
-		try {
-			Drawing drawing=new Drawing(g,this);
-			drawing.drawBackground();
-			drawing.drawHead();
-			drawing.drawLabyrinth();
-			drawing.drawPacmans();
-			drawing.drawCookies();
-		} catch(Exception e) {
-			logger.error("ERROR", e);
+		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
+			try {
+				Drawing drawing=new Drawing(g,this);
+				drawing.drawBackground();
+				drawing.drawHead();
+				drawing.drawLabyrinth();
+				drawing.drawPacmans();
+				drawing.drawCookies();
+			} catch(Exception e) {
+				logger.error("ERROR", e);
+			}
+		}
+		else {
+			super.paint(g);
 		}
 
 	}

@@ -267,6 +267,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					currentPlayers.add(playerWrap.getPlayer());
 				}
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
+				//player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
 				/*try {
 					callback.notifyPlayers(currentPlayers);
 				} catch (RemoteException ex) {

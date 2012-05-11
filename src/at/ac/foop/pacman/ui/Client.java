@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import at.ac.foop.pacman.application.client.GameController;
 import at.ac.foop.pacman.application.client.GameState;
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.Labyrinth;
 
 /**
  * The main entry point for the gui. It shows the
@@ -76,6 +77,7 @@ public class Client implements Observer{
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
+				this.ui.initGameBoard();
 				logger.warn("(Unimplemented) New map loadded");
 				break;
 			case NEW_COLOR:
