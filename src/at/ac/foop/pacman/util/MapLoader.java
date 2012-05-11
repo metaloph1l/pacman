@@ -17,6 +17,7 @@ public class MapLoader {
 
 	private static MapLoader instance = null;
 	private List<String> mapFiles = null;
+	private String lastMap = null;
 	private Map<String, String[][]> maps = null;
 	private final Logger logger;
 
@@ -73,11 +74,12 @@ public class MapLoader {
 					this.maps = new HashMap<String, String[][]>();
 				}
 				this.maps.put(mapName, map);
+				this.lastMap = mapName;
 				return map;
 			}
 		}
 	}
-
+	
 	/**
 	 * This reads a map file and stores its
 	 * values as an array. The map has to
@@ -127,6 +129,11 @@ public class MapLoader {
 
 		return mapArr;
 	}
+	
+	public String[][] getLastMap() {
+		return this.maps.get(this.lastMap);
+	}
+
 
 	public static String getMapFolderPath() {
 		return PropertyLoader.getInstance().getProperty(ServerSettings.SERVER_CONFIG,
