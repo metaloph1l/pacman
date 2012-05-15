@@ -76,7 +76,7 @@ public interface IGame extends Remote {
 	 * @param directions A list of Key-Value pairs with playerId
 	 * and the direction of that player.
 	 */
-	void notifyClock(int count, Map<Long, Direction> directions)
+	void notifyClock(Integer count, Map<Long, Direction> directions)
 	    throws RemoteException;
 	
 	/**

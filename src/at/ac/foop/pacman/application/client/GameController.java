@@ -62,7 +62,7 @@ public class GameController extends Observable implements IGame {
 			//2. Inform the server of this players name
 			this.server.setName(playerId, name);
 
-			Player player = players.get(playerId.intValue());
+			Player player = players.get(playerId.intValue() - 1);
 			if(player.getId().equals(this.playerId)) {
 				player.setName(name);
 			}
@@ -135,13 +135,14 @@ public class GameController extends Observable implements IGame {
 			Coordinate point = positions.get(id);
 			//Give the pacman the square on which is should be
 			pacman.setLocation(map.getSquare(point.getX(), point.getY()));
+			map.getSquare(point.getX(), point.getY()).enter(player);
 			states.add(GameState.NEW_POSITION);
 			this.notifyObservers();
 		}
 	}
 
 	@Override
-	public void notifyClock(int count, Map<Long, Direction> directions)
+	public void notifyClock(Integer count, Map<Long, Direction> directions)
 			throws RemoteException {
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
@@ -170,6 +171,7 @@ public class GameController extends Observable implements IGame {
 				} else {
 					currentSquare.leave(player);
 					nextSquare.enter(player);
+					player.getPacman().setLocation(nextSquare);
 				}
 			}
 		}

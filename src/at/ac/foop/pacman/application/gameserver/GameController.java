@@ -79,6 +79,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			this.map = LabyrinthGenerator.generateLabyrinth();
 			
 			List<Coordinate> pacmanCoords = LabyrinthGenerator.getPacmanPositions();
+			System.out.println("PacManCoords: " + pacmanCoords);
 			if(pacmanCoords == null || pacmanCoords.size() < Player.PLAYER_COUNT) {
 				// log and don't play round
 				// TODO: maybe notify clients?
@@ -86,17 +87,22 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				return;
 			}
 			
-
+			Map<Long, Coordinate> coords = new HashMap<Long, Coordinate>();
 			for (PlayerSlot player : players) {
 				Square pacmanPos = new Field(0);
 				pacmanPos.setCoordinate(pacmanCoords.get(0));
 				player.getPlayer().initPacman(pacmanPos);
 				pacmanCoords.remove(0);
 				player.getPlayer().getPacman().setAlive(true);
-				
+				this.map.getSquare(pacmanPos.getCoordinate().getX(), pacmanPos.getCoordinate().getY()).enter(player.getPlayer());
 				// TODO: notify clients of current pacman positions
-				// player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", this.map));
+				
+				coords.put(player.getPlayerId(), player.getPlayer().getLocation().getCoordinate());
+			}
+			
+			for (PlayerSlot player : players) {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
 			}
 
 			play = true;
@@ -113,9 +119,10 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 			for (PlayerSlot player : players) {
 				directions.put(player.getPlayerId(), player.getDirection());
+				System.out.println("CurrentPlayerWithDir: " + player.getPlayerId() + " " + player.getDirection());
 			}
 			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", new Integer(clock), directions));
 				/*try {
 					player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
 					player.getCallback().notifyClock(clock, directions);
@@ -221,11 +228,11 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	@Override
 	public void ready(Long playerId) {
-		if (playerId < 0 || playerId > players.size() - 1) {
+		if (playerId < 0 || playerId > players.size()) {
 			throw new IllegalArgumentException("player id out of bounds.");
 		}
 
-		PlayerSlot playerSlot = players.get(playerId.intValue());
+		PlayerSlot playerSlot = players.get(playerId.intValue() - 1);
 
 		if (playerSlot.getName() == null) {
 			throw new RuntimeException("player name must be set before ready is called.");
@@ -301,7 +308,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	
 	@Override
 	public void disconnect(Long playerId) {
-		if (playerId < 0 || playerId > players.size() - 1) {
+		if (playerId < 0 || playerId > players.size()) {
 			throw new IllegalArgumentException("player id must be valid when disconnecting.");
 		}
 
@@ -340,7 +347,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	@Override
 	public void setName(Long playerId, String name) {
-		if (playerId < 0 || playerId > players.size() - 1) {
+		if (playerId < 0 || playerId > players.size()) {
 			throw new IllegalArgumentException("player id must be valid when setting the name.");
 		}
 
@@ -348,7 +355,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			throw new IllegalArgumentException("player name must not be null.");
 		}
 
-		PlayerSlot player = players.get(playerId.intValue());
+		PlayerSlot player = players.get(playerId.intValue() - 1);
 		player.setName(name);
 
 		for (PlayerSlot playerWrap : this.players) {

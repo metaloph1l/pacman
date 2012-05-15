@@ -66,7 +66,7 @@ public class PlayerSlotThread implements Runnable {
 		if(this.methodCalls == null) {
 			methodCalls = new LinkedBlockingQueue<MethodCall>();
 		}
-		// System.out.println(mCall);
+		// System.out.println("MethodCall: " + mCall);
 		this.methodCalls.add(mCall);
 	}
 

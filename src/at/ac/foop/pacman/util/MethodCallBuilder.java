@@ -38,6 +38,7 @@ public class MethodCallBuilder {
 			//System.out.println("Args: " + argClasses);
 			m = IGame.class.getMethod(method, argClasses);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			return null;
 		}
 		

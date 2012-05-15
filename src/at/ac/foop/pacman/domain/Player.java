@@ -39,6 +39,9 @@ public class Player implements Serializable {
 		this.pacman = new Pacman();
 		this.pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
 		this.pacman.setLocation(square);
+		this.pacman.getLocation().enter(this);
+		this.pacman.setAlive(true);
+		this.pacman.setDirection(Direction.NONE);
 	}
 
 	public Pacman getPacman() {
@@ -59,6 +62,7 @@ public class Player implements Serializable {
 	}
 
 	public void setDirection(Direction direction) {
+		System.out.println("PACMAN: " + pacman);
 		pacman.setDirection(direction);
 	}
 
