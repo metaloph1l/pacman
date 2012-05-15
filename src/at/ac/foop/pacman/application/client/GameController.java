@@ -1,6 +1,5 @@
 package at.ac.foop.pacman.application.client;
 
-import java.awt.Point;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.application.IGame;
 import at.ac.foop.pacman.application.IGameServer;
+import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.GameOutcome;
 import at.ac.foop.pacman.domain.Labyrinth;
@@ -121,7 +121,7 @@ public class GameController extends Observable implements IGame {
 	}
 
 	@Override
-	public void notifyPositions(Map<Long, Point> positions) {
+	public void notifyPositions(Map<Long, Coordinate> positions) {
 		//3. Setup a representation of the game locally
 		//   that includes: Players, Pacmans, Labyrinth, etc.
 		// TODO: This players are only placeholders for the real players
@@ -132,9 +132,9 @@ public class GameController extends Observable implements IGame {
 			//Set the start color according to the id
 			pacman.setColor(PacmanColor.values()[id.intValue()]);
 			player.setPacman(pacman);
-			Point point = positions.get(id);
+			Coordinate point = positions.get(id);
 			//Give the pacman the square on which is should be
-			pacman.setLocation(map.getSquare(point.x, point.y));
+			pacman.setLocation(map.getSquare(point.getX(), point.getY()));
 			states.add(GameState.NEW_POSITION);
 			this.notifyObservers();
 		}

@@ -1,9 +1,9 @@
 package at.ac.foop.pacman.application;
 
-import java.awt.Point;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Player;
@@ -29,7 +29,7 @@ public interface IGame extends Remote {
 	 * @param positions The map contains the id of the player as the key
 	 * and the Position on the map as the value.
 	 */
-	void notifyPositions(Map<Long, Point> positions) throws RemoteException;
+	void notifyPositions(Map<Long, Coordinate> positions) throws RemoteException;
 
 	/**
 	 * This notifies the client to update its representation
