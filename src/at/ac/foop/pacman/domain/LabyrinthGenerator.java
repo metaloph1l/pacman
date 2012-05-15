@@ -20,6 +20,7 @@ public class LabyrinthGenerator {
 			return null;
 		}
 		Square[][] map = new Square[mapArrStr.length][mapArrStr[0].length];
+		//Square[][] map = new Square[mapArrStr[0].length][mapArrStr.length];
 
 		Integer fieldPoints = Integer.parseInt(PropertyLoader.getInstance().
 			getProperty(ServerSettings.SERVER_CONFIG,
@@ -27,6 +28,12 @@ public class LabyrinthGenerator {
 			ServerSettings.DEFAULT_FIELD_POINTS)
 		);
 
+		// we could also switch the indices because y represents the height
+		// this means that the first index of the array should be the row
+		// and the second index should be the column. In the presentation
+		// from map-Loader it is the opposite way around.
+		// But this is not done here and we just switch the index in the
+		// getSquare-Method
 		for (int i = 0; i < mapArrStr.length; i++) {
 			for(int j = 0; j < mapArrStr[i].length; j++) {
 				if(mapArrStr[i][j].equals("W")) {
@@ -45,8 +52,8 @@ public class LabyrinthGenerator {
 					map[i][j] = new Field(fieldPoints);
 				}
 				Coordinate coord = new Coordinate();
-				coord.setX(i);
-				coord.setY(j);
+				coord.setX(j);
+				coord.setY(i);
 				map[i][j].setCoordinate(coord);
 			}
 		}
@@ -65,8 +72,8 @@ public class LabyrinthGenerator {
 			for(int j = 0; j < mapArrStr[i].length; j++) {
 				if(mapArrStr[i][j].equals("P")) {
 					Coordinate coord = new Coordinate();
-					coord.setX(i);
-					coord.setY(j);
+					coord.setX(j);
+					coord.setY(i);
 					positions.add(coord);
 				}
 			}
