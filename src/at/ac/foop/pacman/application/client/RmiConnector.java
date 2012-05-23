@@ -43,8 +43,7 @@ public class RmiConnector {
 			controller = new GameController(server);
 			UnicastRemoteObject.exportObject(controller, 0);
 
-			logger.info("Initializing GameController");
-			((GameController)controller).init("Test");
+			((GameController)controller).init();
 			return (GameController)controller;
 		} catch (MalformedURLException e) {
 			// TODO: exception handling

@@ -29,7 +29,9 @@ public class StartUpClient {
 
 			//Initialisation of the user interface
 			//TODO: ID of this player
-			new Client(controller, 10000,controller.getPlayers().get(0).getId());
+			Client client = new Client(controller, 10000, controller.getPlayers().get(0).getId());
+			
+			controller.connect("PLAYER " + controller.getPlayers().get(0).getId());
 		} catch(Exception e) {
 			Logger.getLogger(StartUpClient.class).error("ERROR", e);
 		}

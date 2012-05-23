@@ -47,7 +47,7 @@ public class GameController extends Observable implements IGame {
 		logger = Logger.getLogger(GameController.class);
 	}
 
-	public void init(String name) throws RemoteException {
+	public void init() throws RemoteException {
 		//Initialize the players
 		players = new ArrayList<Player>(Player.PLAYER_COUNT);
 		for(int i=0; i< Player.PLAYER_COUNT; i++) {
@@ -55,6 +55,12 @@ public class GameController extends Observable implements IGame {
 			player.setId(new Long(i));
 			players.add(player);
 		}
+		//NOTE: This controller has no play method. Every change
+		//      to the game come from the server through the RMI
+		//      methods.
+	}
+	
+	public void connect(String name) throws RemoteException {
 		try {
 			//1. Connect to the server
 			playerId = this.server.connect(this);
@@ -74,9 +80,6 @@ public class GameController extends Observable implements IGame {
 			//TODO: handle any server exception here
 			logger.error("Error", e);
 		}
-		//NOTE: This controller has no play method. Every change
-		//      to the game come from the server through the RMI
-		//      methods.
 	}
 	
 	public void disconnect() throws RemoteException {
@@ -119,7 +122,10 @@ public class GameController extends Observable implements IGame {
 		logger.info("A new map has been received");
 		//notify the UI that a new map has been downloaded
 		states.add(GameState.NEW_MAP);
+		
+		this.setChanged();
 		this.notifyObservers();
+		this.clearChanged();
 	}
 
 	@Override
@@ -132,21 +138,28 @@ public class GameController extends Observable implements IGame {
 		// this.playerOutput();
 		for(Long id : positions.keySet()) {
 			Player player = players.get(id.intValue() - 1);
-			System.out.println("PLAYER IN NOTIFY POSITIONS: " + player);
 			Pacman pacman = player.getPacman();
 			//Set the start color according to the id
 			
 			Coordinate point = positions.get(id);
 			//Give the pacman the square on which is should be
-			System.out.println("PLAYER SETTING TO SQUARE AT POINT: " + point);
+			map.getSquare(point.getX(), point.getY()).enter(player);
 			pacman.setLocation(map.getSquare(point.getX(), point.getY()));
 			pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
 			//player.setPacman(pacman);
 			
-			//map.getSquare(point.getX(), point.getY()).enter(player);
-			states.add(GameState.NEW_POSITION);
+			
+			/* states.add(GameState.NEW_POSITION);
+			this.setChanged();
 			this.notifyObservers();
+			this.clearChanged(); */
 		}
+		
+		states.add(GameState.NEW_POSITIONS);
+		this.setChanged();
+		this.notifyObservers();
+		this.clearChanged();
+		
 		// logger.info("IN NOTIFY POSITIONS END");
 		// this.playerOutput();
 	}
@@ -250,6 +263,10 @@ public class GameController extends Observable implements IGame {
 
 	@Override
 	public void notifyGameStarting() throws RemoteException {
+		states.add(GameState.GAME_START);
+		this.setChanged();
+		this.notifyObservers();
+		this.clearChanged();
 		logger.info("[Unimplemented] Game has started.");
 	}
 
@@ -267,6 +284,8 @@ public class GameController extends Observable implements IGame {
 		players.get(id.intValue()).setName(name);
 		states.add(GameState.NEW_PLAYER);
 		//notify the UI that a player name has changed
+		this.setChanged();
 		this.notifyObservers();
+		this.clearChanged();
     }
 }
