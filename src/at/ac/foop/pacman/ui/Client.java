@@ -57,7 +57,7 @@ public class Client implements Observer{
 	 * @param cmd
 	 */
 	public void sendcmd(Direction cmd) {
-		//TODO: send cmd to observer
+		this.controller.movePacman(cmd);
 	}
 	
 	public Labyrinth getMap() {

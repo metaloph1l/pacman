@@ -112,6 +112,15 @@ public class GameController extends Observable implements IGame {
 	public Labyrinth getMap() {
 		return this.map;
 	}
+	
+	public void movePacman(Direction dir) {
+		try {
+			this.server.changeDirection(this.playerId, dir);
+		} catch (RemoteException e) {
+			// TODO: Error Handling
+			logger.error("Error", e);
+		}
+	}
 
 	@Override
 	public void notifyMapChange(Labyrinth labyrinth) throws RemoteException {

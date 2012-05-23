@@ -106,8 +106,6 @@ public class UI extends JPanel {
 	}
 
 	public void paint(Graphics g) {
-		logger.debug("Painting Start");
-
 		//Renderingoptions
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
@@ -115,12 +113,7 @@ public class UI extends JPanel {
 				RenderingHints.VALUE_RENDER_QUALITY);
 
 		//TODO: implement Scoreboard
-		logger.info("PAINTING: " + this.repaintTimer);
-		if(this.repaintTimer != null) {
-			logger.info("PAINTTIMER IS RUNNING: " + this.repaintTimer.isRunning());
-		}
 		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
-			logger.info("TIMER RUNNING?");
 			try {
 				Drawing drawing=new Drawing(g,this);
 				drawing.drawBackground();

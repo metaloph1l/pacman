@@ -167,8 +167,41 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				}
 			}
 		}
+		this.playerOutput();
 
 		return checkSquares;
+	}
+	
+	private void playerOutput() {
+		logger.info("------------------- DEBUG PLAYER OUTPUT ------------------------");
+		for (PlayerSlot player : this.players) {
+			if (player == null) {
+				continue;
+			}
+			Pacman pacman = player.getPlayer().getPacman();
+			if (pacman == null) {
+				continue;
+			}
+			
+			Square currentSquare = pacman.getLocation();
+			Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
+
+			logger.info("CURRENT PLAYER: " + player.getPlayer());
+			logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
+			logger.info("CURRENT SQUARE: " + currentSquare);
+			for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
+				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+			}
+			
+			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
+			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
+			if(((Field)currentSquareMap).getPlayers().size() == 0) {
+				logger.info("NO PLAYERS ON SQUARE");
+			}
+			for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
+				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+			}
+		}
 	}
 
 	public void start() {
@@ -225,11 +258,11 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	@Override
 	public void changeDirection(Long playerId, Direction direction) {
-		if (playerId < 0 || playerId > players.size() - 1) {
+		if (playerId < 0 || playerId > players.size()) {
 			throw new IllegalArgumentException("player id out of bounds.");
 		}
 
-		PlayerSlot playerSlot = players.get(playerId.intValue());
+		PlayerSlot playerSlot = players.get(playerId.intValue() - 1);
 
 		playerSlot.getPlayer().getPacman().setDirection(direction);
 	}
