@@ -39,12 +39,12 @@ public class Drawing extends JPanel {
 
 		//height und width von hier nehmen
 
-		if (this.parent.parent.controller.getMap()==null) {
+		if (this.parent.parent.getMap()==null) {
 			logger.info("No Map");
 		}
 
-		this.parent.labHeight=this.parent.parent.controller.getMap().getHeight();
-		this.parent.labWidth=this.parent.parent.controller.getMap().getWidth();
+		this.parent.labHeight=this.parent.parent.getMap().getHeight();
+		this.parent.labWidth=this.parent.parent.getMap().getWidth();
 		this.parent.labStepY=((this.height-55)/this.parent.labHeight);
 		this.parent.labStepX=((this.width-10)/this.parent.labWidth);
 		this.parent.labStartY=(this.height-55)-this.parent.labStepY*this.parent.labHeight+50;
@@ -84,7 +84,7 @@ public class Drawing extends JPanel {
 		for (int i=0;i<parent.labHeight;i++) { //y
 			for (int j=0;j<parent.labWidth;j++) { //x
 				//getSquare(x,y)
-				if (this.parent.parent.controller.getMap().getSquare(j, i).getType()==SquareType.WALL) {
+				if (this.parent.parent.getMap().getSquare(j, i).getType()==SquareType.WALL) {
 					//wall
 					//fillrect(x,y,stepx,stepy)
 					GradientPaint gp3 = new GradientPaint(0, 0,new Color(120,0,200), width/100, height/20, new Color(128,0,255), true);
@@ -99,7 +99,7 @@ public class Drawing extends JPanel {
 				{
 					//Field
 					//getSquare(x,y)
-					if (this.parent.parent.controller.getMap().getSquare(j, i).getPoints()==2)
+					if (this.parent.parent.getMap().getSquare(j, i).getPoints()==2)
 					{
 						//normal cookie
 						//fillrect(x,y,stepx,stepy)
@@ -108,7 +108,7 @@ public class Drawing extends JPanel {
 						g2d.fillRect(j*parent.labStepX+parent.labStartX+parent.labStepX*3/8, i*parent.labStepY+parent.labStartY+parent.labStepY*3/8, parent.labStepX/4, parent.labStepY/4);
 						g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1));
 					}
-					else if (this.parent.parent.controller.getMap().getSquare(j, i).getPoints()>2)
+					else if (this.parent.parent.getMap().getSquare(j, i).getPoints()>2)
 					{
 						//colored cookie
 						//fillrect(x,y,stepx,stepy)
@@ -155,7 +155,7 @@ public class Drawing extends JPanel {
 		//		{
 		//			j++;
 		//		}
-		for (int i=0;i<this.parent.parent.controller.getPlayers().size();i++){
+		for (int i=0;i<this.parent.parent.getPlayers().size();i++){
 			if (j==i)
 			{
 				//Players pacman
@@ -164,7 +164,7 @@ public class Drawing extends JPanel {
 			else
 			{
 				//opponents Pacman
-				if (this.goodToEat(this.parent.parent.controller.getPlayers().get(i).getPacman().getColor(),this.parent.parent.controller.getPlayers().get(j).getPacman().getColor()))
+				if (this.goodToEat(this.parent.parent.getPlayers().get(i).getPacman().getColor(),this.parent.parent.getPlayers().get(j).getPacman().getColor()))
 				{
 					g2d.setColor(Color.GREEN);
 				}

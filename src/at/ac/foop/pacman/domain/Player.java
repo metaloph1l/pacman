@@ -62,7 +62,7 @@ public class Player implements Serializable {
 	}
 
 	public void setDirection(Direction direction) {
-		System.out.println("PACMAN: " + pacman);
+		// System.out.println("PACMAN: " + pacman);
 		pacman.setDirection(direction);
 	}
 

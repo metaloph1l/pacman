@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Arc2D;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,7 +21,9 @@ import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Pacman;
+import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.ui.drawings.Drawing;
 
 //TODO: relative movement of pacmans
@@ -96,6 +99,7 @@ public class UI extends JPanel {
 	} //end constructor
 	
 	public void initGameBoard() {
+		logger.info("INITIALIZING GAME BOARD");
 		this.colorChangeTimer.start();
 		this.repaintTimer.start();
 		this.repaint();
@@ -111,7 +115,12 @@ public class UI extends JPanel {
 				RenderingHints.VALUE_RENDER_QUALITY);
 
 		//TODO: implement Scoreboard
+		logger.info("PAINTING: " + this.repaintTimer);
+		if(this.repaintTimer != null) {
+			logger.info("PAINTTIMER IS RUNNING: " + this.repaintTimer.isRunning());
+		}
 		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
+			logger.info("TIMER RUNNING?");
 			try {
 				Drawing drawing=new Drawing(g,this);
 				drawing.drawBackground();
@@ -131,7 +140,7 @@ public class UI extends JPanel {
 
 	private Shape animatedPacman(int player) {
 		double arcphi=(this.pacmandphi-360.0f)*(-1)/2+this.pacmanphi;
-		Pacman pacman = this.parent.controller.getPlayers().get(player).getPacman();
+		Pacman pacman = this.parent.getPlayers().get(player).getPacman();
 		if (pacman != null) {
 			switch (pacman.getDirection()) {
 				case UP:{
@@ -176,14 +185,17 @@ public class UI extends JPanel {
 
 		logger.debug("before shape");
 
-		this.pacmanShape=new Shape[this.parent.controller.getPlayers().size()];
-		for (int i=0;i<this.parent.controller.getPlayers().size();i++) {
-			logger.debug("in shape");
-			this.pacmanShape[i]=this.animatedPacman(i);
-		}
 		this.pacmanAnimation=-4;
 		this.pacmandphi=360.0f;
 		this.pacmanphi=0.0f;
+	}
+	
+	public void initializePacmans() {
+		this.pacmanShape=new Shape[this.parent.getPlayers().size()];
+		for (int i=0;i<this.parent.getPlayers().size();i++) {
+			logger.debug("in shape");
+			this.pacmanShape[i]=this.animatedPacman(i);
+		}
 	}
 
 	class AnimationTimer implements ActionListener {
@@ -210,7 +222,7 @@ public class UI extends JPanel {
 				coloredCookieColor=new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
 			}
 
-			for (int i=0;i<parent.controller.getPlayers().size();i++) {
+			for (int i=0;i<parent.getPlayers().size();i++) {
 				pacmanShape[i]=animatedPacman(i);
 			}
 
@@ -229,7 +241,7 @@ public class UI extends JPanel {
 			repaint();
 
 			//test:
-			repaintTimer.stop();
+			//repaintTimer.stop();
 		}
 	} //end of AnimationTimer (inner class)
 

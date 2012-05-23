@@ -1,5 +1,6 @@
 package at.ac.foop.pacman.ui;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -9,6 +10,7 @@ import at.ac.foop.pacman.application.client.GameController;
 import at.ac.foop.pacman.application.client.GameState;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Labyrinth;
+import at.ac.foop.pacman.domain.Player;
 
 /**
  * The main entry point for the gui. It shows the
@@ -30,6 +32,8 @@ public class Client implements Observer{
 	public int colorChangeSpeed;
 
 	public GameController controller;
+	public Labyrinth map;
+	public List<Player> players;
 
 	//Constructor
 	public Client(GameController controller, int colorChangeSpeed, long playerId) {
@@ -55,6 +59,14 @@ public class Client implements Observer{
 	public void sendcmd(Direction cmd) {
 		//TODO: send cmd to observer
 	}
+	
+	public Labyrinth getMap() {
+		return this.map;
+	}
+	
+	public List<Player> getPlayers() {
+		return this.players;
+	}
 
 	//TODO: optional: pauserequest
 
@@ -77,8 +89,8 @@ public class Client implements Observer{
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
-				this.ui.initGameBoard();
-				logger.warn("(Unimplemented) New map loadded");
+				this.map = this.controller.getMap();
+				logger.info("MAP LOADED");
 				break;
 			case NEW_COLOR:
 				logger.warn("(Unimplemented) Color changed");
@@ -87,8 +99,17 @@ public class Client implements Observer{
 				logger.warn("(Unimplemented) Player joined");
 				break;
 			case NEW_POSITION: break;
+			case NEW_POSITIONS: 
+				this.players = this.controller.getPlayers();
+				logger.info("GOT PLAYER POSITIONS: " + this.players);
+				break;
 			case NEW_TURN: break;
 			case PLAYER_READY: break;
+			case GAME_START:
+				logger.info("GAME STARTING...");
+				this.ui.initializePacmans();
+				this.ui.initGameBoard();
+				break;
 			default: throw new RuntimeException("[Error] Unimplemented GameState type");
 		}
 	}

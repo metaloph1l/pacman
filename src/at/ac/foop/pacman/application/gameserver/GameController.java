@@ -87,6 +87,11 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				return;
 			}
 			
+			// first notify players of new map (no pacmans or anything is set on the map yet)
+			for (PlayerSlot player : players) {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+			}
+			
 			Map<Long, Coordinate> coords = new HashMap<Long, Coordinate>();
 			List<Player> currentPlayers = new ArrayList<Player>();
 			for (PlayerSlot player : players) {
@@ -104,7 +109,6 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			}
 			
 			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
 			}
@@ -123,7 +127,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 			for (PlayerSlot player : players) {
 				directions.put(player.getPlayerId(), player.getDirection());
-				System.out.println("CurrentPlayerWithDir: " + player.getPlayerId() + " " + player.getDirection());
+				//System.out.println("CurrentPlayerWithDir: " + player.getPlayerId() + " " + player.getDirection());
 			}
 			for (PlayerSlot player : players) {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", new Integer(clock), directions));
