@@ -88,20 +88,24 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			}
 			
 			Map<Long, Coordinate> coords = new HashMap<Long, Coordinate>();
+			List<Player> currentPlayers = new ArrayList<Player>();
 			for (PlayerSlot player : players) {
-				Square pacmanPos = new Field(0);
-				pacmanPos.setCoordinate(pacmanCoords.get(0));
-				player.getPlayer().initPacman(pacmanPos);
+				this.map.getSquare(pacmanCoords.get(0));
+				//Square pacmanPos = new Field(0);
+				Square squarePac = this.map.getSquare(pacmanCoords.get(0));
+				squarePac.enter(player.getPlayer());
+				player.getPlayer().initPacman(squarePac);
 				pacmanCoords.remove(0);
 				player.getPlayer().getPacman().setAlive(true);
-				this.map.getSquare(pacmanPos.getCoordinate().getX(), pacmanPos.getCoordinate().getY()).enter(player.getPlayer());
 				// TODO: notify clients of current pacman positions
 				
 				coords.put(player.getPlayerId(), player.getPlayer().getLocation().getCoordinate());
+				currentPlayers.add(player.getPlayer());
 			}
 			
 			for (PlayerSlot player : players) {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
 			}
 

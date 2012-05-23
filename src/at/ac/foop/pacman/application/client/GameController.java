@@ -21,6 +21,7 @@ import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.domain.Square;
+import at.ac.foop.pacman.domain.Field;
 import at.ac.foop.pacman.domain.SquareType;
 
 /**
@@ -113,6 +114,7 @@ public class GameController extends Observable implements IGame {
 	public void notifyMapChange(Labyrinth labyrinth) throws RemoteException {
 		//This indicates that the server wants to change the map.
 		//set the next map
+		this.map = labyrinth;
 		nextMap = map;
 		logger.info("A new map has been received");
 		//notify the UI that a new map has been downloaded
@@ -126,19 +128,27 @@ public class GameController extends Observable implements IGame {
 		//   that includes: Players, Pacmans, Labyrinth, etc.
 		// TODO: This players are only placeholders for the real players
 		//       that get sent to the client once the game starts!
+		// logger.info("IN NOTIFY POSITIONS START");
+		// this.playerOutput();
 		for(Long id : positions.keySet()) {
-			Player player = players.get(id.intValue());
-			Pacman pacman = new Pacman();
+			Player player = players.get(id.intValue() - 1);
+			System.out.println("PLAYER IN NOTIFY POSITIONS: " + player);
+			Pacman pacman = player.getPacman();
 			//Set the start color according to the id
-			pacman.setColor(PacmanColor.values()[id.intValue()]);
-			player.setPacman(pacman);
+			
 			Coordinate point = positions.get(id);
 			//Give the pacman the square on which is should be
+			System.out.println("PLAYER SETTING TO SQUARE AT POINT: " + point);
 			pacman.setLocation(map.getSquare(point.getX(), point.getY()));
-			map.getSquare(point.getX(), point.getY()).enter(player);
+			pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
+			//player.setPacman(pacman);
+			
+			//map.getSquare(point.getX(), point.getY()).enter(player);
 			states.add(GameState.NEW_POSITION);
 			this.notifyObservers();
 		}
+		// logger.info("IN NOTIFY POSITIONS END");
+		// this.playerOutput();
 	}
 
 	@Override
@@ -146,13 +156,41 @@ public class GameController extends Observable implements IGame {
 			throws RemoteException {
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
-			Player player = players.get(key.intValue());
+			Player player = players.get(key.intValue() - 1);
 			player.setDirection(direction);
 			this.movePacmans();
 		}
 		this.count = count;
 		//notify the UI that the player positions have changed
 		this.notifyObservers();
+	}
+	
+	private void playerOutput() {
+		for (Player player : players) {
+			if (player == null) {
+				continue;
+			}
+			Pacman pacman = player.getPacman();
+			if (pacman == null) {
+				continue;
+			}
+			
+			Square currentSquare = pacman.getLocation();
+			Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
+
+			logger.info("CURRENT PLAYER: " + player);
+			logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
+			logger.info("CURRENT SQUARE: " + currentSquare);
+			for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
+				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+			}
+			
+			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
+			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
+			for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
+				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+			}
+		}
 	}
 
 	private void movePacmans() {
@@ -190,7 +228,10 @@ public class GameController extends Observable implements IGame {
 
 	@Override
 	public void notifyPlayers(List<Player> players) throws RemoteException {
-		logger.info("[Unimplemented] Player list received.");
+		this.players = players;
+		//logger.info("IN NOTIFY PLAYERS");
+		//this.playerOutput();
+		//logger.info("[Unimplemented] Player list received.");
 	}
 	@Override
 	public void notifyPlayer(Player player) throws RemoteException {

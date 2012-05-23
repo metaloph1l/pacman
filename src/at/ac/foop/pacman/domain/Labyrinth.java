@@ -53,6 +53,14 @@ public class Labyrinth implements Serializable {
 
 		return squares[y][x];
 	}
+	
+	public Square getSquare(Coordinate coord) {
+		if (coord.getX() < 0 || coord.getY() < 0 || coord.getX() > width - 1 || coord.getY() > height - 1) {
+			throw new IllegalArgumentException("Array index out of bounds.");
+		}
+
+		return squares[coord.getY()][coord.getX()];
+	}
 
 	public Square getSquare(Square square, Direction direction) {
 		Coordinate coord = square.getCoordinate();
@@ -72,7 +80,7 @@ public class Labyrinth implements Serializable {
 				tmp = squares[coord.getY()][(coord.getX() + 1) % width];
 				break;
 			case NONE:
-				tmp = square;
+				tmp = squares[coord.getY()][coord.getX()];
 				break;
 		}
 

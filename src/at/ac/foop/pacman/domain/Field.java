@@ -24,7 +24,9 @@ final public class Field extends Square implements Serializable {
 			this.occupants = new ArrayList<Player>();
 		}
 		
-		this.occupants.add(inboundPlayer);
+		if(this.occupants.contains(inboundPlayer) == false) {
+			this.occupants.add(inboundPlayer);
+		}
 	}
 	
 	@Override

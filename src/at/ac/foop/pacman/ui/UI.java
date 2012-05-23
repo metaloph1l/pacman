@@ -98,6 +98,7 @@ public class UI extends JPanel {
 	public void initGameBoard() {
 		this.colorChangeTimer.start();
 		this.repaintTimer.start();
+		this.repaint();
 	}
 
 	public void paint(Graphics g) {
