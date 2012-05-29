@@ -88,7 +88,7 @@ public class GameController extends Observable implements IGame {
 				this.server.disconnect(playerId);
 			}
 		} catch(RemoteException e) {
-			//TODO: handle any server exception here
+			// TODO: handle any server exception here
 			logger.error("Error", e);
 		}
 	}

@@ -102,7 +102,6 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				player.getPlayer().initPacman(squarePac);
 				pacmanCoords.remove(0);
 				player.getPlayer().getPacman().setAlive(true);
-				// TODO: notify clients of current pacman positions
 				
 				coords.put(player.getPlayerId(), player.getPlayer().getLocation().getCoordinate());
 				currentPlayers.add(player.getPlayer());
@@ -145,7 +144,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	private List<Square> movePacmans() {
 		List<Square> checkSquares = new ArrayList<Square>();
-
+		logger.info("-------------- BEFORE MOVE ----------------------");
+		this.playerOutput();
 		for (PlayerSlot player : players) {
 			Pacman pacman = player.getPlayer().getPacman();
 
@@ -162,11 +162,13 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				} else {
 					currentSquare.leave(player.getPlayer());
 					nextSquare.enter(player.getPlayer());
+					player.getPlayer().getPacman().setLocation(nextSquare);
 
 					checkSquares.add(nextSquare);
 				}
 			}
 		}
+		logger.info("-------------- AFTER MOVE ----------------------");
 		this.playerOutput();
 
 		return checkSquares;
