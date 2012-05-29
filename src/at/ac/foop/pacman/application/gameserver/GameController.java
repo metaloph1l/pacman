@@ -454,6 +454,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				}
 			}
 
+			logger.info("ConflictingSquare-Players: " + conflictingSquare + " " + conflictingPlayers);
 			if (conflictingSquare == null || conflictingPlayers == null) {
 				throw new RuntimeException("Could not find conflicting square.");
 			}
@@ -461,8 +462,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			Player player1, player2;
 			Pacman pacman1, pacman2, winner, loser;
 
-			player1 = conflictingPlayers.get(0);
-			player2 = conflictingPlayers.get(1);
+			player1 = ((Field)conflictingSquare).getPlayers().get(0);
+			player2 = ((Field)conflictingSquare).getPlayers().get(1);
 			pacman1 = player1.getPacman();
 			pacman2 = player2.getPacman();
 
