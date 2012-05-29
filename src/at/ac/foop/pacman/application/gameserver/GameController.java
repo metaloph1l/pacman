@@ -240,6 +240,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		}
 
 		timer.schedule(tt, 3000, CLOCK_LENGTH);
+		//timer.schedule(tt, 500, CLOCK_LENGTH);
 	}
 
 	public static GameController getCurrentInstance() {

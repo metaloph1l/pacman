@@ -103,7 +103,9 @@ public class Client implements Observer{
 				break;
 			case NEW_POSITION: break;
 			case NEW_POSITIONS: 
-				this.players.addAll(this.controller.getPlayers());
+				for(int i =0; i < this.controller.getPlayers().size(); i++) {
+					this.players.add(new Player(this.controller.getPlayers().get(i)));
+				}
 				this.map = new Labyrinth(this.controller.getMap());
 				logger.info("GOT PLAYER POSITIONS: " + this.players);
 				break;

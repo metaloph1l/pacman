@@ -176,12 +176,25 @@ public class GameController extends Observable implements IGame {
 	@Override
 	public void notifyClock(Integer count, Map<Long, Direction> directions)
 			throws RemoteException {
+		logger.info("NOTIFY-CLOCK");
+		String output = "Coordinate: ";
+		for (Player player : players) {
+			output += player.getPacman().getLocation().getCoordinate() + " ";
+		}
+		logger.info(output);
 		for(Long key : directions.keySet()) {
 			Direction direction = directions.get(key);
 			Player player = players.get(key.intValue() - 1);
 			player.setDirection(direction);
-			this.movePacmans();
 		}
+		this.movePacmans();
+		
+		output = "Coordinate: ";
+		for (Player player : players) {
+			output += player.getPacman().getLocation().getCoordinate() + " ";
+		}
+		logger.info(output);
+		
 		this.count = count;
 		//notify the UI that the player positions have changed
 		//this.setChanged();
@@ -224,9 +237,9 @@ public class GameController extends Observable implements IGame {
 			if (pacman.isAlive()) {
 				Square currentSquare = pacman.getLocation();
 				Direction direction = pacman.getDirection();
+				logger.info("CurrentSquare: " + pacman.getLocation().getCoordinate());
 				Square nextSquare = map.getSquare(currentSquare, direction);
-
-
+				logger.info("NextSquare: " + nextSquare.getCoordinate());
 
 				if (SquareType.WALL.equals(nextSquare.getType())) {
 					//Nothing to do. The player hits a wall.

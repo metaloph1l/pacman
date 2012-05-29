@@ -22,6 +22,13 @@ public class Player implements Serializable {
 		this.name = name;
 		this.points = 0L;
 	}
+	
+	public Player(Player player) {
+		this.id = player.getId();
+		this.name = player.getName();
+		this.points = player.getPoints();
+		this.pacman = player.getPacman();
+	}
 
 	public Long getPoints() {
 		return points;
