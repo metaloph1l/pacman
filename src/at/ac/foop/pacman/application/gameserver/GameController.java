@@ -144,8 +144,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	private List<Square> movePacmans() {
 		List<Square> checkSquares = new ArrayList<Square>();
-		logger.info("-------------- BEFORE MOVE ----------------------");
-		this.playerOutput();
+		//logger.info("-------------- BEFORE MOVE ----------------------");
+		//this.playerOutput();
 		for (PlayerSlot player : players) {
 			Pacman pacman = player.getPlayer().getPacman();
 
@@ -155,26 +155,31 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				Square nextSquare = map.getSquare(currentSquare, direction);
 
 
-
 				if (SquareType.WALL.equals(nextSquare.getType())) {
 					//Nothing to do. The player hits a wall.
-					checkSquares.add(currentSquare);
+					if(checkSquares.contains(currentSquare) == false) {
+						checkSquares.add(currentSquare);
+					}
 				} else {
 					currentSquare.leave(player.getPlayer());
 					nextSquare.enter(player.getPlayer());
 					player.getPlayer().getPacman().setLocation(nextSquare);
+					player.getPlayer().addPoints(nextSquare.getPoints());
+					
 
-					checkSquares.add(nextSquare);
+					if(checkSquares.contains(nextSquare) == false) {
+						checkSquares.add(nextSquare);
+					}
 				}
 			}
 		}
-		logger.info("-------------- AFTER MOVE ----------------------");
-		this.playerOutput();
+		//logger.info("-------------- AFTER MOVE ----------------------");
+		//this.playerOutput();
 		
-		logger.info("-------------- CHECK SQUARES OUTPUT ----------------------");
+		/*logger.info("-------------- CHECK SQUARES OUTPUT ----------------------");
 		for(int i = 0; i < checkSquares.size(); i++) {
 			System.out.println("CHECK SQUARE: " + checkSquares.get(i));
-		}
+		}*/
 
 		return checkSquares;
 	}

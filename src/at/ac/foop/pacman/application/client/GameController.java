@@ -184,7 +184,9 @@ public class GameController extends Observable implements IGame {
 		}
 		this.count = count;
 		//notify the UI that the player positions have changed
-		this.notifyObservers();
+		//this.setChanged();
+		//this.notifyObservers();
+		//this.clearChanged();
 	}
 	
 	private void playerOutput() {

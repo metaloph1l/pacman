@@ -55,6 +55,13 @@ final public class Field extends Square implements Serializable {
 	
 	@Override
 	public Integer getPoints() {
-		return points;
+		return this.points;
+	}
+	
+	@Override
+	public Integer consumePoints() {
+		int retPoints = this.points;
+		this.points = 0;
+		return retPoints;
 	}
 }

@@ -1,5 +1,6 @@
 package at.ac.foop.pacman.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -45,6 +46,7 @@ public class Client implements Observer{
 		//TODO: if the controller object is null, then the UI must inform
 		//      the user that the client could not connect to the game server.
 
+		this.players = new ArrayList<Player>();
 		this.colorChangeSpeed=colorChangeSpeed;
 		this.myID=playerId;
 		this.ui=new UI(this);
@@ -86,10 +88,11 @@ public class Client implements Observer{
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
+		logger.info("UPDATE");
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
-				this.map = this.controller.getMap();
+				this.map = new Labyrinth(this.controller.getMap());
 				logger.info("MAP LOADED");
 				break;
 			case NEW_COLOR:
@@ -100,7 +103,8 @@ public class Client implements Observer{
 				break;
 			case NEW_POSITION: break;
 			case NEW_POSITIONS: 
-				this.players = this.controller.getPlayers();
+				this.players.addAll(this.controller.getPlayers());
+				this.map = new Labyrinth(this.controller.getMap());
 				logger.info("GOT PLAYER POSITIONS: " + this.players);
 				break;
 			case NEW_TURN: break;

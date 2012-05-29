@@ -14,6 +14,13 @@ public class Labyrinth implements Serializable {
 	int width;
 	int height;
 	Square[][] squares; //the game field
+	
+	//Constructors
+	public Labyrinth(Labyrinth lab) {
+		this.squares = lab.getSquares();
+		this.width = lab.width;
+		this.height = lab.height;
+	}
 
 	//Constructors
 	public Labyrinth(int width, int height) {
@@ -60,6 +67,10 @@ public class Labyrinth implements Serializable {
 		}
 
 		return squares[coord.getY()][coord.getX()];
+	}
+	
+	public Square[][] getSquares() {
+		return this.squares;
 	}
 
 	public Square getSquare(Square square, Direction direction) {

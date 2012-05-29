@@ -14,11 +14,13 @@ public class Player implements Serializable {
 
 	//Constructors
 	public Player() {
+		this.points = 0L;
 	}
 	
 	public Player(Long id, String name) {
 		this.id = id;
 		this.name = name;
+		this.points = 0L;
 	}
 
 	public Long getPoints() {

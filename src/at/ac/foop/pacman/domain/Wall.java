@@ -32,4 +32,9 @@ final public class Wall extends Square implements Serializable {
 	public Integer getPoints() {
 		return 0;
 	}
+	
+	@Override
+	public Integer consumePoints() {
+		return 0;
+	}
 }

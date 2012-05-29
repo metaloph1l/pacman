@@ -31,6 +31,8 @@ public abstract class Square implements Serializable {
 	
 	abstract public SquareType getType();
 	
+	abstract public Integer consumePoints();
+	
 	abstract public Integer getPoints();
 	
 	public Coordinate getCoordinate() {
