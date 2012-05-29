@@ -170,6 +170,11 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		}
 		logger.info("-------------- AFTER MOVE ----------------------");
 		this.playerOutput();
+		
+		logger.info("-------------- CHECK SQUARES OUTPUT ----------------------");
+		for(int i = 0; i < checkSquares.size(); i++) {
+			System.out.println("CHECK SQUARE: " + checkSquares.get(i));
+		}
 
 		return checkSquares;
 	}
