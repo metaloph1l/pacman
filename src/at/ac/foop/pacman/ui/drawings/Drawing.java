@@ -157,11 +157,32 @@ public class Drawing extends JPanel {
 			return false;
 		}
 	}
-
+	
 	/**
 	 * draws Pacmans
 	 */
 	public void drawPacmans() {
+		for (int i = 0; i < this.parent.parent.getPlayers().size(); i++) {
+			if(this.parent.parent.getPlayers().get(i).getPacman().getColor().equals(PacmanColor.BLUE)) {
+				g2d.setColor(Color.BLUE);
+			}
+			else if (this.parent.parent.getPlayers().get(i).getPacman().getColor().equals(PacmanColor.GREEN)) {
+				g2d.setColor(Color.GREEN);
+			}
+			else {
+				g2d.setColor(Color.RED);
+			}
+			
+			g2d.fill(parent.pacmanShape[i]);
+			g2d.setColor(Color.BLACK); // background pacman
+			g2d.draw(this.parent.pacmanShape[i]);
+		}
+	}
+
+	/**
+	 * draws Pacmans
+	 */
+	public void drawPacmansBackup() {
 		int j = 0;
 		// TODO: break if j>Playercount + exception
 		// while(this.parent.parent.controller.getPlayers().get(j).getId()!=this.parent.parent.myID)
