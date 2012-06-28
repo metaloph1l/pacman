@@ -2,6 +2,8 @@ package at.ac.foop.pacman.domain;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Logger;
+
 /**
 *
 * @author Phil
@@ -40,17 +42,25 @@ public class Pacman implements Serializable {
 		this.color = color;
 	}
 
+	/**
+	 * Colors are changed according to the following specification
+	 * 
+	 * o(RED) = GREEN;
+	 * o(BLUE) = RED;
+	 * o(GREEN) = BLUE;
+	 */
 	public void changeColor() {
 		switch(this.color) {
 		case RED:
 			this.color = PacmanColor.GREEN;
 			break;
-		case GREEN:
+		case BLUE: 
 			this.color = PacmanColor.RED;
-		case BLUE: //do nothing
 			break;
-		default:
-//TODO: error?				
+		case GREEN:
+			this.color = PacmanColor.BLUE;
+			break;
+		default:			
 			break;
 		}
 	}
@@ -86,6 +96,9 @@ public class Pacman implements Serializable {
 		if (color1.equals(color2)) {
 			throw new RuntimeException("Encountered two pacmans with the same color.");
 		}
+		
+		Logger.getLogger(Pacman.class).debug("Pacman1 color: " + pacman1.getColor());
+		Logger.getLogger(Pacman.class).debug("Pacman2 color: " + pacman2.getColor());
 		
 		int result = (Pacman.getNumber(color1)-Pacman.getNumber(color2))%3;
 		
