@@ -22,6 +22,7 @@ import at.ac.foop.pacman.domain.Field;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.LabyrinthGenerator;
 import at.ac.foop.pacman.domain.Pacman;
+import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.PlayerSlot;
 import at.ac.foop.pacman.domain.Square;
@@ -36,7 +37,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	//Constants
 
 	public static int CLOCK_LENGTH = 500;
-	public static int CLOCKS_PER_ROUND = 100;
+	public static int CLOCKS_PER_ROUND = 500;
+	public static int COLOR_CHANGE_CLOCKS = 50;
 	public static int NUM_OF_ROUNDS_PER_GAME = 3;
 	private static GameController instance = null;
 	//Fields
@@ -118,6 +120,34 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 
 	private void playRound() {
 		// this.playerOutput();
+		int activePlayers = 0;
+		for (PlayerSlot player : players) {
+			if(player.getPlayer().getPacman().isAlive()) {
+				activePlayers++;
+			}
+		}
+		
+		if (activePlayers == 1) {
+			this.timer.cancel();
+			for (PlayerSlot player : players) {
+				// TODO: notify end of round....
+				// player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameOver"));
+			}
+		}
+		
+		/*
+		 * The game allows the color of the Pacmans to rotate in response
+		 * to a certain event or based on time. Our current policy will
+		 * be that the game changes the color of the Pacmans after a certain
+		 * number of clock ticks (e.g. 20).
+		 * 
+		 */
+		if((this.clock) > 0 && (this.clock%GameController.COLOR_CHANGE_CLOCKS == 0)) {
+			for (PlayerSlot player : players) {
+				player.getPlayer().changeColor();
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyColorChange"));
+			}
+		}
 		List<Square> checkSquares = this.movePacmans();
 
 		if (checkSquares.size() != Player.PLAYER_COUNT) {

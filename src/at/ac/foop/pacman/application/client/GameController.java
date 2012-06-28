@@ -286,7 +286,10 @@ public class GameController extends Observable implements IGame {
 		}
 		//notify the UI that colors have been changed
 		this.states.add(GameState.NEW_COLOR);
+		
+		this.setChanged();
 		this.notifyObservers();
+		this.clearChanged();
 	}
 
 	@Override
