@@ -117,6 +117,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	}
 
 	private void playRound() {
+		logger.info("NEW ROUND");
+		this.playerOutput();
 		List<Square> checkSquares = this.movePacmans();
 
 		if (checkSquares.size() != Player.PLAYER_COUNT) {
@@ -196,22 +198,28 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			}
 			
 			Square currentSquare = pacman.getLocation();
-			Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
-
-			logger.info("CURRENT PLAYER: " + player.getPlayer());
-			logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
-			logger.info("CURRENT SQUARE: " + currentSquare);
-			for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
-				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+			if(currentSquare != null) {
+				Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
+	
+				logger.info("CURRENT PLAYER: " + player.getPlayer());
+				logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
+				logger.info("CURRENT SQUARE: " + currentSquare);
+				for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
+					logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+				}
+				
+				logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
+				logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
+				if(((Field)currentSquareMap).getPlayers().size() == 0) {
+					logger.info("NO PLAYERS ON SQUARE");
+				}
+				for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
+					logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+				}
 			}
-			
-			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
-			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
-			if(((Field)currentSquareMap).getPlayers().size() == 0) {
-				logger.info("NO PLAYERS ON SQUARE");
-			}
-			for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
-				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+			else {
+				logger.info("CURRENT PLAYER: " + player.getPlayer());
+				logger.info("CURRENT SQUARE: " + null);
 			}
 		}
 	}
@@ -434,8 +442,16 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	}
 
 	private void resolveConflict(List<Square> checkSquares) {
-		if (checkSquares.size() == 2) {
+		int activePlayers = 0;
+		for (PlayerSlot playerWrap : this.players) {
+			if(playerWrap.getPlayer().getPacman().isAlive()) {
+				activePlayers++;
+			}
+		}
+		
+		if ((checkSquares.size() == 2 && activePlayers > 2) || (checkSquares.size() == 1 && activePlayers == 2)) {
 			//Two players on the same field -> find out which and decide which player won
+			logger.info("TWO PLAYERS ON SAME FIELD");
 			Square conflictingSquare = null;
 			List<Player> conflictingPlayers = null;
 
@@ -470,13 +486,19 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			winner = Pacman.getWinner(pacman1, pacman2);
 
 			if (winner == player1.getPacman()) {
+				player2.getPacman().setAlive(false);
+				conflictingSquare.leave(player2);
+				player2.getPacman().setLocation(null);
 				player2.sendBounty(player1);
 			} else {
+				player1.getPacman().setAlive(false);
+				conflictingSquare.leave(player1);
+				player1.getPacman().setLocation(null);
 				player1.sendBounty(player2);
 			}
 
 
-		} else if (checkSquares.size() == 1) {
+		} else if (checkSquares.size() == 1 && activePlayers == 3) {
 			//Three players on the same field -> draw
 		}
 	}
