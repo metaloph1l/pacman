@@ -24,12 +24,11 @@ import at.ac.foop.pacman.domain.Player;
  *
  */
 public class Client implements Observer{
-
-
+	
+	//Fields
 	private final UI ui;
 	private final Logger logger;
 	public long myID;
-
 	public int colorChangeSpeed;
 
 	public GameController controller;
