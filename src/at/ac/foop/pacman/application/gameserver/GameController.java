@@ -111,14 +111,13 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
 			}
-			this.playerOutput();
 
 			play = true;
 		}
 	}
 
 	private void playRound() {
-		this.playerOutput();
+		// this.playerOutput();
 		List<Square> checkSquares = this.movePacmans();
 
 		if (checkSquares.size() != Player.PLAYER_COUNT) {
