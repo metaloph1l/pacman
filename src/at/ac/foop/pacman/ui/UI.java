@@ -65,6 +65,8 @@ public class UI extends JPanel {
 	public int labWidth;
 	public int labStepX;
 	public int labStartX;
+	
+	private Label loadingLabel;
 
 	//Constructors
 	public UI(Client newparent){
@@ -75,7 +77,8 @@ public class UI extends JPanel {
 		JFrame frame = new JFrame("Pacman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(450, 505);
-		this.add(new Label("LOADING..."));
+		loadingLabel = new Label("LOADING...");
+		this.add(loadingLabel);
 		frame.add(this);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -114,6 +117,7 @@ public class UI extends JPanel {
 
 		//TODO: implement Scoreboard
 		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
+			this.loadingLabel.setVisible(false);
 			try {
 				Drawing drawing=new Drawing(g,this);
 				drawing.drawBackground();
