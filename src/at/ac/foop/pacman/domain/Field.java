@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  *
  * @author Phil
@@ -38,14 +40,13 @@ final public class Field extends Square implements Serializable {
 		}
 	}
 	
-	public void resolveConflict() {
+	public void resolveConflict() {		
 		if(this.occupants.size() == 3) {
 			// Three players on the same field -> draw
 		}else if (this.occupants.size() > 1) {
 			for(int i = 0; i < this.occupants.size(); i++) {
-				System.out.println(this.occupants.get(i));
+				Logger.getLogger(Field.class).debug(this.occupants.get(i));
 			}
-
 			Player player1, player2;
 			Pacman pacman1, pacman2, winner, loser;
 

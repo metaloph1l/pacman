@@ -138,7 +138,7 @@ public class UI extends JPanel {
 	private Shape animatedPacman(int player) {
 		double arcphi=(this.pacmandphi-360.0f)*(-1)/2+this.pacmanphi;
 		Pacman pacman = this.parent.getPlayers().get(player).getPacman();
-		if (pacman != null) {
+		if (pacman != null && pacman.isAlive()) {
 			switch (pacman.getDirection()) {
 				case UP:{
 					arcphi+=90;

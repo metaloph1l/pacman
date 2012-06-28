@@ -193,9 +193,9 @@ public class GameController extends Observable implements IGame {
 			player.setDirection(direction);
 		}
 		
-		// this.playerOutput();
+		this.playerOutput();
 		List<Square> squares = this.movePacmans();
-		// this.playerOutput();
+		this.playerOutput();
 		
 		for (Square square : squares) {
 			((Field)square).resolveConflict();
@@ -215,7 +215,7 @@ public class GameController extends Observable implements IGame {
 	}
 	
 	private void playerOutput() {
-		logger.info("-----------------------------------------------------------------");
+		logger.debug("-----------------------------------------------------------------");
 		for (Player player : players) {
 			if (player == null) {
 				continue;
@@ -226,19 +226,28 @@ public class GameController extends Observable implements IGame {
 			}
 			
 			Square currentSquare = pacman.getLocation();
-			Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
-
-			logger.info("CURRENT PLAYER: " + player);
-			logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
-			logger.info("CURRENT SQUARE: " + currentSquare);
-			for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
-				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+			if(currentSquare != null) {
+				Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
+	
+				logger.debug("CURRENT PLAYER: " + player);
+				logger.debug("CURRENT SQUARE: " + currentSquare.getCoordinate());
+				logger.debug("CURRENT SQUARE: " + currentSquare);
+				for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
+					logger.debug("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+				}
+				
+				logger.debug("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
+				logger.debug("CURRENT SQUARE FROM MAP: " + currentSquareMap);
+				if(((Field)currentSquareMap).getPlayers().size() == 0) {
+					logger.debug("NO PLAYERS ON SQUARE");
+				}
+				for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
+					logger.debug("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+				}
 			}
-			
-			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
-			logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
-			for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
-				logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+			else {
+				logger.debug("CURRENT PLAYER: " + player);
+				logger.debug("CURRENT SQUARE: " + null);
 			}
 		}
 	}

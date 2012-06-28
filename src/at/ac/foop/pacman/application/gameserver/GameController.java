@@ -125,25 +125,30 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				((Field)square).resolveConflict();
 			}
 			//this.resolveConflict(checkSquares);
-		} else {
-			Map<Long, Direction> directions = new HashMap<Long, Direction>();
+		} 
+		
+		Map<Long, Direction> directions = new HashMap<Long, Direction>();
 
-			for (PlayerSlot player : players) {
-				directions.put(player.getPlayerId(), player.getDirection());
-				//System.out.println("CurrentPlayerWithDir: " + player.getPlayerId() + " " + player.getDirection());
+		for (PlayerSlot player : players) {
+			if(player.getPlayer().getPacman().isAlive() == false) {
+				// TODO: NotifyDead? player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", new Integer(clock), directions));
+				directions.put(player.getPlayerId(), Direction.NONE);
 			}
-			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", new Integer(clock), directions));
-				/*try {
-					player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
-					player.getCallback().notifyClock(clock, directions);
-				} catch (RemoteException ex) {
-					logger.error("ERROR", ex);
-				}*/
-			}
-
-			this.clock++;
+			directions.put(player.getPlayerId(), player.getDirection());
+			//System.out.println("CurrentPlayerWithDir: " + player.getPlayerId() + " " + player.getDirection());
 		}
+		
+		for (PlayerSlot player : players) {
+			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", new Integer(clock), directions));
+			/*try {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyClock", clock, directions));
+				player.getCallback().notifyClock(clock, directions);
+			} catch (RemoteException ex) {
+				logger.error("ERROR", ex);
+			}*/
+		}
+
+		this.clock++;
 	}
 
 	private List<Square> movePacmans() {
@@ -189,7 +194,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	}
 	
 	private void playerOutput() {
-		logger.info("------------------- DEBUG PLAYER OUTPUT ------------------------");
+		logger.debug("------------------- DEBUG PLAYER OUTPUT ------------------------");
 		for (PlayerSlot player : this.players) {
 			if (player == null) {
 				continue;
@@ -203,25 +208,25 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			if(currentSquare != null) {
 				Square currentSquareMap = map.getSquare(currentSquare, Direction.NONE);
 	
-				logger.info("CURRENT PLAYER: " + player.getPlayer());
-				logger.info("CURRENT SQUARE: " + currentSquare.getCoordinate());
-				logger.info("CURRENT SQUARE: " + currentSquare);
+				logger.debug("CURRENT PLAYER: " + player.getPlayer());
+				logger.debug("CURRENT SQUARE: " + currentSquare.getCoordinate());
+				logger.debug("CURRENT SQUARE: " + currentSquare);
 				for(int i = 0; i < ((Field)currentSquare).getPlayers().size(); i++) {
-					logger.info("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
+					logger.debug("PLAYER ON SQUARE: " + ((Field)currentSquare).getPlayers().get(i));
 				}
 				
-				logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
-				logger.info("CURRENT SQUARE FROM MAP: " + currentSquareMap);
+				logger.debug("CURRENT SQUARE FROM MAP: " + currentSquareMap.getCoordinate());
+				logger.debug("CURRENT SQUARE FROM MAP: " + currentSquareMap);
 				if(((Field)currentSquareMap).getPlayers().size() == 0) {
-					logger.info("NO PLAYERS ON SQUARE");
+					logger.debug("NO PLAYERS ON SQUARE");
 				}
 				for(int i = 0; i < ((Field)currentSquareMap).getPlayers().size(); i++) {
-					logger.info("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
+					logger.debug("PLAYER ON SQUARE: " + ((Field)currentSquareMap).getPlayers().get(i));
 				}
 			}
 			else {
-				logger.info("CURRENT PLAYER: " + player.getPlayer());
-				logger.info("CURRENT SQUARE: " + null);
+				logger.debug("CURRENT PLAYER: " + player.getPlayer());
+				logger.debug("CURRENT SQUARE: " + null);
 			}
 		}
 	}
