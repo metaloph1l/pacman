@@ -38,6 +38,41 @@ final public class Field extends Square implements Serializable {
 		}
 	}
 	
+	public void resolveConflict() {
+		if(this.occupants.size() == 3) {
+			// Three players on the same field -> draw
+		}else if (this.occupants.size() > 1) {
+			for(int i = 0; i < this.occupants.size(); i++) {
+				System.out.println(this.occupants.get(i));
+			}
+
+			Player player1, player2;
+			Pacman pacman1, pacman2, winner, loser;
+
+			player1 = this.occupants.get(0);
+			player2 = this.occupants.get(1);
+			pacman1 = player1.getPacman();
+			pacman2 = player2.getPacman();
+
+			winner = Pacman.getWinner(pacman1, pacman2);
+
+			if (winner == player1.getPacman()) {
+				player2.getPacman().setAlive(false);
+				this.leave(player2);
+				player2.getPacman().setLocation(null);
+				player2.sendBounty(player1);
+			} else {
+				player1.getPacman().setAlive(false);
+				this.leave(player1);
+				player1.getPacman().setLocation(null);
+				player1.sendBounty(player2);
+			}
+		}
+		else {
+			// NOTHING TODO
+		}
+	}
+	
 	public List<Player> getPlayers() {
 		return new ArrayList<Player>(this.occupants);
 	}
@@ -46,6 +81,10 @@ final public class Field extends Square implements Serializable {
 	public void reset() {
 		this.occupants = null;
 		this.points = 0;
+	}
+
+	public void resetPlayers() {
+		this.occupants = null;
 	}
 	
 	@Override

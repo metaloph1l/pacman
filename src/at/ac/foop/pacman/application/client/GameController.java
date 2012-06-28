@@ -144,7 +144,7 @@ public class GameController extends Observable implements IGame {
 		// TODO: This players are only placeholders for the real players
 		//       that get sent to the client once the game starts!
 		// logger.info("IN NOTIFY POSITIONS START");
-		// this.playerOutput();
+		this.playerOutput();
 		for(Long id : positions.keySet()) {
 			Player player = players.get(id.intValue() - 1);
 			Pacman pacman = player.getPacman();
@@ -152,6 +152,7 @@ public class GameController extends Observable implements IGame {
 			
 			Coordinate point = positions.get(id);
 			//Give the pacman the square on which is should be
+			((Field)map.getSquare(point.getX(), point.getY())).resetPlayers();
 			map.getSquare(point.getX(), point.getY()).enter(player);
 			pacman.setLocation(map.getSquare(point.getX(), point.getY()));
 			pacman.setColor(PacmanColor.values()[id.intValue() - 1]);
@@ -168,7 +169,7 @@ public class GameController extends Observable implements IGame {
 		this.setChanged();
 		this.notifyObservers();
 		this.clearChanged();
-		
+		this.playerOutput();		
 		// logger.info("IN NOTIFY POSITIONS END");
 		// this.playerOutput();
 	}
@@ -188,7 +189,14 @@ public class GameController extends Observable implements IGame {
 			Player player = players.get(key.intValue() - 1);
 			player.setDirection(direction);
 		}
-		this.movePacmans();
+		
+		this.playerOutput();
+		List<Square> squares = this.movePacmans();
+		this.playerOutput();
+		
+		for (Square square : squares) {
+			((Field)square).resolveConflict();
+		}
 		
 		/*output = "Coordinate: ";
 		for (Player player : players) {
@@ -204,6 +212,7 @@ public class GameController extends Observable implements IGame {
 	}
 	
 	private void playerOutput() {
+		logger.info("-----------------------------------------------------------------");
 		for (Player player : players) {
 			if (player == null) {
 				continue;
@@ -231,7 +240,8 @@ public class GameController extends Observable implements IGame {
 		}
 	}
 
-	private void movePacmans() {
+	private List<Square> movePacmans() {
+		List<Square> squares = new ArrayList<Square>();
 		for (Player player : players) {
 			Pacman pacman = player.getPacman();
 
@@ -248,9 +258,11 @@ public class GameController extends Observable implements IGame {
 					currentSquare.leave(player);
 					nextSquare.enter(player);
 					player.getPacman().setLocation(nextSquare);
+					squares.add(nextSquare);
 				}
 			}
 		}
+		return squares;
 	}
 
 	@Override

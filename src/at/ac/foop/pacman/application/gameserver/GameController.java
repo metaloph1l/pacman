@@ -111,18 +111,21 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
 			}
+			this.playerOutput();
 
 			play = true;
 		}
 	}
 
 	private void playRound() {
-		logger.info("NEW ROUND");
 		this.playerOutput();
 		List<Square> checkSquares = this.movePacmans();
 
 		if (checkSquares.size() != Player.PLAYER_COUNT) {
-			this.resolveConflict(checkSquares);
+			for (Square square : checkSquares) {
+				((Field)square).resolveConflict();
+			}
+			//this.resolveConflict(checkSquares);
 		} else {
 			Map<Long, Direction> directions = new HashMap<Long, Direction>();
 
@@ -441,6 +444,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void resolveConflict(List<Square> checkSquares) {
 		int activePlayers = 0;
 		for (PlayerSlot playerWrap : this.players) {
