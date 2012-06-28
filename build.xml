@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="pacman" default="compile" basedir=".">
+<project name="FOOP Pacman" default="compile" basedir=".">
     <description>
         A distributed pacman project
     </description>
