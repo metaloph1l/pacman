@@ -36,6 +36,7 @@ import at.ac.foop.pacman.util.MethodCallBuilder;
 public class GameController extends UnicastRemoteObject implements IGameServer {
 	//Constants
 
+	private static final long serialVersionUID = 1432136270483528145L;
 	public static int CLOCK_LENGTH = 500;
 	public static int CLOCKS_PER_ROUND = 500;
 	public static int COLOR_CHANGE_CLOCKS = 50;
@@ -117,6 +118,14 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			play = true;
 		}
 	}
+	
+	private Map<Long, Long> currentStatistics() {
+		Map<Long, Long> statistics = new HashMap<Long, Long>();
+		for (PlayerSlot player : players) {
+			statistics.put(player.getPlayerId(), player.getPlayer().getPoints());
+		}
+		return statistics;
+	}
 
 	private void playRound() {
 		// this.playerOutput();
@@ -128,11 +137,8 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		}
 		
 		if (activePlayers == 1) {
-			this.timer.cancel();
-			for (PlayerSlot player : players) {
-				// TODO: notify end of round....
-				// player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameOver"));
-			}
+			this.endRound();
+			return;
 		}
 		
 		/*
@@ -203,7 +209,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					currentSquare.leave(player.getPlayer());
 					nextSquare.enter(player.getPlayer());
 					player.getPlayer().getPacman().setLocation(nextSquare);
-					player.getPlayer().addPoints(nextSquare.getPoints());
+					player.getPlayer().addPoints(nextSquare.consumePoints());
 					
 
 					if(checkSquares.contains(nextSquare) == false) {
@@ -223,6 +229,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		return checkSquares;
 	}
 	
+	@SuppressWarnings("unused")
 	private void playerOutput() {
 		logger.debug("------------------- DEBUG PLAYER OUTPUT ------------------------");
 		for (PlayerSlot player : this.players) {
@@ -265,7 +272,9 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		if (this.timer == null) {
 			this.timer = new Timer();
 		} else {
+			// we can't cancel the timer and reuse it
 			this.timer.cancel();
+			this.timer = new Timer();
 		}
 
 		GameTimerTask tt = new GameTimerTask();
@@ -305,9 +314,14 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	public void endRound() {
 		this.play = false;
 		round++;
-
-		//TODO somehow signal clients that a new round starts and wait for ready up of all clients.
 		timer.cancel();
+		
+		//TODO somehow signal clients that a new round starts and wait for ready up of all clients.
+		Map<Long, Long> statistics = this.currentStatistics();
+		for (PlayerSlot player : players) {
+			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyRoundFinished", statistics));
+			player.setReady(false);
+		}
 	}
 
 	public Labyrinth getMap() {
