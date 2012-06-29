@@ -24,7 +24,10 @@ import javax.swing.Timer;
 import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.domain.Direction;
+import at.ac.foop.pacman.domain.GameOutcome;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.ui.drawings.Drawing;
+import at.ac.foop.pacman.ui.drawings.OvalButton;
 import at.ac.foop.pacman.ui.drawings.PacmanAnimationTimer;
 
 //TODO: relative movement of pacmans
@@ -37,11 +40,16 @@ import at.ac.foop.pacman.ui.drawings.PacmanAnimationTimer;
 public class UI extends JPanel {
 
 	private static final long serialVersionUID = -5053684701514536944L;
+	public static final int SCREEN_SIZE_WIDTH = 600;
+	public static final int SCREEN_SIZE_HEIGHT = 505;
 	private Client uiController;
 	private final Logger logger = Logger.getLogger(UI.class);
 	private final Timer repaintTimer; // repaints Labyrinth every time is called
 	private PacmanAnimationTimer pacmanAnimation;
-	private JDialog statisticScreen;
+	//private JDialog statisticScreen;
+	
+	private boolean showStatisticScreen;
+	private boolean showGameOverScreen;
 
 
 	//also used for shape
@@ -61,9 +69,9 @@ public class UI extends JPanel {
 		this.initialize(newparent);
 		JFrame frame = new JFrame("Pacman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(600, 505);
-		loadingLabel = new Label("LOADING...");
-		this.add(loadingLabel);
+		frame.setSize(UI.SCREEN_SIZE_WIDTH, UI.SCREEN_SIZE_HEIGHT);
+		frame.setSize(UI.SCREEN_SIZE_WIDTH, UI.SCREEN_SIZE_HEIGHT);
+		frame.setResizable(false);
 		frame.add(this);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -89,6 +97,7 @@ public class UI extends JPanel {
 	
 	private void initialize(Client newparent){
 		this.uiController = newparent;
+		this.showStatisticScreen = false;
 
 		logger.debug("before shape");
 	}
@@ -111,11 +120,22 @@ public class UI extends JPanel {
 		rh.put(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
 
-		//TODO: implement Scoreboard
-		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
-			this.loadingLabel.setVisible(false);
+		if(this.showGameOverScreen == true) {
+			Drawing drawing = new Drawing(g, this);
+			drawing.drawBackground();
+			drawing.drawHead();
+			drawing.drawGameStatistics();
+		}
+		else if(this.showStatisticScreen == true) {
+			Drawing drawing = new Drawing(g, this);
+			drawing.drawBackground();
+			drawing.drawHead();
+			drawing.drawRoundStatistics();
+		}
+		else if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
 			try {
 				Drawing drawing = new Drawing(g, this);
+				drawing.initializeMapValues();
 				drawing.drawBackground();
 				drawing.drawHead();
 				drawing.drawLabyrinth();
@@ -123,17 +143,41 @@ public class UI extends JPanel {
 				drawing.drawCookies();
 				drawing.drawStatistics();
 			} catch(Exception e) {
-				logger.error("ERROR", e);
+				Drawing drawing = new Drawing(g, this);
+				drawing.drawLoadingScreen();
 			}
 		}
 		else {
-			super.paint(g);
+			Drawing drawing = new Drawing(g, this);
+			drawing.drawBackground();
+			drawing.drawHead();
+			drawing.drawLoadingScreen();
+			// super.paint(g);
 		}
 	}
 	
 	public void showEndOfRoundScreen(Map<Long, Long> roundStatistics) {
+		this.showStatisticScreen = true;
+		OvalButton nextRound = new OvalButton("Next Round");
+		nextRound.setSize(100, 25);
+		nextRound.setVisible(true);
+		nextRound.setLocation(250, 300);
+		this.add(nextRound);
+		nextRound.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+	    	    //UI.this.statisticScreen.setVisible(false);
+	    	    //UI.this.statisticScreen.dispose();
+	    	    UI.this.removeAll();
+	    	    UI.this.showStatisticScreen = false;
+	    	    UI.this.repaint();
+	    	    UI.this.getUiController().signalReady();
+			}
+	    });
+		this.repaintTimer.stop();
+		this.repaint();
+		
 		// TODO: show statistics
-		statisticScreen = new JDialog();
+		/*statisticScreen = new JDialog();
 		statisticScreen.setLayout(new BoxLayout(statisticScreen.getContentPane(), BoxLayout.Y_AXIS));
 		statisticScreen.setAlwaysOnTop(true);
 		statisticScreen.setLocationRelativeTo(null);
@@ -161,6 +205,28 @@ public class UI extends JPanel {
 	    statisticScreen.pack();
 	    this.setFocusable(false);
 	    statisticScreen.setVisible(true);
+	    */
+	}
+	
+	public void showGameOverScreen() {
+		this.showGameOverScreen = true;
+		OvalButton nextRound = new OvalButton("New Game");
+		nextRound.setSize(100, 25);
+		nextRound.setVisible(true);
+		nextRound.setLocation(250, 400);
+		this.add(nextRound);
+		nextRound.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+	    	    //UI.this.statisticScreen.setVisible(false);
+	    	    //UI.this.statisticScreen.dispose();
+	    	    UI.this.removeAll();
+	    	    UI.this.showGameOverScreen = false;
+	    	    UI.this.repaint();
+	    	    UI.this.getUiController().signalReady();
+			}
+	    });
+		this.repaintTimer.stop();
+		this.repaint();
 	}
 
 	class DirectionListener extends KeyAdapter {

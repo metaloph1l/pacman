@@ -2,17 +2,23 @@ package at.ac.foop.pacman.ui.drawings;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.domain.PacmanColor;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.domain.SquareType;
 import at.ac.foop.pacman.ui.UI;
 
@@ -40,6 +46,9 @@ public class Drawing extends JPanel {
 
 		// height und width von hier nehmen
 
+	}
+	
+	public void initializeMapValues() {
 		if (this.parent.getUiController().getMap() == null) {
 			logger.info("No Map");
 		}
@@ -50,11 +59,89 @@ public class Drawing extends JPanel {
 		this.parent.labStepX = ((this.width - 155) / this.parent.labWidth);
 		this.parent.labStartY = (this.height - 55) - this.parent.labStepY * this.parent.labHeight + 50;
 		this.parent.labStartX = (this.width - 155) - this.parent.labStepX * this.parent.labWidth + 5;
+	
 	}
+	
+	public void drawGameStatistics() {
+		String strGameStatistics = "Game Statistics...";
+		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+		g2d.setPaint(gp2);
+		Font font = new Font("Arial", Font.BOLD, 25);
+		g2d.setFont(font);
+		int strLength = (int) (g2d.getFontMetrics().getStringBounds(strGameStatistics, g2d).getWidth());
+		int startX = (this.width / 2 - strLength / 2);
+		int startY = 80;
+		
+		g2d.drawString(strGameStatistics, startX, startY);
+		
+		String strGameOutcome = "Game Outcome: " + this.parent.getUiController().controller.getGameOutcome();
+		strLength = (int) (g2d.getFontMetrics().getStringBounds(strGameOutcome, g2d).getWidth());
+		g2d.drawString(strGameOutcome, startX, 120);
+		
+		Map<Long, PlayerOutcome> playerOutcomes = this.parent.getUiController().controller.getPlayerOutcome();
+		Iterator<Entry<Long, PlayerOutcome>> it = playerOutcomes.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Entry<Long, PlayerOutcome> pairs = it.next();
+	        String playerOutcome = "Player " + pairs.getKey() + ": " + pairs.getValue();
+	        strLength = (int) (g2d.getFontMetrics().getStringBounds(playerOutcome, g2d).getWidth());
+			g2d.drawString(playerOutcome, startX, 160 + (pairs.getKey()*40));
+	    }
+	}
+	
+	public void drawRoundStatistics() {
+		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+		g2d.setPaint(gp2);
+		Font font = new Font("Arial", Font.BOLD, 25);
+		g2d.setFont(font);
+		
+		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
+			String strPlayerPoints = "Player "+ this.parent.getUiController().getPlayers().get(i).getId() + ":";
+			strPlayerPoints = strPlayerPoints + " " + this.parent.getUiController().getPlayers().get(i).getPoints() + " Points";
+			int strLength = (int) (g2d.getFontMetrics().getStringBounds(strPlayerPoints, g2d).getWidth());
+			g2d.drawString(strPlayerPoints, this.width / 2 - strLength / 2, 120 + (i*60));
+		}
+		
+		/*OvalButton bonjourButton = new OvalButton("Bonjour");
+		bonjourButton.setSize(200,200);
+		bonjourButton.setVisible(true);
+		bonjourButton.setLocation(300, 300);
+		bonjourButton.repaint();
+	    this.add(bonjourButton); 
+	    this.repaint();*/
+	    //this.parent.repaint();
+	}
+	
+	
 
 	public void drawBackground() {
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, 0, this.width, this.height);
+	}
+	
+	public void clearScreen() {
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(0, 0, UI.SCREEN_SIZE_WIDTH, UI.SCREEN_SIZE_WIDTH);
+	}
+	
+	public void clearPlayFieldSection() {
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(0, 55, UI.SCREEN_SIZE_WIDTH, UI.SCREEN_SIZE_WIDTH);
+	}
+	
+	/**
+	 * draws loading screen
+	 */
+	public void drawLoadingScreen() {
+		String strpacman = "Waiting for other players...";
+		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+		g2d.setPaint(gp2);
+		Font font = new Font("Arial", Font.BOLD, 25);
+		g2d.setFont(font);
+		int strLength = (int) (g2d.getFontMetrics().getStringBounds(strpacman, g2d).getWidth());
+		int startX = (this.width / 2 - strLength / 2);
+		int startY = (this.height / 2);
+		
+		g2d.drawString(strpacman, startX, startY);
 	}
 
 	/**

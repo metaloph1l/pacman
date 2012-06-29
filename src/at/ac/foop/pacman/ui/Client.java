@@ -107,6 +107,9 @@ public class Client implements Observer{
 				this.ui.showEndOfRoundScreen(this.controller.getRoundStatistic());
 				break;
 			case PLAYER_READY: break;
+			case GAME_OVER:
+				this.ui.showGameOverScreen();
+				break;
 			case GAME_START:
 				logger.info("GAME STARTING...");
 				this.ui.initializePacmans();
