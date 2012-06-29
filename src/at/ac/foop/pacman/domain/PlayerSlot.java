@@ -27,6 +27,11 @@ public final class PlayerSlot {
 		this.playerSlotThread.addMethodCall(m);
 	}
 	
+	public void resetValues() {
+		this.ready = false;
+		this.player.reset();
+	}
+	
 	public void reset() {
 		this.connected = false;
 		this.callback = null;

@@ -10,6 +10,7 @@ public class Player implements Serializable {
 	String name; //The name of the player (for statistics)
 	private Long points; //current number of points of the player
 	private Pacman pacman; //the pacman that represents the player on the board. If null then player has been eaten;
+	private PlayerOutcome outcome;
 	//Labyrinth map; //the current map in this round 
 
 	//Constructors
@@ -93,5 +94,18 @@ public class Player implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public PlayerOutcome getOutcome() {
+		return outcome;
+	}
+
+	public void setOutcome(PlayerOutcome outcome) {
+		this.outcome = outcome;
+	}
+	
+	public void reset() {
+		this.outcome = PlayerOutcome.Normal;
+		this.points = 0L;
 	}
 }
