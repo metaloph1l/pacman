@@ -37,6 +37,8 @@ public class GameController extends Observable implements IGame {
 	Labyrinth map;
 	Labyrinth nextMap;
 	int count;
+	private GameOutcome gameOutcome;
+	private Map<Long, PlayerOutcome> playerOutcome;
 	private Map<Long, Long> roundStatistic;
 	private final IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
@@ -349,7 +351,16 @@ public class GameController extends Observable implements IGame {
 
 	@Override
 	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
-		logger.info("[Unimplemented] Game over.");
+		gameOutcome = type;
+		this.playerOutcome = outcome;
+		states.add(GameState.GAME_OVER);
+		for(Player player : this.players) {
+			player.reset();
+		}
+		//notify the UI that the game is over
+		this.setChanged();
+		this.notifyObservers();
+		this.clearChanged();
 	}
 
 	public GameState removeState() {
@@ -368,5 +379,21 @@ public class GameController extends Observable implements IGame {
 	
 	public Map<Long, Long> getRoundStatistic() {
 		return roundStatistic;
+	}
+	
+	public Map<Long, PlayerOutcome> getPlayerOutcome() {
+		return playerOutcome;
+	}
+
+	public void setPlayerOutcome(Map<Long, PlayerOutcome> playerOutcome) {
+		this.playerOutcome = playerOutcome;
+	}
+
+	public GameOutcome getGameOutcome() {
+		return gameOutcome;
+	}
+
+	public void setGameOutcome(GameOutcome gameOutcome) {
+		this.gameOutcome = gameOutcome;
 	}
 }
