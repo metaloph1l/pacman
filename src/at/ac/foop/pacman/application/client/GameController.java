@@ -37,6 +37,7 @@ public class GameController extends Observable implements IGame {
 	Labyrinth map;
 	Labyrinth nextMap;
 	int count;
+	private Map<Long, Long> roundStatistic;
 	private final IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
 	private final Queue<GameState> states = new LinkedList<GameState>();
@@ -75,7 +76,7 @@ public class GameController extends Observable implements IGame {
 			}
 
 			//4. Finally signal the server that we are ready
-			this.server.ready(playerId);
+			this.ready();
 		} catch(RemoteException e) {
 			//TODO: handle any server exception here
 			logger.error("Error", e);
@@ -91,6 +92,18 @@ public class GameController extends Observable implements IGame {
 			// TODO: handle any server exception here
 			logger.error("Error", e);
 		}
+	}
+	
+	public boolean ready() {
+		try {
+			this.server.ready(playerId);
+		}
+		catch(RemoteException e) {
+			// TODO: handle any server exception here
+			logger.error("Error", e);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -193,9 +206,9 @@ public class GameController extends Observable implements IGame {
 			player.setDirection(direction);
 		}
 		
-		this.playerOutput();
+		//this.playerOutput();
 		List<Square> squares = this.movePacmans();
-		this.playerOutput();
+		//this.playerOutput();
 		
 		for (Square square : squares) {
 			((Field)square).resolveConflict();
@@ -214,6 +227,7 @@ public class GameController extends Observable implements IGame {
 		//this.clearChanged();
 	}
 	
+	@SuppressWarnings("unused")
 	private void playerOutput() {
 		logger.debug("-----------------------------------------------------------------");
 		for (Player player : players) {
@@ -322,6 +336,16 @@ public class GameController extends Observable implements IGame {
 		this.clearChanged();
 		logger.info("[Unimplemented] Game has started.");
 	}
+	
+	@Override
+	public void notifyRoundFinished(Map<Long, Long> pointTable) throws RemoteException {
+		this.roundStatistic = pointTable;
+		states.add(GameState.END_OF_ROUND);
+		this.logger.info("Round is finished");
+		this.setChanged();
+		this.notifyObservers();
+		this.clearChanged();
+	}
 
 	@Override
 	public void notifyGameOver(GameOutcome type, Map<Long, PlayerOutcome> outcome) throws RemoteException {
@@ -341,4 +365,8 @@ public class GameController extends Observable implements IGame {
 		this.notifyObservers();
 		this.clearChanged();
     }
+	
+	public Map<Long, Long> getRoundStatistic() {
+		return roundStatistic;
+	}
 }

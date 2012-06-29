@@ -99,6 +99,14 @@ public interface IGame extends Remote {
 	void notifyGameOver(GameOutcome type, Map<Long,PlayerOutcome> outcome) throws RemoteException;
 	
 	/**
+	 * Notifies the client that the current round is over
+	 * the player ids of the winning and losing player.
+	 * 
+	 * @param pointTable A map of players and their points
+	 */
+	void notifyRoundFinished(Map<Long, Long> pointTable) throws RemoteException;
+	
+	/**
 	 * The game allows the color of the Pacmans to rotate in response
 	 * to a certain event or based on time. Our current policy will
 	 * be that the game changes the color of the Pacmans after a certain

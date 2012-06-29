@@ -8,5 +8,6 @@ public enum GameState {
 	NEW_PLAYER,
 	PLAYER_READY,
 	NEW_TURN,
+	END_OF_ROUND,
 	GAME_START
 }
