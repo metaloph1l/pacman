@@ -19,11 +19,13 @@ import at.ac.foop.pacman.application.IGameServer;
 import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
 import at.ac.foop.pacman.domain.Field;
+import at.ac.foop.pacman.domain.GameOutcome;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.LabyrinthGenerator;
 import at.ac.foop.pacman.domain.Pacman;
 import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
+import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.domain.PlayerSlot;
 import at.ac.foop.pacman.domain.Square;
 import at.ac.foop.pacman.domain.SquareType;
@@ -40,7 +42,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	public static int CLOCK_LENGTH = 500;
 	public static int CLOCKS_PER_ROUND = 500;
 	public static int COLOR_CHANGE_CLOCKS = 50;
-	public static int NUM_OF_ROUNDS_PER_GAME = 3;
+	public static int NUM_OF_ROUNDS_PER_GAME = 2;
 	private static GameController instance = null;
 	//Fields
 	private final List<PlayerSlot> players;
@@ -78,45 +80,48 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 	 * rounds. Each round play
 	 */
 	public void initializeRound() {
-		if (round < NUM_OF_ROUNDS_PER_GAME) {
-			this.map = LabyrinthGenerator.generateLabyrinth();
-			
-			List<Coordinate> pacmanCoords = LabyrinthGenerator.getPacmanPositions();
-			System.out.println("PacManCoords: " + pacmanCoords);
-			if(pacmanCoords == null || pacmanCoords.size() < Player.PLAYER_COUNT) {
-				// log and don't play round
-				// TODO: maybe notify clients?
-				logger.error("ERROR - Couldn't get enough pacman coordinates");
-				return;
-			}
-			
-			// first notify players of new map (no pacmans or anything is set on the map yet)
+		if (round > NUM_OF_ROUNDS_PER_GAME) {
+			// We are done with one game -> reset all Values and run new Game
 			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+				player.resetValues();
 			}
-			
-			Map<Long, Coordinate> coords = new HashMap<Long, Coordinate>();
-			List<Player> currentPlayers = new ArrayList<Player>();
-			for (PlayerSlot player : players) {
-				this.map.getSquare(pacmanCoords.get(0));
-				//Square pacmanPos = new Field(0);
-				Square squarePac = this.map.getSquare(pacmanCoords.get(0));
-				squarePac.enter(player.getPlayer());
-				player.getPlayer().initPacman(squarePac);
-				pacmanCoords.remove(0);
-				player.getPlayer().getPacman().setAlive(true);
-				
-				coords.put(player.getPlayerId(), player.getPlayer().getLocation().getCoordinate());
-				currentPlayers.add(player.getPlayer());
-			}
-			
-			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
-			}
-
-			play = true;
 		}
+		this.map = LabyrinthGenerator.generateLabyrinth();
+		
+		List<Coordinate> pacmanCoords = LabyrinthGenerator.getPacmanPositions();
+		if(pacmanCoords == null || pacmanCoords.size() < Player.PLAYER_COUNT) {
+			// log and don't play round
+			// TODO: maybe notify clients?
+			logger.error("ERROR - Couldn't get enough pacman coordinates");
+			return;
+		}
+		
+		// first notify players of new map (no pacmans or anything is set on the map yet)
+		for (PlayerSlot player : players) {
+			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyMapChange", this.map));
+		}
+		
+		Map<Long, Coordinate> coords = new HashMap<Long, Coordinate>();
+		List<Player> currentPlayers = new ArrayList<Player>();
+		for (PlayerSlot player : players) {
+			this.map.getSquare(pacmanCoords.get(0));
+			//Square pacmanPos = new Field(0);
+			Square squarePac = this.map.getSquare(pacmanCoords.get(0));
+			squarePac.enter(player.getPlayer());
+			player.getPlayer().initPacman(squarePac);
+			pacmanCoords.remove(0);
+			player.getPlayer().getPacman().setAlive(true);
+			
+			coords.put(player.getPlayerId(), player.getPlayer().getLocation().getCoordinate());
+			currentPlayers.add(player.getPlayer());
+		}
+		
+		for (PlayerSlot player : players) {
+			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPlayers", currentPlayers));
+			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyPositions", coords));
+		}
+
+		play = true;
 	}
 	
 	private Map<Long, Long> currentStatistics() {
@@ -317,10 +322,38 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		timer.cancel();
 		
 		//TODO somehow signal clients that a new round starts and wait for ready up of all clients.
-		Map<Long, Long> statistics = this.currentStatistics();
-		for (PlayerSlot player : players) {
-			player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyRoundFinished", statistics));
-			player.setReady(false);
+		if(this.round == GameController.NUM_OF_ROUNDS_PER_GAME){
+			this.round = 0;
+			Map<Long, PlayerOutcome> outcome = new HashMap<Long, PlayerOutcome>();
+			List<Long> winnerIds = new ArrayList<Long>();
+			Long maxPoints = 0L;
+			for (PlayerSlot player : players) {
+				if(maxPoints <= player.getPlayer().getPoints()) {
+					winnerIds.add(player.getPlayerId());
+					maxPoints = player.getPlayer().getPoints();
+				}
+			}
+			
+			for (PlayerSlot player : players) {
+				if(winnerIds.contains(player.getPlayerId())) {
+					outcome.put(player.getPlayerId(), PlayerOutcome.Victory);
+				}
+				else {
+					outcome.put(player.getPlayerId(), PlayerOutcome.Lose);
+				}
+			}
+			
+			for (PlayerSlot player : players) {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameOver", GameOutcome.Normal, outcome));
+				player.resetValues();
+			}
+		}
+		else {
+			Map<Long, Long> statistics = this.currentStatistics();
+			for (PlayerSlot player : players) {
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyRoundFinished", statistics));
+				player.setReady(false);
+			}
 		}
 	}
 
