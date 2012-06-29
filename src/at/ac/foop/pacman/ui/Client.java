@@ -61,6 +61,15 @@ public class Client implements Observer{
 		this.controller.movePacman(cmd);
 	}
 	
+	/**
+	 *
+	 * signals ready for next round
+	 *
+	 */
+	public void signalReady() {
+		this.controller.ready();
+	}
+	
 	public Labyrinth getMap() {
 		return this.map;
 	}
@@ -71,28 +80,13 @@ public class Client implements Observer{
 
 	//TODO: optional: pauserequest
 
-	/**
-	 *
-	 * call when colors change
-	 * restarts Timer
-	 *
-	 */
-	public void colorChanges(){
-		//TODO: call this when color changes
-		//TODO: optional: PID-Element for actual time
-
-		this.ui.colorChangeAnimation=0;
-		this.ui.colorChangeTimer.restart();
-	}
-
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		logger.info("UPDATE");
 		GameState state = controller.removeState();
 		switch(state) {
 			case NEW_MAP:
-				this.map = new Labyrinth(this.controller.getMap());
-				logger.info("MAP LOADED");
+				// we need a deep copy here
+				this.map = this.controller.getMap();
 				break;
 			case NEW_COLOR:
 				logger.warn("(Unimplemented) Color changed");
@@ -102,13 +96,16 @@ public class Client implements Observer{
 				break;
 			case NEW_POSITION: break;
 			case NEW_POSITIONS: 
+				this.players.clear();
 				for(int i = 0; i < this.controller.getPlayers().size(); i++) {
-					this.players.add(new Player(this.controller.getPlayers().get(i)));
+					this.players.add(this.controller.getPlayers().get(i));
 				}
-				this.map = new Labyrinth(this.controller.getMap());
-				logger.info("GOT PLAYER POSITIONS: " + this.players);
+				//this.map = this.controller.getMap();
 				break;
 			case NEW_TURN: break;
+			case END_OF_ROUND: 
+				this.ui.showEndOfRoundScreen(this.controller.getRoundStatistic());
+				break;
 			case PLAYER_READY: break;
 			case GAME_START:
 				logger.info("GAME STARTING...");

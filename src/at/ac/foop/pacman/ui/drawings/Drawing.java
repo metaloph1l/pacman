@@ -23,6 +23,7 @@ import at.ac.foop.pacman.ui.UI;
  */
 public class Drawing extends JPanel {
 
+	private static final long serialVersionUID = 89327207047038380L;
 	private final Graphics2D g2d;
 	private final int width, height;
 	private final UI parent;
@@ -39,18 +40,16 @@ public class Drawing extends JPanel {
 
 		// height und width von hier nehmen
 
-		if (this.parent.parent.getMap() == null) {
+		if (this.parent.getUiController().getMap() == null) {
 			logger.info("No Map");
 		}
 
-		this.parent.labHeight = this.parent.parent.getMap().getHeight();
-		this.parent.labWidth = this.parent.parent.getMap().getWidth();
+		this.parent.labHeight = this.parent.getUiController().getMap().getHeight();
+		this.parent.labWidth = this.parent.getUiController().getMap().getWidth();
 		this.parent.labStepY = ((this.height - 55) / this.parent.labHeight);
-		this.parent.labStepX = ((this.width - 10) / this.parent.labWidth);
-		this.parent.labStartY = (this.height - 55) - this.parent.labStepY
-				* this.parent.labHeight + 50;
-		this.parent.labStartX = (this.width - 10) - this.parent.labStepX
-				* this.parent.labWidth + 5;
+		this.parent.labStepX = ((this.width - 155) / this.parent.labWidth);
+		this.parent.labStartY = (this.height - 55) - this.parent.labStepY * this.parent.labHeight + 50;
+		this.parent.labStartX = (this.width - 155) - this.parent.labStepX * this.parent.labWidth + 5;
 	}
 
 	public void drawBackground() {
@@ -64,15 +63,13 @@ public class Drawing extends JPanel {
 	public void drawHead() {
 		// string pacman
 		String strpacman = "PACMAN";
-		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20,
-				Color.orange, true);
+		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
 		g2d.setPaint(gp2);
 		Font font = new Font("Arial", Font.BOLD, 25);
 		g2d.setFont(font);
-		int strLength = (int) (g2d.getFontMetrics().getStringBounds(strpacman,
-				g2d).getWidth());
+		int strLength = (int) (g2d.getFontMetrics().getStringBounds(strpacman, g2d).getWidth());
 		int start = (this.width / 2 - strLength / 2);
-
+		
 		g2d.drawString(strpacman, start, 30);
 
 		// underline
@@ -80,6 +77,40 @@ public class Drawing extends JPanel {
 				this.width, 110, Color.yellow, true);
 		g2d.setPaint(gp1);
 		g2d.fillRect(0, 35, this.width, 10);
+	}
+	
+	/**
+	 * draws head
+	 */
+	public void drawStatistics() {
+		g2d.setColor(Color.BLACK);
+		g2d.fillRect(this.width - 155, 35, 155, this.height);
+		
+		String strStatistic = "Statistic";
+		GradientPaint gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+		g2d.setPaint(gp2);
+		Font font = new Font("Arial", Font.BOLD, 25);
+		g2d.setFont(font);
+		int strLength = (int) (g2d.getFontMetrics().getStringBounds(strStatistic, g2d).getWidth());
+		//int start = (this.width / 2 - strLength / 2);
+		int start = (this.width - 155/2 - strLength / 2);
+
+		g2d.drawString(strStatistic, start, 30);
+		
+		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
+			String strPlayer = "Player "+ this.parent.getUiController().getPlayers().get(i).getId() + ":";
+			String strPoints = this.parent.getUiController().getPlayers().get(i).getPoints() + " Points";
+			g2d.drawString(strPlayer, this.width - 140, 80 + (i*60));
+			g2d.drawString(strPoints, this.width - 140, 100 + (i*60));
+		}
+		
+		
+
+		/* // underline
+		GradientPaint gp1 = new GradientPaint(0, 0, new Color(125, 125, 125),
+				this.width, 110, Color.yellow, true);
+		g2d.setPaint(gp1);
+		g2d.fillRect(0, 35, this.width, 10); */
 	}
 
 	/**
@@ -89,7 +120,7 @@ public class Drawing extends JPanel {
 		for (int i = 0; i < parent.labHeight; i++) { // y
 			for (int j = 0; j < parent.labWidth; j++) { // x
 				// getSquare(x,y)
-				if (this.parent.parent.getMap().getSquare(j, i).getType() == SquareType.WALL) {
+				if (this.parent.getUiController().getMap().getSquare(j, i).getType() == SquareType.WALL) {
 					// wall
 					// fillrect(x,y,stepx,stepy)
 					GradientPaint gp3 = new GradientPaint(0, 0, new Color(120,
@@ -109,12 +140,12 @@ public class Drawing extends JPanel {
 				} else {
 					// Field
 					// getSquare(x,y)
-					if (this.parent.parent.getMap().getSquare(j, i).getPoints() == 2) {
+					if (this.parent.getUiController().getMap().getSquare(j, i).getPoints() == 2) {
 						// normal cookie
 						// fillrect(x,y,stepx,stepy)
 						g2d.setComposite(AlphaComposite.getInstance(
 								AlphaComposite.SRC_OVER,
-								this.parent.alphaCookieAnimation));
+								this.parent.getPacmanAnimation().getAlphaCookieAnimation()));
 						g2d.setColor(new Color(255, 255, 100));
 						g2d.fillRect(j * parent.labStepX + parent.labStartX
 								+ parent.labStepX * 3 / 8, i * parent.labStepY
@@ -122,13 +153,13 @@ public class Drawing extends JPanel {
 								parent.labStepX / 4, parent.labStepY / 4);
 						g2d.setComposite(AlphaComposite.getInstance(
 								AlphaComposite.SRC_OVER, 1));
-					} else if (this.parent.parent.getMap().getSquare(j, i)
+					} else if (this.parent.getUiController().getMap().getSquare(j, i)
 							.getPoints() > 2) {
 						// colored cookie
 						// fillrect(x,y,stepx,stepy)
 
 						GradientPaint gp4 = new GradientPaint(0, 0,
-								this.parent.coloredCookieColor,
+								this.parent.getPacmanAnimation().getColoredCookieColor(),
 								this.parent.labStepY / 5,
 								this.parent.labStepX / 5, Color.white, true);
 						g2d.setPaint(gp4);
@@ -162,20 +193,20 @@ public class Drawing extends JPanel {
 	 * draws Pacmans
 	 */
 	public void drawPacmans() {
-		for (int i = 0; i < this.parent.parent.getPlayers().size(); i++) {
-			if(this.parent.parent.getPlayers().get(i).getPacman().getColor().equals(PacmanColor.BLUE)) {
+		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
+			if(this.parent.getUiController().getPlayers().get(i).getPacman().getColor().equals(PacmanColor.BLUE)) {
 				g2d.setColor(Color.BLUE);
 			}
-			else if (this.parent.parent.getPlayers().get(i).getPacman().getColor().equals(PacmanColor.GREEN)) {
+			else if (this.parent.getUiController().getPlayers().get(i).getPacman().getColor().equals(PacmanColor.GREEN)) {
 				g2d.setColor(Color.GREEN);
 			}
 			else {
 				g2d.setColor(Color.RED);
 			}
 			
-			g2d.fill(parent.pacmanShape[i]);
+			g2d.fill(this.parent.getPacmanAnimation().getPacmanShape()[i]);
 			g2d.setColor(Color.BLACK); // background pacman
-			g2d.draw(this.parent.pacmanShape[i]);
+			g2d.draw(this.parent.getPacmanAnimation().getPacmanShape()[i]);
 		}
 	}
 
@@ -185,27 +216,27 @@ public class Drawing extends JPanel {
 	public void drawPacmansBackup() {
 		int j = 0;
 		// TODO: break if j>Playercount + exception
-		// while(this.parent.parent.controller.getPlayers().get(j).getId()!=this.parent.parent.myID)
+		// while(this.parent.getUiController().controller.getPlayers().get(j).getId()!=this.parent.getUiController().myID)
 		// {
 		// j++;
 		// }
-		for (int i = 0; i < this.parent.parent.getPlayers().size(); i++) {
+		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
 			if (j == i) {
 				// Players pacman
 				g2d.setColor(Color.BLUE);
 			} else {
 				// opponents Pacman
-				if (this.goodToEat(this.parent.parent.getPlayers().get(i)
-						.getPacman().getColor(), this.parent.parent
+				if (this.goodToEat(this.parent.getUiController().getPlayers().get(i)
+						.getPacman().getColor(), this.parent.getUiController()
 						.getPlayers().get(j).getPacman().getColor())) {
 					g2d.setColor(Color.GREEN);
 				} else {
 					g2d.setColor(Color.RED);
 				}
 			}
-			g2d.fill(parent.pacmanShape[i]);
+			g2d.fill(this.parent.getPacmanAnimation().getPacmanShape()[i]);
 			g2d.setColor(Color.BLACK); // background pacman
-			g2d.draw(this.parent.pacmanShape[i]);
+			g2d.draw(this.parent.getPacmanAnimation().getPacmanShape()[i]);
 		}
 	}
 
@@ -215,10 +246,10 @@ public class Drawing extends JPanel {
 	public void drawCookies() {
 		// colorchangeanimation
 		Color helpcolor;
-		if (this.parent.colorChangeAnimation < 60) {
+		if (this.parent.getPacmanAnimation().getColorChangeAnimation() < 60) {
 			helpcolor = new Color(0, 125, 0);
 		} else {
-			if (this.parent.colorChangeAnimation < 90) {
+			if (this.parent.getPacmanAnimation().getColorChangeAnimation() < 90) {
 				helpcolor = new Color(200, 100, 0);
 			} else {
 				helpcolor = new Color(125, 0, 0);
@@ -227,7 +258,7 @@ public class Drawing extends JPanel {
 		GradientPaint gp5 = new GradientPaint(0, 0, helpcolor, 0, 20,
 				Color.yellow, true);
 		g2d.setPaint(gp5);
-		g2d.fillRect((width * this.parent.colorChangeAnimation / 100), 37,
-				(width * (100 - this.parent.colorChangeAnimation) / 100), 6);
+		g2d.fillRect((width * this.parent.getPacmanAnimation().getColorChangeAnimation() / 100), 37,
+				(width * (100 - this.parent.getPacmanAnimation().getColorChangeAnimation()) / 100), 6);
 	}
 }

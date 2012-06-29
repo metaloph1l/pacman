@@ -1,30 +1,31 @@
 package at.ac.foop.pacman.ui;
 
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.geom.Arc2D;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
 
-import at.ac.foop.pacman.domain.Coordinate;
 import at.ac.foop.pacman.domain.Direction;
-import at.ac.foop.pacman.domain.Labyrinth;
-import at.ac.foop.pacman.domain.Pacman;
-import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.ui.drawings.Drawing;
+import at.ac.foop.pacman.ui.drawings.PacmanAnimationTimer;
 
 //TODO: relative movement of pacmans
 
@@ -35,27 +36,13 @@ import at.ac.foop.pacman.ui.drawings.Drawing;
  */
 public class UI extends JPanel {
 
-	public Client parent;
+	private static final long serialVersionUID = -5053684701514536944L;
+	private Client uiController;
 	private final Logger logger = Logger.getLogger(UI.class);
-
 	private final Timer repaintTimer; // repaints Labyrinth every time is called
-	public float alphaCookieAnimation; //alpha of cookies (small Value)
-	private float plusAlphaCookie; //alpha changes
+	private PacmanAnimationTimer pacmanAnimation;
+	private JDialog statisticScreen;
 
-	private int coloredCookieTimer; // color of cookies change after certain value is reached
-	public Color coloredCookieColor; // colored cookies current color
-
-	public int colorChangeAnimation; // Percent of bar painted
-	public Timer colorChangeTimer; 	// called every 1/100 of colorChangeSpeed
-									// stops after bar is 100%
-									// restarts after Client.colorChanges is called
-
-	//TODO: move shape into Drawing
-	//Pacman
-	public Shape[] pacmanShape; //current shape of pacman
-	private int pacmanAnimation; //difference in opening or closing of mouth [degrees]
-	private double pacmandphi ; //for animation of pacmanmouth
-	private double pacmanphi;	//for animation of pacmanmouth
 
 	//also used for shape
 	//TODO: move m,n, ... into Drawing after pacmanshape
@@ -71,12 +58,10 @@ public class UI extends JPanel {
 	//Constructors
 	public UI(Client newparent){
 		//initialize
-		logger.info("Initializing UI");
 		this.initialize(newparent);
-		logger.info("Finished initializing UI");
 		JFrame frame = new JFrame("Pacman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(450, 505);
+		frame.setSize(600, 505);
 		loadingLabel = new Label("LOADING...");
 		this.add(loadingLabel);
 		frame.add(this);
@@ -85,9 +70,10 @@ public class UI extends JPanel {
 
 		setFocusable(true);
 
-		this.repaintTimer= new Timer(5, new AnimationTimer());
+		pacmanAnimation = new PacmanAnimationTimer(this);
+		this.repaintTimer = new Timer(5, pacmanAnimation);
 
-		this.colorChangeTimer=new Timer((this.parent.colorChangeSpeed/100),new ActionListener() {
+		/*this.colorChangeTimer=new Timer((this.parent.colorChangeSpeed/100),new ActionListener() {
 			public void actionPerformed(ActionEvent e){
 				if (colorChangeAnimation<100){
 					colorChangeAnimation++;
@@ -96,16 +82,26 @@ public class UI extends JPanel {
 					colorChangeAnimation=100;
 				}
 			}
-		});
+		});*/
 
-		addKeyListener(new DirectionListener(parent));
+		addKeyListener(new DirectionListener(uiController));
 	} //end constructor
+	
+	private void initialize(Client newparent){
+		this.uiController = newparent;
+
+		logger.debug("before shape");
+	}
 	
 	public void initGameBoard() {
 		logger.info("INITIALIZING GAME BOARD");
-		this.colorChangeTimer.start();
+		//this.colorChangeTimer.start();
 		this.repaintTimer.start();
 		this.repaint();
+	}
+	
+	public void initializePacmans() {
+		this.pacmanAnimation.initializePacmans();
 	}
 
 	public void paint(Graphics g) {
@@ -119,12 +115,13 @@ public class UI extends JPanel {
 		if(this.repaintTimer != null && this.repaintTimer.isRunning()) {
 			this.loadingLabel.setVisible(false);
 			try {
-				Drawing drawing=new Drawing(g,this);
+				Drawing drawing = new Drawing(g, this);
 				drawing.drawBackground();
 				drawing.drawHead();
 				drawing.drawLabyrinth();
 				drawing.drawPacmans();
 				drawing.drawCookies();
+				drawing.drawStatistics();
 			} catch(Exception e) {
 				logger.error("ERROR", e);
 			}
@@ -132,120 +129,44 @@ public class UI extends JPanel {
 		else {
 			super.paint(g);
 		}
-
-	}
-
-	private Shape animatedPacman(int player) {
-		double arcphi=(this.pacmandphi-360.0f)*(-1)/2+this.pacmanphi;
-		Pacman pacman = this.parent.getPlayers().get(player).getPacman();
-		if (pacman != null && pacman.isAlive()) {
-			switch (pacman.getDirection()) {
-				case UP:{
-					arcphi+=90;
-					break;
-				}
-				case LEFT:{
-					arcphi+=180;
-					break;
-				}
-				case DOWN:{
-					arcphi+=270;
-					break;
-				}
-			}
-			if (arcphi>360.0) {
-				arcphi-=360;
-			}
-			Coordinate coordinate = pacman.getLocation().getCoordinate();
-			int x=coordinate.getX();
-			int y=coordinate.getY();
-			return new Arc2D.Double(x*this.labStepX+this.labStartX,
-					y*this.labStepY+this.labStartY,
-					labStepX, labStepY, arcphi,
-					this.pacmandphi, Arc2D.PIE
-					);
-		} else {
-			//logger.debug("no Pacman");
-			//return some random Pacman for testing purposes
-			//TODO: exception handling
-			return new Arc2D.Double(this.labStepX,this.labStepY,labStepX,labStepY,4.0f,4.0f,Arc2D.PIE);
-		}
-	}
-
-	private void initialize(Client newparent){
-		this.colorChangeAnimation=0;
-		this.parent=newparent;
-		this.alphaCookieAnimation=1.0f;
-		this.plusAlphaCookie=-0.01f;
-		this.coloredCookieTimer=(int)(Math.random()*40);
-		this.coloredCookieColor=Color.RED;
-
-		logger.debug("before shape");
-
-		this.pacmanAnimation=-4;
-		this.pacmandphi=360.0f;
-		this.pacmanphi=0.0f;
 	}
 	
-	public void initializePacmans() {
-		this.pacmanShape=new Shape[this.parent.getPlayers().size()];
-		for (int i=0;i<this.parent.getPlayers().size();i++) {
-			logger.debug("in shape");
-			this.pacmanShape[i]=this.animatedPacman(i);
-		}
+	public void showEndOfRoundScreen(Map<Long, Long> roundStatistics) {
+		// TODO: show statistics
+		statisticScreen = new JDialog();
+		statisticScreen.setLayout(new BoxLayout(statisticScreen.getContentPane(), BoxLayout.Y_AXIS));
+		statisticScreen.setAlwaysOnTop(true);
+		statisticScreen.setLocationRelativeTo(null);
+		
+		Iterator<Entry<Long, Long>> it = roundStatistics.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<Long, Long> entry = it.next();
+	        JLabel temp = new JLabel("Player " + entry.getKey() + ": \t" + entry.getValue() + " points");
+	        temp.setAlignmentX(Component.CENTER_ALIGNMENT);
+	        statisticScreen.add(temp);
+	    }
+	    
+	    JButton readyBt = new JButton("Ready");
+	    readyBt.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+	    	    UI.this.statisticScreen.setVisible(false);
+	    	    UI.this.statisticScreen.dispose();
+	    	    UI.this.setFocusable(true);
+	    	    UI.this.getUiController().signalReady();
+	    	}
+	    });
+	    statisticScreen.add(readyBt);
+		
+	    statisticScreen.setFocusable(true);
+	    statisticScreen.pack();
+	    this.setFocusable(false);
+	    statisticScreen.setVisible(true);
 	}
-
-	class AnimationTimer implements ActionListener {
-		public void actionPerformed(ActionEvent e){
-
-			//change alpha
-			alphaCookieAnimation+=plusAlphaCookie;
-			if (alphaCookieAnimation>=1.0f)
-			{
-				plusAlphaCookie=-plusAlphaCookie;
-				alphaCookieAnimation=1.0f;
-			} else {
-				if (alphaCookieAnimation<=0.6f)
-				{
-					plusAlphaCookie=-plusAlphaCookie;
-					alphaCookieAnimation=0.6f;
-				}
-			}
-
-			//change color of colored cookie
-			coloredCookieTimer++;
-			if (coloredCookieTimer>60) {
-				coloredCookieTimer=(int)(Math.random()*40);
-				coloredCookieColor=new Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
-			}
-
-			for (int i=0;i<parent.getPlayers().size();i++) {
-				pacmanShape[i]=animatedPacman(i);
-			}
-
-			//mouth open/closing
-
-			pacmandphi+=pacmanAnimation;
-			if (pacmandphi>360) {
-				pacmandphi=360;
-				pacmanAnimation=-pacmanAnimation;
-			}
-			if (pacmandphi<300) {
-				pacmandphi=300;
-				pacmanAnimation=-pacmanAnimation;
-			}
-
-			repaint();
-
-			//test:
-			//repaintTimer.stop();
-		}
-	} //end of AnimationTimer (inner class)
 
 	class DirectionListener extends KeyAdapter {
 		private final Client client;
 		public DirectionListener(Client newclient){
-			client=newclient;
+			client = newclient;
 		}
 
 		public void keyPressed(KeyEvent e) {
@@ -279,5 +200,17 @@ public class UI extends JPanel {
 			}
 			client.sendcmd(direction);
 		}
+	}
+	
+	public Client getUiController() {
+		return uiController;
+	}
+
+	public void setUiController(Client uiController) {
+		this.uiController = uiController;
+	}
+	
+	public PacmanAnimationTimer getPacmanAnimation() {
+		return pacmanAnimation;
 	}
 }
