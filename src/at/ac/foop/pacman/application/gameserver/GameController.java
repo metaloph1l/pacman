@@ -131,6 +131,14 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 		}
 		return statistics;
 	}
+	
+	private Map<Long, Long> currentRoundStatistics() {
+		Map<Long, Long> statistics = new HashMap<Long, Long>();
+		for (PlayerSlot player : players) {
+			statistics.put(player.getPlayerId(), player.getPlayer().getRoundPoints());
+		}
+		return statistics;
+	}
 
 	private void playRound() {
 		// this.playerOutput();
@@ -214,7 +222,7 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					currentSquare.leave(player.getPlayer());
 					nextSquare.enter(player.getPlayer());
 					player.getPlayer().getPacman().setLocation(nextSquare);
-					player.getPlayer().addPoints(nextSquare.consumePoints());
+					player.getPlayer().addRoundPoints(nextSquare.consumePoints());
 					
 
 					if(checkSquares.contains(nextSquare) == false) {
@@ -327,10 +335,18 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 			Map<Long, PlayerOutcome> outcome = new HashMap<Long, PlayerOutcome>();
 			List<Long> winnerIds = new ArrayList<Long>();
 			Long maxPoints = 0L;
+			
 			for (PlayerSlot player : players) {
 				if(maxPoints <= player.getPlayer().getPoints()) {
-					winnerIds.add(player.getPlayerId());
 					maxPoints = player.getPlayer().getPoints();
+				}
+			}
+			
+			for (PlayerSlot player : players) {
+				player.getPlayer().addPoints(player.getPlayer().getRoundPoints());
+				player.getPlayer().setRoundPoints(0L);
+				if(maxPoints.equals(player.getPlayer().getPoints())) {
+					winnerIds.add(player.getPlayerId());
 				}
 			}
 			
@@ -342,16 +358,27 @@ public class GameController extends UnicastRemoteObject implements IGameServer {
 					outcome.put(player.getPlayerId(), PlayerOutcome.Lose);
 				}
 			}
+			GameOutcome gameResult = null; 
+			if(winnerIds.size() == 3) {
+				gameResult = GameOutcome.Draw;
+			}
+			else {
+				gameResult = GameOutcome.Normal;
+			}
 			
+			Map<Long, Long> statistics = this.currentStatistics();
 			for (PlayerSlot player : players) {
-				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameOver", GameOutcome.Normal, outcome));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyStatistics", statistics));
+				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyGameOver", gameResult, outcome));
 				player.resetValues();
 			}
 		}
 		else {
-			Map<Long, Long> statistics = this.currentStatistics();
+			Map<Long, Long> statistics = this.currentRoundStatistics();
 			for (PlayerSlot player : players) {
 				player.notifyPlayer(MethodCallBuilder.getMethodCall("notifyRoundFinished", statistics));
+				player.getPlayer().addPoints(player.getPlayer().getRoundPoints());
+				player.getPlayer().setRoundPoints(0L);
 				player.setReady(false);
 			}
 		}
