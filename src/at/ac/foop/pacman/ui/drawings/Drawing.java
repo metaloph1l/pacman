@@ -2,8 +2,6 @@ package at.ac.foop.pacman.ui.drawings;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -76,14 +74,25 @@ public class Drawing extends JPanel {
 		
 		String strGameOutcome = "Game Outcome: " + this.parent.getUiController().controller.getGameOutcome();
 		strLength = (int) (g2d.getFontMetrics().getStringBounds(strGameOutcome, g2d).getWidth());
+		startX = (this.width / 2 - strLength / 2);
 		g2d.drawString(strGameOutcome, startX, 120);
 		
 		Map<Long, PlayerOutcome> playerOutcomes = this.parent.getUiController().controller.getPlayerOutcome();
 		Iterator<Entry<Long, PlayerOutcome>> it = playerOutcomes.entrySet().iterator();
 	    while (it.hasNext()) {
 	        Entry<Long, PlayerOutcome> pairs = it.next();
-	        String playerOutcome = "Player " + pairs.getKey() + ": " + pairs.getValue();
+	        if(pairs.getKey().equals(this.parent.getUiController().getPlayerId())) {
+				gp2 = new GradientPaint(0, 0, Color.GREEN, 5, 20, Color.BLUE, true);
+				g2d.setPaint(gp2);
+			}
+			else {
+				gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+				g2d.setPaint(gp2);
+			}
+	        String playerOutcome = "Player " + pairs.getKey() + ": " + pairs.getValue() + "" +
+	        		" (" + this.parent.getUiController().getGamePointsForPlayer(pairs.getKey()) + " Points)";
 	        strLength = (int) (g2d.getFontMetrics().getStringBounds(playerOutcome, g2d).getWidth());
+	        startX = (this.width / 2 - strLength / 2);
 			g2d.drawString(playerOutcome, startX, 160 + (pairs.getKey()*40));
 	    }
 	}
@@ -95,8 +104,16 @@ public class Drawing extends JPanel {
 		g2d.setFont(font);
 		
 		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
+			if(this.parent.getUiController().getPlayers().get(i).getId().equals(this.parent.getUiController().getPlayerId())) {
+				gp2 = new GradientPaint(0, 0, Color.GREEN, 5, 20, Color.BLUE, true);
+				g2d.setPaint(gp2);
+			}
+			else {
+				gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+				g2d.setPaint(gp2);
+			}
 			String strPlayerPoints = "Player "+ this.parent.getUiController().getPlayers().get(i).getId() + ":";
-			strPlayerPoints = strPlayerPoints + " " + this.parent.getUiController().getPlayers().get(i).getPoints() + " Points";
+			strPlayerPoints = strPlayerPoints + " " + this.parent.getUiController().getPlayers().get(i).getRoundPoints() + " Points";
 			int strLength = (int) (g2d.getFontMetrics().getStringBounds(strPlayerPoints, g2d).getWidth());
 			g2d.drawString(strPlayerPoints, this.width / 2 - strLength / 2, 120 + (i*60));
 		}
@@ -185,8 +202,17 @@ public class Drawing extends JPanel {
 		g2d.drawString(strStatistic, start, 30);
 		
 		for (int i = 0; i < this.parent.getUiController().getPlayers().size(); i++) {
+			if(this.parent.getUiController().getPlayers().get(i).getId().equals(this.parent.getUiController().getPlayerId())) {
+				gp2 = new GradientPaint(0, 0, Color.GREEN, 5, 20, Color.BLUE, true);
+				g2d.setPaint(gp2);
+			}
+			else {
+				gp2 = new GradientPaint(0, 0, Color.yellow, 5, 20, Color.orange, true);
+				g2d.setPaint(gp2);
+			}
+			
 			String strPlayer = "Player "+ this.parent.getUiController().getPlayers().get(i).getId() + ":";
-			String strPoints = this.parent.getUiController().getPlayers().get(i).getPoints() + " Points";
+			String strPoints = this.parent.getUiController().getPlayers().get(i).getRoundPoints() + " Points";
 			g2d.drawString(strPlayer, this.width - 140, 80 + (i*60));
 			g2d.drawString(strPoints, this.width - 140, 100 + (i*60));
 		}

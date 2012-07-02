@@ -2,6 +2,7 @@ package at.ac.foop.pacman.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,7 +29,8 @@ public class Client implements Observer{
 	//Fields
 	private final UI ui;
 	private final Logger logger;
-	public long myID;
+	private long playerId;
+	private Map<Long, Long> gameStatistic;
 	public int colorChangeSpeed;
 
 	public GameController controller;
@@ -46,9 +48,9 @@ public class Client implements Observer{
 		//      the user that the client could not connect to the game server.
 
 		this.players = new ArrayList<Player>();
-		this.colorChangeSpeed=colorChangeSpeed;
-		this.myID=playerId;
-		this.ui=new UI(this);
+		this.colorChangeSpeed = colorChangeSpeed;
+		this.setPlayerId(playerId);
+		this.ui = new UI(this);
 	}
 
 	/**
@@ -108,6 +110,7 @@ public class Client implements Observer{
 				break;
 			case PLAYER_READY: break;
 			case GAME_OVER:
+				this.gameStatistic = this.controller.getGameStatistic();
 				this.ui.showGameOverScreen();
 				break;
 			case GAME_START:
@@ -116,6 +119,26 @@ public class Client implements Observer{
 				this.ui.initGameBoard();
 				break;
 			default: throw new RuntimeException("[Error] Unimplemented GameState type");
+		}
+	}
+
+	public long getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(long playerId) {
+		this.playerId = playerId;
+	}
+	
+	public long getGamePointsForPlayer(long playerId) {
+		if(this.gameStatistic == null) {
+			return 0L;
+		}
+		if(this.gameStatistic.containsKey(playerId)) {
+			return this.gameStatistic.get(playerId);
+		}
+		else {
+			return 0L;
 		}
 	}
 

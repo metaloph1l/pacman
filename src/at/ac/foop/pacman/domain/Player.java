@@ -9,6 +9,7 @@ public class Player implements Serializable {
 	Long id; //Uniquely identified the player
 	String name; //The name of the player (for statistics)
 	private Long points; //current number of points of the player
+	private Long roundPoints; //current number of points of the player (for active round)
 	private Pacman pacman; //the pacman that represents the player on the board. If null then player has been eaten;
 	private PlayerOutcome outcome;
 	//Labyrinth map; //the current map in this round 
@@ -16,21 +17,24 @@ public class Player implements Serializable {
 	//Constructors
 	public Player() {
 		this.points = 0L;
+		this.roundPoints = 0L;
 	}
 	
 	public Player(Long id, String name) {
 		this.id = id;
 		this.name = name;
 		this.points = 0L;
+		this.roundPoints = 0L;
 	}
 	
 	public Player(Player player) {
 		this.id = player.getId();
 		this.name = player.getName();
 		this.points = player.getPoints();
+		this.roundPoints = player.getRoundPoints();
 		this.pacman = player.getPacman();
 	}
-
+	
 	public Long getPoints() {
 		return points;
 	}
@@ -39,10 +43,18 @@ public class Player implements Serializable {
 		this.points = points;
 	}
 
+	public Long getRoundPoints() {
+		return roundPoints;
+	}
+
+	public void setRoundPoints(Long roundPoints) {
+		this.roundPoints = roundPoints;
+	}
+
 	public void sendBounty(Player player) {
 		this.pacman.setAlive(false);
-		player.setPoints(this.points + player.getPoints());
-		points = 0L;
+		player.setRoundPoints(this.roundPoints + player.getRoundPoints());
+		roundPoints = 0L;
 	}
 	
 	public void initPacman(Square square) {
@@ -61,10 +73,13 @@ public class Player implements Serializable {
 	public void setPacman(Pacman pacman) {
 		this.pacman = pacman;
 	}
-
-	//Getters and Setters
-	public void addPoints(int points) {
+	
+	public void addPoints(long points) {
 		this.points += new Long(points);
+	}
+
+	public void addRoundPoints(long roundPoints) {
+		this.roundPoints += new Long(roundPoints);
 	}
 
 	public Square getLocation() {
@@ -106,6 +121,7 @@ public class Player implements Serializable {
 	
 	public void reset() {
 		this.outcome = PlayerOutcome.Normal;
+		this.roundPoints = 0L;
 		this.points = 0L;
 	}
 }
