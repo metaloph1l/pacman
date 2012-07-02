@@ -32,6 +32,7 @@ public class StartUpClient {
 			Client client = new Client(controller, 10000, controller.getPlayers().get(0).getId());
 			
 			controller.connect("PLAYER " + controller.getPlayers().get(0).getId());
+			client.setPlayerId(controller.getPlayerId());
 		} catch(Exception e) {
 			Logger.getLogger(StartUpClient.class).error("ERROR", e);
 		}
