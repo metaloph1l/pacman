@@ -40,6 +40,7 @@ public class GameController extends Observable implements IGame {
 	private GameOutcome gameOutcome;
 	private Map<Long, PlayerOutcome> playerOutcome;
 	private Map<Long, Long> roundStatistic;
+	private Map<Long, Long> gameStatistic;
 	private final IGameServer server; //Interface to the game server
 	private Long playerId; //The id of this clients player
 	private final Queue<GameState> states = new LinkedList<GameState>();
@@ -285,7 +286,7 @@ public class GameController extends Observable implements IGame {
 				} else {
 					currentSquare.leave(player);
 					nextSquare.enter(player);
-					player.addPoints(nextSquare.consumePoints());
+					player.addRoundPoints(nextSquare.consumePoints());
 					player.getPacman().setLocation(nextSquare);
 					squares.add(nextSquare);
 				}
@@ -319,6 +320,13 @@ public class GameController extends Observable implements IGame {
 	public void notifyPlayer(Player player) throws RemoteException {
 		logger.info("[Unimplemented] Single Player update received.");
 	}
+	
+	@Override
+	public void notifyStatistics(Map<Long, Long> pointTable) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println(pointTable);
+		this.gameStatistic = pointTable;
+	}
 
 	@Override
 	public void notifyScore(Map<Long, Long> statistics) throws RemoteException {
@@ -332,6 +340,10 @@ public class GameController extends Observable implements IGame {
 
 	@Override
 	public void notifyGameStarting() throws RemoteException {
+		for(Player player : this.players) {
+			player.addPoints(player.getRoundPoints());
+			player.setRoundPoints(0L);
+		}
 		states.add(GameState.GAME_START);
 		this.setChanged();
 		this.notifyObservers();
@@ -395,5 +407,21 @@ public class GameController extends Observable implements IGame {
 
 	public void setGameOutcome(GameOutcome gameOutcome) {
 		this.gameOutcome = gameOutcome;
+	}
+	
+	public Long getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(Long playerId) {
+		this.playerId = playerId;
+	}
+	
+	public Map<Long, Long> getGameStatistic() {
+		return gameStatistic;
+	}
+
+	public void setGameStatistic(Map<Long, Long> gameStatistic) {
+		this.gameStatistic = gameStatistic;
 	}
 }

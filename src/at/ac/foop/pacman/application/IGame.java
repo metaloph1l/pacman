@@ -99,6 +99,13 @@ public interface IGame extends Remote {
 	void notifyGameOver(GameOutcome type, Map<Long,PlayerOutcome> outcome) throws RemoteException;
 	
 	/**
+	 * Notifies the client of the current overall statistics.
+	 * 
+	 * @param pointTable A map of players and their points
+	 */
+	void notifyStatistics(Map<Long, Long> pointTable) throws RemoteException;
+	
+	/**
 	 * Notifies the client that the current round is over
 	 * the player ids of the winning and losing player.
 	 * 
