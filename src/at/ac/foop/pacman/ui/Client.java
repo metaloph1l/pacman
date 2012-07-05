@@ -15,13 +15,13 @@ import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.Player;
 
 /**
- * The main entry point for the gui. It shows the
- * Game Window, displays the labyrinth and handles
- * user input.
+ * The main entry point for the GUI. It create the
+ * UI class, and acts as a game observer which receives the
+ * game change events and in response updates the UI.
  *
  * @author
- * Sebastian Geiger: Intial Design
- * Stefan
+ * Sebastian Geiger: Intial Design <br/>
+ * Stefan Gahr
  *
  */
 public class Client implements Observer{

@@ -21,8 +21,12 @@ import at.ac.foop.pacman.domain.SquareType;
 import at.ac.foop.pacman.ui.UI;
 
 /**
+ * This drawing class is responsible to draw the 2D graphic onto the JPanel that represents the game field.
+ * It paints the fields, pacmans, scoreboards, etc. which are visible to the user.
  * 
- * @author Stefan
+ * The objects which are painted are pulled from the Client class
+ * 
+ * @author Stefan Gahr
  * 
  */
 public class Drawing extends JPanel {

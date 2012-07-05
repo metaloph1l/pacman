@@ -14,8 +14,8 @@ import at.ac.foop.pacman.util.ClientSettings;
 import at.ac.foop.pacman.util.PropertyLoader;
 
 /**
- *
- * @author Phil
+ * Used by the Client to connect to the server via RMI and retrieve a remote GameController instance.
+ * @author Philipp Grandits
  */
 public class RmiConnector {
 

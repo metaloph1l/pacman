@@ -1,6 +1,5 @@
 package at.ac.foop.pacman.application.gameserver;
 
-import java.net.ConnectException;
 import java.nio.channels.AlreadyConnectedException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -23,7 +22,6 @@ import at.ac.foop.pacman.domain.GameOutcome;
 import at.ac.foop.pacman.domain.Labyrinth;
 import at.ac.foop.pacman.domain.LabyrinthGenerator;
 import at.ac.foop.pacman.domain.Pacman;
-import at.ac.foop.pacman.domain.PacmanColor;
 import at.ac.foop.pacman.domain.Player;
 import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.domain.PlayerSlot;
@@ -32,8 +30,10 @@ import at.ac.foop.pacman.domain.SquareType;
 import at.ac.foop.pacman.util.MethodCallBuilder;
 
 /**
- *
- * @author Phil
+ * The server GameController contains both the RMI logic and the necessary logic to handle the server side parts of
+ * the game. All calls from the client are received here and then applied to the domain objects.
+ * 
+ * @author Philipp Grandits
  */
 public class GameController extends UnicastRemoteObject implements IGameServer {
 	//Constants
