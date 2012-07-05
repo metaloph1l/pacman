@@ -1,7 +1,6 @@
 package at.ac.foop.pacman.ui;
 
 
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Label;
 import java.awt.RenderingHints;
@@ -9,33 +8,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
 
 import at.ac.foop.pacman.domain.Direction;
-import at.ac.foop.pacman.domain.GameOutcome;
-import at.ac.foop.pacman.domain.PlayerOutcome;
 import at.ac.foop.pacman.ui.drawings.Drawing;
 import at.ac.foop.pacman.ui.drawings.OvalButton;
 import at.ac.foop.pacman.ui.drawings.PacmanAnimationTimer;
 
-//TODO: relative movement of pacmans
-
 /**
- * UI including keyevents
+ * The UI is responsible to create the Window Frame and handle the keyboard inputs.
+ * It relies on the Drawing class to paint a Java Graphics2D based game graphic.
+ * The keyboard commands are sent to the Client controller. 
  *
- * @author Stefan
+ * @author
+ * Stefan Gahr (Design and implementation) <br/>
+ * Ralph Hoch (Refactoring and Fixes) <br/>
+ * Sebastian Geiger (Documentation)
  */
 public class UI extends JPanel {
 
@@ -46,11 +40,9 @@ public class UI extends JPanel {
 	private final Logger logger = Logger.getLogger(UI.class);
 	private final Timer repaintTimer; // repaints Labyrinth every time is called
 	private PacmanAnimationTimer pacmanAnimation;
-	//private JDialog statisticScreen;
 	
 	private boolean showStatisticScreen;
 	private boolean showGameOverScreen;
-
 
 	//also used for shape
 	//TODO: move m,n, ... into Drawing after pacmanshape
@@ -229,6 +221,11 @@ public class UI extends JPanel {
 		this.repaint();
 	}
 
+	
+	/**
+	 * This is the Keyboard Listener. It listens for keyboards presses by the user
+	 * and forwards them to the Client Class.
+	 */
 	class DirectionListener extends KeyAdapter {
 		private final Client client;
 		public DirectionListener(Client newclient){
